@@ -1,4 +1,3 @@
-
 package view;
 
 import Form.FormTambahBarang;
@@ -50,20 +49,20 @@ import java.io.File;
 import java.nio.file.Path;
 import javax.imageio.ImageIO;
 import java.util.Date;
-import main.Session;
 
-
-public class FormLaporanPenjualan extends javax.swing.JPanel {
+public class FormLaporanPembelian extends javax.swing.JPanel {
 
     private Connection conn;
 
-    public FormLaporanPenjualan() {
+    public FormLaporanPembelian() {
         initComponents();
+        tampilkanLaporanPembelianLengkap();
+
         JD_Awal.getDateEditor().addPropertyChangeListener("date", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (JD_Awal.getDate() != null && JD_Akhir.getDate() != null) {
-                    tampilkanLaporanPenjualan(JD_Awal.getDate(), JD_Akhir.getDate());
+                    tampilkanLaporanPembelian(JD_Awal.getDate(), JD_Akhir.getDate());
                 }
             }
         });
@@ -72,19 +71,20 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (JD_Awal.getDate() != null && JD_Akhir.getDate() != null) {
-                    tampilkanLaporanPenjualan(JD_Awal.getDate(), JD_Akhir.getDate());
+                    tampilkanLaporanPembelian(JD_Awal.getDate(), JD_Akhir.getDate());
                 }
             }
         });
-        DefaultTableModel model = new DefaultTableModel(new Object[]{"ID Penjualan", "Nama User", "Tanggal", "Nama Barang", "Jumlah", "Harga Satuan", "Total"}, 0) {
+
+        DefaultTableModel model = new DefaultTableModel(new Object[]{"ID", "Nama", "Kategori", "Satuan", "Harga", "Jumlah", "Supplier", "User"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Semua sel tidak dapat diedit langsung
             }
         };
-        tabel_penjualan.setModel(model);
+        tabel_pembelian.setModel(model);
 
-        JTableHeader header = tabel_penjualan.getTableHeader();
+        JTableHeader header = tabel_pembelian.getTableHeader();
         header.setDefaultRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
@@ -102,20 +102,18 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
             }
         });
 
-        tabel_penjualan.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
-        tabel_penjualan.getTableHeader().setOpaque(false);
-        tabel_penjualan.getTableHeader().setBackground(new Color(0, 102, 204));
-        tabel_penjualan.getTableHeader().setForeground(Color.WHITE);
+        tabel_pembelian.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
+        tabel_pembelian.getTableHeader().setOpaque(false);
+        tabel_pembelian.getTableHeader().setBackground(new Color(0, 102, 204));
+        tabel_pembelian.getTableHeader().setForeground(Color.WHITE);
 
-        tabel_penjualan.setRowHeight(30);
-        tabel_penjualan.setShowGrid(true);
-        tabel_penjualan.setGridColor(Color.LIGHT_GRAY);
-        tabel_penjualan.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        tabel_penjualan.setSelectionBackground(new Color(204, 229, 255));
-        tabel_penjualan.setSelectionForeground(Color.BLACK);
-        tabel_penjualan.setShowVerticalLines(true);
-
-        tampilkanLaporanPenjualanLengkap();
+        tabel_pembelian.setRowHeight(30);
+        tabel_pembelian.setShowGrid(true);
+        tabel_pembelian.setGridColor(Color.LIGHT_GRAY);
+        tabel_pembelian.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        tabel_pembelian.setSelectionBackground(new Color(204, 229, 255));
+        tabel_pembelian.setSelectionForeground(Color.BLACK);
+        tabel_pembelian.setShowVerticalLines(true);
 
         // Style tombol
         btn_hapus.setText("HAPUS");
@@ -140,35 +138,38 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         });
     }
 
-    public void tampilkanLaporanPenjualanLengkap() {
-        DefaultTableModel model = (DefaultTableModel) tabel_penjualan.getModel();
-        model.setRowCount(0); // reset isi 
-        String[] kolom = {"ID Penjualan", "Nama User", "Tanggal", "Nama Barang", "Jumlah", "Harga Satuan", "Total"};
+    public void tampilkanLaporanPembelianLengkap() {
+        DefaultTableModel model = (DefaultTableModel) tabel_pembelian.getModel();
+        model.setRowCount(0); // reset isi tabel
+
+        String[] kolom = {"ID Pembelian", "Nama Barang", "Kategori", "Satuan", "Harga Satuan", "Jumlah Beli", "Total", "Supplier", "User"};
         model.setColumnIdentifiers(kolom);
-        tabel_penjualan.setModel(model);
+        tabel_pembelian.setModel(model);
 
         try {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
-            String sql = "SELECT p.id_Penjualan, u.Nama AS nama_user, p.tanggal, "
-                    + "b.Nama_barang, pr.Jumlah_Jual, pr.Harga_Satuan, pr.Total "
-                    + "FROM penjualan p "
-                    + "JOIN users u ON p.id_user = u.id_user "
-                    + "JOIN penjualanrinci pr ON p.id_Penjualan = pr.id_Penjualan "
-                    + "JOIN barang b ON pr.id_Barang = b.id_Barang "
-                    + "ORDER BY p.tanggal DESC";
+            String sql = "SELECT p.id_pembelian, b.nama_barang, b.kategori, pr.satuan, "
+                    + "pr.harga_satuan, pr.jumlah_beli, s.Nama AS nama_supplier, u.Nama AS nama_user "
+                    + "FROM pembelian p "
+                    + "JOIN pembelianrinci pr ON p.id_pembelian = pr.id_pembelian "
+                    + "JOIN barang b ON pr.id_barang = b.id_barang "
+                    + "JOIN supplier s ON p.id_supplier = s.Id_Supplier_Utama "
+                    + "JOIN users u ON p.id_user = u.Id_user "
+                    + "ORDER BY p.tgl_pembelian DESC";
 
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
 
             while (rs.next()) {
                 model.addRow(new Object[]{
-                    rs.getString("id_Penjualan"),
-                    rs.getString("nama_user"),
-                    rs.getDate("tanggal"),
-                    rs.getString("Nama_barang"),
-                    rs.getInt("Jumlah_Jual"),
-                    rs.getDouble("Harga_Satuan"),
-                    rs.getDouble("Total")
+                    rs.getString("id_pembelian"),
+                    rs.getString("nama_barang"),
+                    rs.getString("kategori"),
+                    rs.getString("satuan"),
+                    rs.getDouble("harga_satuan"),
+                    rs.getInt("jumlah_beli"),
+                    rs.getString("nama_supplier"),
+                    rs.getString("nama_user")
                 });
             }
 
@@ -176,27 +177,28 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
             st.close();
             con.close();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Gagal menampilkan laporan penjualan lengkap: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Gagal menampilkan laporan pembelian lengkap: " + e.getMessage());
         }
     }
 
-    public void tampilkanLaporanPenjualan(Date tglAwal, Date tglAkhir) {
-        DefaultTableModel model = (DefaultTableModel) tabel_penjualan.getModel();
+    public void tampilkanLaporanPembelian(Date tglAwal, Date tglAkhir) {
+        DefaultTableModel model = (DefaultTableModel) tabel_pembelian.getModel();
         model.setRowCount(0); // reset isi tabel
-        String[] kolom = {"ID Penjualan", "Nama User", "Tanggal", "Nama Barang", "Jumlah", "Harga Satuan", "Total"};
+
+        String[] kolom = {"ID Pembelian", "Nama Barang", "Kategori", "Satuan", "Harga Satuan", "Jumlah Beli", "Total", "Supplier", "User"};
         model.setColumnIdentifiers(kolom);
-        tabel_penjualan.setModel(model);
+        tabel_pembelian.setModel(model);
 
         try {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
-            String sql = "SELECT p.id_Penjualan, u.Nama AS nama_user, p.tanggal, "
-                    + "b.Nama_barang, pr.Jumlah_Jual, pr.Harga_Satuan, pr.Total "
-                    + "FROM penjualan p "
-                    + "JOIN users u ON p.id_user = u.id_user "
-                    + "JOIN penjualanrinci pr ON p.id_Penjualan = pr.id_Penjualan "
-                    + "JOIN barang b ON pr.id_Barang = b.id_Barang "
-                    + "WHERE p.tanggal BETWEEN ? AND ? "
-                    + "ORDER BY p.tanggal DESC";
+            String sql = "SELECT p.id_pembelian, b.nama_barang, b.kategori, pr.satuan, "
+                    + "pr.harga_satuan, pr.jumlah_beli, s.Nama AS nama_supplier, u.Nama AS nama_user "
+                    + "FROM pembelian p "
+                    + "JOIN pembelianrinci pr ON p.id_pembelian = pr.id_pembelian "
+                    + "JOIN barang b ON pr.id_barang = b.id_barang "
+                    + "JOIN supplier s ON p.id_supplier = s.Id_Supplier_Utama "
+                    + "JOIN users u ON p.id_user = u.Id_user "
+                    + "ORDER BY p.tgl_pembelian DESC";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setDate(1, new java.sql.Date(tglAwal.getTime()));
@@ -206,21 +208,23 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
 
             while (rs.next()) {
                 model.addRow(new Object[]{
-                    rs.getString("id_Penjualan"),
-                    rs.getString("nama_user"),
-                    rs.getDate("tanggal"),
-                    rs.getString("Nama_barang"),
-                    rs.getInt("Jumlah_Jual"),
-                    rs.getDouble("Harga_Satuan"),
-                    rs.getDouble("Total")
+                    rs.getString("id_pembelian"),
+                    rs.getString("nama_barang"),
+                    rs.getString("kategori"),
+                    rs.getString("satuan"),
+                    rs.getDouble("harga_satuan"),
+                    rs.getInt("jumlah_beli"),
+                    rs.getString("nama_supplier"),
+                    rs.getString("nama_user")
                 });
+
             }
 
             rs.close();
             pst.close();
             con.close();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Gagal menampilkan laporan penjualan: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Gagal menampilkan laporan pembelian: " + e.getMessage());
         }
     }
 
@@ -238,14 +242,11 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         btn_hapus = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        JD_Awal = new com.toedter.calendar.JDateChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tabel_penjualan = new javax.swing.JTable();
-        CB_Kamin = new javax.swing.JComboBox<>();
+        tabel_pembelian = new javax.swing.JTable();
+        JD_Awal = new com.toedter.calendar.JDateChooser();
+        CB_Supp = new javax.swing.JComboBox<>();
         JD_Akhir = new com.toedter.calendar.JDateChooser();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(755, 509));
         setMinimumSize(new java.awt.Dimension(755, 509));
@@ -260,7 +261,7 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Laporan Data Penjualan");
+        jLabel1.setText("Laporan Data Pembelian");
 
         btn_hapus.setBackground(new java.awt.Color(204, 0, 0));
         btn_hapus.setForeground(new java.awt.Color(255, 255, 255));
@@ -281,7 +282,7 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("08 - 06 - 2025");
 
-        tabel_penjualan.setModel(new javax.swing.table.DefaultTableModel(
+        tabel_pembelian.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -289,16 +290,10 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
 
             }
         ));
-        jScrollPane1.setViewportView(tabel_penjualan);
+        jScrollPane1.setViewportView(tabel_pembelian);
 
-        CB_Kamin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4", "Test", " " }));
-
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Awal");
-
-        jLabel4.setText("Akhir");
-
-        jLabel6.setText("Kasir / Admin");
+        CB_Supp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        CB_Supp.setPreferredSize(new java.awt.Dimension(125, 26));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -313,21 +308,15 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(JD_Awal, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(JD_Awal, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(JD_Akhir, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))
+                        .addComponent(JD_Akhir, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(CB_Kamin, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(CB_Supp, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btn_hapus))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE))
+                        .addComponent(btn_hapus)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -340,18 +329,12 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3))
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(12, 12, 12)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(JD_Awal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(JD_Akhir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(CB_Kamin, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_hapus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(34, 34, 34)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btn_hapus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(JD_Awal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JD_Akhir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CB_Supp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
                 .addContainerGap())
@@ -366,18 +349,15 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> CB_Kamin;
+    private javax.swing.JComboBox<String> CB_Supp;
     private com.toedter.calendar.JDateChooser JD_Akhir;
     private com.toedter.calendar.JDateChooser JD_Awal;
     private javax.swing.JButton btn_hapus;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tabel_penjualan;
+    private javax.swing.JTable tabel_pembelian;
     // End of variables declaration//GEN-END:variables
 }
