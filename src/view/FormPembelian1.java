@@ -159,7 +159,7 @@ public class FormPembelian1 extends javax.swing.JPanel {
         tbl_pembelian.setSelectionForeground(Color.BLACK);
         tbl_pembelian.setShowVerticalLines(true);
 
-        // === Style dan Hover Tombol ===
+        //Style dan Hover Tombol
         styleButton(btn_simpan, "SIMPAN");
         styleButton(btn_tambah, "TAMBAH");
         styleButton(btn_caribarang, "CARI BARANG");
@@ -760,7 +760,7 @@ public class FormPembelian1 extends javax.swing.JPanel {
             ps.setString(1, barcode);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getString("Id_barang"); // ✅ Ubah ke getString
+                    return rs.getString("Id_barang"); // Ubah ke getString
                 }
             }
         }
