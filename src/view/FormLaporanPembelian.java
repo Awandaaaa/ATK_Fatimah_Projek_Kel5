@@ -47,6 +47,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import javax.imageio.ImageIO;
 import java.util.Date;
 
@@ -56,8 +57,6 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
 
     public FormLaporanPembelian() {
         initComponents();
-        tampilkanLaporanPembelianLengkap();
-
         JD_Awal.getDateEditor().addPropertyChangeListener("date", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -75,8 +74,7 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
                 }
             }
         });
-
-        DefaultTableModel model = new DefaultTableModel(new Object[]{"ID", "Nama", "Kategori", "Satuan", "Harga", "Jumlah", "Supplier", "User"}, 0) {
+        DefaultTableModel model = new DefaultTableModel(new Object[]{"No", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "Supplier"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Semua sel tidak dapat diedit langsung
@@ -115,6 +113,8 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         tabel_pembelian.setSelectionForeground(Color.BLACK);
         tabel_pembelian.setShowVerticalLines(true);
 
+        tampilkanLaporanPembelianLengkap();
+
         // Style tombol
         btn_hapus.setText("HAPUS");
         btn_hapus.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
@@ -140,85 +140,94 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
 
     public void tampilkanLaporanPembelianLengkap() {
         DefaultTableModel model = (DefaultTableModel) tabel_pembelian.getModel();
-        model.setRowCount(0); // reset isi tabel
+        model.setRowCount(0);
 
-        String[] kolom = {"ID Pembelian", "Nama Barang", "Kategori", "Satuan", "Harga Satuan", "Jumlah Beli", "Total", "Supplier", "User"};
+        String[] kolom = {"No", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "Supplier", "ID Pembelian Rinci"};
         model.setColumnIdentifiers(kolom);
         tabel_pembelian.setModel(model);
 
         try {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
-            String sql = "SELECT p.id_pembelian, b.nama_barang, b.kategori, pr.satuan, "
-                    + "pr.harga_satuan, pr.jumlah_beli, s.Nama AS nama_supplier, u.Nama AS nama_user "
+            String sql = "SELECT pr.id_pembelianrinci, s.Nama, p.Tgl_Pembelian, "
+                    + "b.Nama_barang, pr.Jumlah_Beli, pr.Harga_Satuan, pr.Total "
                     + "FROM pembelian p "
+                    + "JOIN supplier s ON p.id_Supplier = s.id_Supplier "
                     + "JOIN pembelianrinci pr ON p.id_pembelian = pr.id_pembelian "
-                    + "JOIN barang b ON pr.id_barang = b.id_barang "
-                    + "JOIN supplier s ON p.id_supplier = s.Id_Supplier_Utama "
-                    + "JOIN users u ON p.id_user = u.Id_user "
-                    + "ORDER BY p.tgl_pembelian DESC";
+                    + "JOIN barang b ON pr.id_Barang = b.id_Barang "
+                    + "ORDER BY p.Tgl_Pembelian DESC";
 
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
 
+            int no = 1;
             while (rs.next()) {
                 model.addRow(new Object[]{
-                    rs.getString("id_pembelian"),
-                    rs.getString("nama_barang"),
-                    rs.getString("kategori"),
-                    rs.getString("satuan"),
-                    rs.getDouble("harga_satuan"),
-                    rs.getInt("jumlah_beli"),
-                    rs.getString("nama_supplier"),
-                    rs.getString("nama_user")
+                    no++,
+                    rs.getString("Nama"),
+                    rs.getDate("Tgl_Pembelian"),
+                    rs.getString("Nama_barang"),
+                    rs.getInt("Jumlah_Beli"),
+                    rs.getDouble("Harga_Satuan"),
+                    rs.getDouble("Total"),
+                    rs.getString("id_pembelianrinci")
                 });
             }
+
+            // Sembunyikan kolom ID Pembelian Rinci
+            tabel_pembelian.getColumnModel().getColumn(7).setMinWidth(0);
+            tabel_pembelian.getColumnModel().getColumn(7).setMaxWidth(0);
+            tabel_pembelian.getColumnModel().getColumn(7).setWidth(0);
 
             rs.close();
             st.close();
             con.close();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Gagal menampilkan laporan pembelian lengkap: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Gagal menampilkan laporan pembelian: " + e.getMessage());
         }
     }
 
     public void tampilkanLaporanPembelian(Date tglAwal, Date tglAkhir) {
         DefaultTableModel model = (DefaultTableModel) tabel_pembelian.getModel();
-        model.setRowCount(0); // reset isi tabel
+        model.setRowCount(0);
 
-        String[] kolom = {"ID Pembelian", "Nama Barang", "Kategori", "Satuan", "Harga Satuan", "Jumlah Beli", "Total", "Supplier", "User"};
+        String[] kolom = {"No", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "Supplier", "ID Pembelian Rinci"};
         model.setColumnIdentifiers(kolom);
         tabel_pembelian.setModel(model);
 
         try {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
-            String sql = "SELECT p.id_pembelian, b.nama_barang, b.kategori, pr.satuan, "
-                    + "pr.harga_satuan, pr.jumlah_beli, s.Nama AS nama_supplier, u.Nama AS nama_user "
+            String sql = "SELECT pr.id_pembelianrinci, s.Nama, p.Tgl_Pembelian, "
+                    + "b.Nama_barang, pr.Jumlah_Beli, pr.Harga_Satuan, pr.Total "
                     + "FROM pembelian p "
+                    + "JOIN supplier s ON p.id_Supplier = s.id_Supplier "
                     + "JOIN pembelianrinci pr ON p.id_pembelian = pr.id_pembelian "
-                    + "JOIN barang b ON pr.id_barang = b.id_barang "
-                    + "JOIN supplier s ON p.id_supplier = s.Id_Supplier_Utama "
-                    + "JOIN users u ON p.id_user = u.Id_user "
-                    + "ORDER BY p.tgl_pembelian DESC";
+                    + "JOIN barang b ON pr.id_Barang = b.id_Barang "
+                    + "WHERE p.Tgl_Pembelian BETWEEN ? AND ? "
+                    + "ORDER BY p.Tgl_Pembelian DESC";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setDate(1, new java.sql.Date(tglAwal.getTime()));
             pst.setDate(2, new java.sql.Date(tglAkhir.getTime()));
-
             ResultSet rs = pst.executeQuery();
 
+            int no = 1;
             while (rs.next()) {
                 model.addRow(new Object[]{
-                    rs.getString("id_pembelian"),
-                    rs.getString("nama_barang"),
-                    rs.getString("kategori"),
-                    rs.getString("satuan"),
-                    rs.getDouble("harga_satuan"),
-                    rs.getInt("jumlah_beli"),
-                    rs.getString("nama_supplier"),
-                    rs.getString("nama_user")
+                    no++,
+                    rs.getString("Nama"),
+                    rs.getDate("Tgl_Pembelian"),
+                    rs.getString("Nama_barang"),
+                    rs.getInt("Jumlah_Beli"),
+                    rs.getDouble("Harga_Satuan"),
+                    rs.getDouble("Total"),
+                    rs.getString("id_pembelianrinci")
                 });
-
             }
+
+            // Sembunyikan kolom ID Pembelian Rinci
+            tabel_pembelian.getColumnModel().getColumn(7).setMinWidth(0);
+            tabel_pembelian.getColumnModel().getColumn(7).setMaxWidth(0);
+            tabel_pembelian.getColumnModel().getColumn(7).setWidth(0);
 
             rs.close();
             pst.close();
@@ -226,6 +235,12 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Gagal menampilkan laporan pembelian: " + e.getMessage());
         }
+    }
+
+    private String ambilIdPembelianDariBaris(int row) {
+        // Misal kamu menyimpan id_Penjualan di kolom ke-7 (kolom ke-0 sampai 6 ditampilkan)
+        DefaultTableModel model = (DefaultTableModel) tabel_pembelian.getModel();
+        return model.getValueAt(row, 7).toString(); // sesuaikan dengan posisi ID kamu
     }
 
     /**
@@ -245,7 +260,6 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tabel_pembelian = new javax.swing.JTable();
         JD_Awal = new com.toedter.calendar.JDateChooser();
-        CB_Supp = new javax.swing.JComboBox<>();
         JD_Akhir = new com.toedter.calendar.JDateChooser();
 
         setMaximumSize(new java.awt.Dimension(755, 509));
@@ -264,6 +278,7 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         jLabel1.setText("Laporan Data Pembelian");
 
         btn_hapus.setBackground(new java.awt.Color(204, 0, 0));
+        btn_hapus.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_hapus.setForeground(new java.awt.Color(255, 255, 255));
         btn_hapus.setText("HAPUS");
         btn_hapus.addActionListener(new java.awt.event.ActionListener() {
@@ -292,9 +307,6 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tabel_pembelian);
 
-        CB_Supp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        CB_Supp.setPreferredSize(new java.awt.Dimension(125, 26));
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -314,9 +326,8 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(JD_Akhir, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(CB_Supp, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btn_hapus)))
+                        .addComponent(btn_hapus)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -330,11 +341,10 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
                         .addComponent(jLabel3))
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(34, 34, 34)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btn_hapus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btn_hapus, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(JD_Awal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(JD_Akhir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CB_Supp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(JD_Akhir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
                 .addContainerGap())
@@ -345,11 +355,46 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
 
     private void btn_hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_hapusActionPerformed
 
+        int selectedRow = tabel_pembelian.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Pilih dulu baris yang ingin dihapus.");
+            return;
+        }
+
+        int konfirmasi = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin menghapus data ini?", "Konfirmasi Hapus", JOptionPane.YES_NO_OPTION);
+
+        if (konfirmasi == JOptionPane.YES_OPTION) {
+            try {
+                // Ambil ID pembelianrinci dari kolom tersembunyi (kolom ke-7)
+                String idPembelianrinci = tabel_pembelian.getValueAt(selectedRow, 7).toString();
+
+                Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
+
+                // Hapus dari tabel pembelianrinci berdasarkan id_pembelianrinci
+                String sql = "DELETE FROM pembelianrinci WHERE id_pembelianrinci = ?";
+                PreparedStatement pst = con.prepareStatement(sql);
+                pst.setString(1, idPembelianrinci);
+                int rowsAffected = pst.executeUpdate();
+
+                pst.close();
+                con.close();
+
+                if (rowsAffected > 0) {
+                    JOptionPane.showMessageDialog(this, "Data berhasil dihapus.");
+                    tampilkanLaporanPembelianLengkap(); // refresh tabel
+                } else {
+                    JOptionPane.showMessageDialog(this, "Data tidak ditemukan atau sudah dihapus.");
+                }
+
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Gagal menghapus data: " + e.getMessage());
+            }
+        }
     }//GEN-LAST:event_btn_hapusActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> CB_Supp;
     private com.toedter.calendar.JDateChooser JD_Akhir;
     private com.toedter.calendar.JDateChooser JD_Awal;
     private javax.swing.JButton btn_hapus;
