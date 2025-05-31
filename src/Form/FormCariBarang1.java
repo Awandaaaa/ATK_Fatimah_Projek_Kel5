@@ -242,7 +242,7 @@ getRootPane().getActionMap().put("TUTUP_DIALOG", new AbstractAction() {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        jPanel1 = new main.gradasiwarna();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl_barang = new javax.swing.JTable();
         btn_tambah = new javax.swing.JButton();
@@ -251,6 +251,9 @@ getRootPane().getActionMap().put("TUTUP_DIALOG", new AbstractAction() {
         cb_kategori = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setBackground(new java.awt.Color(51, 102, 255));
+
+        jPanel1.setBackground(new java.awt.Color(51, 51, 255));
 
         tbl_barang.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -320,31 +323,26 @@ getRootPane().getActionMap().put("TUTUP_DIALOG", new AbstractAction() {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 295, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 200, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void t_caribarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_caribarangActionPerformed
-       if (tbl_barang.getRowCount() > 0) {
-        tbl_barang.requestFocus();
-        tbl_barang.setRowSelectionInterval(0, 0); // Pilih baris pertama
-    }
-
+        if (tbl_barang.getRowCount() > 0) {
+            tbl_barang.requestFocus();
+            tbl_barang.setRowSelectionInterval(0, 0); // Pilih baris pertama
+        }
     }//GEN-LAST:event_t_caribarangActionPerformed
 
     private void btn_tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_tambahActionPerformed
-         pilihBarang();
-
+        pilihBarang();
     }//GEN-LAST:event_btn_tambahActionPerformed
 
     /**
