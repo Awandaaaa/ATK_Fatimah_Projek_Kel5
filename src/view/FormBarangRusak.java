@@ -12,7 +12,7 @@ public class FormBarangRusak extends javax.swing.JPanel {
     
     public FormBarangRusak() {
         initComponents();
-        
+       
         // Style tombol
         btn_tambah.setText("TAMBAH");
         btn_tambah.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue

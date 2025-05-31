@@ -174,7 +174,7 @@ public class MenuUtama extends javax.swing.JFrame {
 
         pn_kanan.setLayout(new java.awt.BorderLayout());
 
-        pn_dasar.setBackground(new java.awt.Color(204, 204, 255));
+        pn_dasar.setBackground(new java.awt.Color(204, 204, 204));
 
         pn_utama.setBackground(new java.awt.Color(0, 0, 255));
         pn_utama.setPreferredSize(new java.awt.Dimension(755, 509));
@@ -773,7 +773,7 @@ public class MenuUtama extends javax.swing.JFrame {
             pn_dasarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pn_dasarLayout.createSequentialGroup()
                 .addComponent(pn_kiri, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pn_utama, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pn_dasarLayout.setVerticalGroup(
