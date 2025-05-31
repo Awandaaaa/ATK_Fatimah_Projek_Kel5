@@ -1,4 +1,3 @@
-
 package view;
 
 import Form.FormTambahBarang;
@@ -52,7 +51,6 @@ import javax.imageio.ImageIO;
 import java.util.Date;
 import main.Session;
 
-
 public class FormLaporanPenjualan extends javax.swing.JPanel {
 
     private Connection conn;
@@ -76,7 +74,7 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
                 }
             }
         });
-        DefaultTableModel model = new DefaultTableModel(new Object[]{"ID Penjualan", "Nama User", "Tanggal", "Nama Barang", "Jumlah", "Harga Satuan", "Total"}, 0) {
+        DefaultTableModel model = new DefaultTableModel(new Object[]{"No", "Nama User", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Semua sel tidak dapat diedit langsung
@@ -142,8 +140,10 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
 
     public void tampilkanLaporanPenjualanLengkap() {
         DefaultTableModel model = (DefaultTableModel) tabel_penjualan.getModel();
-        model.setRowCount(0); // reset isi 
-        String[] kolom = {"ID Penjualan", "Nama User", "Tanggal", "Nama Barang", "Jumlah", "Harga Satuan", "Total"};
+        model.setRowCount(0); // reset isi
+
+        // Tambahkan kolom "No" dan ganti "Harga Satuan" jadi "Harga"
+        String[] kolom = {"No", "Nama User", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "ID Penjualan"};
         model.setColumnIdentifiers(kolom);
         tabel_penjualan.setModel(model);
 
@@ -160,17 +160,24 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
 
+            int no = 1;
             while (rs.next()) {
                 model.addRow(new Object[]{
-                    rs.getString("id_Penjualan"),
+                    no++,
                     rs.getString("nama_user"),
                     rs.getDate("tanggal"),
                     rs.getString("Nama_barang"),
                     rs.getInt("Jumlah_Jual"),
                     rs.getDouble("Harga_Satuan"),
-                    rs.getDouble("Total")
+                    rs.getDouble("Total"),
+                    rs.getString("id_Penjualan") // kolom tersembunyi
                 });
             }
+
+            // Sembunyikan kolom ID Penjualan (index 7)
+            tabel_penjualan.getColumnModel().getColumn(7).setMinWidth(0);
+            tabel_penjualan.getColumnModel().getColumn(7).setMaxWidth(0);
+            tabel_penjualan.getColumnModel().getColumn(7).setWidth(0);
 
             rs.close();
             st.close();
@@ -183,7 +190,8 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
     public void tampilkanLaporanPenjualan(Date tglAwal, Date tglAkhir) {
         DefaultTableModel model = (DefaultTableModel) tabel_penjualan.getModel();
         model.setRowCount(0); // reset isi tabel
-        String[] kolom = {"ID Penjualan", "Nama User", "Tanggal", "Nama Barang", "Jumlah", "Harga Satuan", "Total"};
+
+        String[] kolom = {"No", "Nama User", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "ID Penjualan"};
         model.setColumnIdentifiers(kolom);
         tabel_penjualan.setModel(model);
 
@@ -201,20 +209,26 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setDate(1, new java.sql.Date(tglAwal.getTime()));
             pst.setDate(2, new java.sql.Date(tglAkhir.getTime()));
-
             ResultSet rs = pst.executeQuery();
 
+            int no = 1;
             while (rs.next()) {
                 model.addRow(new Object[]{
-                    rs.getString("id_Penjualan"),
+                    no++,
                     rs.getString("nama_user"),
                     rs.getDate("tanggal"),
                     rs.getString("Nama_barang"),
                     rs.getInt("Jumlah_Jual"),
                     rs.getDouble("Harga_Satuan"),
-                    rs.getDouble("Total")
+                    rs.getDouble("Total"),
+                    rs.getString("id_Penjualan") // kolom tersembunyi
                 });
             }
+
+            // Sembunyikan kolom ID Penjualan (index 7)
+            tabel_penjualan.getColumnModel().getColumn(7).setMinWidth(0);
+            tabel_penjualan.getColumnModel().getColumn(7).setMaxWidth(0);
+            tabel_penjualan.getColumnModel().getColumn(7).setWidth(0);
 
             rs.close();
             pst.close();
@@ -222,6 +236,12 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Gagal menampilkan laporan penjualan: " + e.getMessage());
         }
+    }
+
+    private String ambilIdPenjualanDariBaris(int row) {
+        // Misal kamu menyimpan id_Penjualan di kolom ke-7 (kolom ke-0 sampai 6 ditampilkan)
+        DefaultTableModel model = (DefaultTableModel) tabel_penjualan.getModel();
+        return model.getValueAt(row, 7).toString(); // sesuaikan dengan posisi ID kamu
     }
 
     /**
@@ -241,11 +261,9 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         JD_Awal = new com.toedter.calendar.JDateChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabel_penjualan = new javax.swing.JTable();
-        CB_Kamin = new javax.swing.JComboBox<>();
         JD_Akhir = new com.toedter.calendar.JDateChooser();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(755, 509));
         setMinimumSize(new java.awt.Dimension(755, 509));
@@ -263,6 +281,7 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         jLabel1.setText("Laporan Data Penjualan");
 
         btn_hapus.setBackground(new java.awt.Color(204, 0, 0));
+        btn_hapus.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_hapus.setForeground(new java.awt.Color(255, 255, 255));
         btn_hapus.setText("HAPUS");
         btn_hapus.addActionListener(new java.awt.event.ActionListener() {
@@ -291,14 +310,11 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tabel_penjualan);
 
-        CB_Kamin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4", "Test", " " }));
-
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Awal");
 
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Akhir");
-
-        jLabel6.setText("Kasir / Admin");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -319,15 +335,14 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
                             .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(JD_Akhir, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(CB_Kamin, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btn_hapus))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE))
+                            .addComponent(jLabel4)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(JD_Akhir, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btn_hapus)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(405, 405, 405))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -343,15 +358,12 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel6))
+                    .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(JD_Awal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(JD_Akhir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(CB_Kamin, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_hapus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(btn_hapus))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
                 .addContainerGap())
@@ -361,12 +373,50 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_hapusActionPerformed
+        int selectedRow = tabel_penjualan.getSelectedRow();
 
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Pilih dulu baris yang ingin dihapus.");
+            return;
+        }
+
+        int konfirmasi = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin menghapus data ini?", "Konfirmasi Hapus", JOptionPane.YES_NO_OPTION);
+
+        if (konfirmasi == JOptionPane.YES_OPTION) {
+            // Ambil ID Penjualan dari model asli (kolom tersembunyi/real)
+            // Jika sudah diganti ke "No", pastikan id_Penjualan tetap bisa diakses (misal lewat model tambahan/hidden field)
+            try {
+                // Misal kita pakai kolom ID Penjualan disimpan secara tersembunyi atau punya cara khusus ambil ID-nya
+                String idPenjualan = ambilIdPenjualanDariBaris(selectedRow); // <-- kamu perlu bikin method ini
+
+                Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
+
+                // Hapus dulu di tabel penjualanrinci (karena ada foreign key)
+                String deleteRinci = "DELETE FROM penjualanrinci WHERE id_Penjualan = ?";
+                PreparedStatement pstRinci = con.prepareStatement(deleteRinci);
+                pstRinci.setString(1, idPenjualan);
+                pstRinci.executeUpdate();
+
+                // Baru hapus di tabel penjualan
+                String deletePenjualan = "DELETE FROM penjualan WHERE id_Penjualan = ?";
+                PreparedStatement pstPenjualan = con.prepareStatement(deletePenjualan);
+                pstPenjualan.setString(1, idPenjualan);
+                pstPenjualan.executeUpdate();
+
+                pstRinci.close();
+                pstPenjualan.close();
+                con.close();
+
+                JOptionPane.showMessageDialog(this, "Data berhasil dihapus.");
+                tampilkanLaporanPenjualanLengkap(); // Refresh tabel
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Gagal menghapus data: " + e.getMessage());
+            }
+        }
     }//GEN-LAST:event_btn_hapusActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> CB_Kamin;
     private com.toedter.calendar.JDateChooser JD_Akhir;
     private com.toedter.calendar.JDateChooser JD_Awal;
     private javax.swing.JButton btn_hapus;
@@ -375,7 +425,6 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tabel_penjualan;
