@@ -42,21 +42,32 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import javax.imageio.ImageIO;
 import java.util.Date;
+import java.util.Locale;
 import main.Session;
 
 public class FormLaporanPenjualan extends javax.swing.JPanel {
 
+    private boolean sedangMemuatUser = false; // Mencegah event saat load combobox
     private Connection conn;
 
     public FormLaporanPenjualan() {
         initComponents();
+        loadUserToComboBox();
+        loadAllData();
+        tampilkanHariTanggal();
+        label_user.setText("Login sebagai: " + Session.getRole());
+        
         JD_Awal.getDateEditor().addPropertyChangeListener("date", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -74,7 +85,7 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
                 }
             }
         });
-        DefaultTableModel model = new DefaultTableModel(new Object[]{"No", "Nama User", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total"}, 0) {
+        DefaultTableModel model = new DefaultTableModel(new Object[]{"ID Penjualan", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "User"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Semua sel tidak dapat diedit langsung
@@ -113,6 +124,17 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         tabel_penjualan.setSelectionForeground(Color.BLACK);
         tabel_penjualan.setShowVerticalLines(true);
 
+        tabel_penjualan.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int baris = tabel_penjualan.getSelectedRow(); // Ambil baris yang diklik
+                if (baris >= 0) {
+                    String idPenjualan = tabel_penjualan.getValueAt(baris, 0).toString(); // Ambil data dari kolom ke-0 (ID Penjualan)
+                    t_cari.setText(idPenjualan); // Masukkan ke TextField
+                }
+            }
+        });
+
         tampilkanLaporanPenjualanLengkap();
 
         // Style tombol
@@ -136,14 +158,59 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
                 btn_hapus.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
+
+        btnClear.setText("CLEAR");
+        btnClear.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btnClear.setForeground(Color.WHITE);
+        btnClear.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
+        btnClear.setFocusPainted(false);
+        btnClear.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+        btnClear.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Hover effect
+        btnClear.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnClear.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnClear.setBackground(new java.awt.Color(70, 130, 180));
+            }
+        });
+    }
+
+    private void loadUserToComboBox() {
+        sedangMemuatUser = true;
+
+        try {
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("SELECT Nama FROM users ORDER BY Nama ASC");
+
+            cb_user.removeAllItems(); // reset dulu
+            cb_user.addItem("-- Pilih User --"); // pilihan default
+
+            while (rs.next()) {
+                cb_user.addItem(rs.getString("Nama"));
+            }
+
+            rs.close();
+            st.close();
+            con.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Gagal memuat data user: " + e.getMessage());
+        }
+
+        sedangMemuatUser = false;
     }
 
     public void tampilkanLaporanPenjualanLengkap() {
         DefaultTableModel model = (DefaultTableModel) tabel_penjualan.getModel();
         model.setRowCount(0); // reset isi
 
-        // Tambahkan kolom "No" dan ganti "Harga Satuan" jadi "Harga"
-        String[] kolom = {"No", "Nama User", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "ID Penjualan"};
+        String[] kolom = {"ID Penjualan", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "User"};
         model.setColumnIdentifiers(kolom);
         tabel_penjualan.setModel(model);
 
@@ -160,24 +227,17 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
 
-            int no = 1;
             while (rs.next()) {
                 model.addRow(new Object[]{
-                    no++,
-                    rs.getString("nama_user"),
+                    rs.getString("id_Penjualan"),
                     rs.getDate("tanggal"),
                     rs.getString("Nama_barang"),
                     rs.getInt("Jumlah_Jual"),
                     rs.getDouble("Harga_Satuan"),
                     rs.getDouble("Total"),
-                    rs.getString("id_Penjualan") // kolom tersembunyi
+                    rs.getString("nama_user")
                 });
             }
-
-            // Sembunyikan kolom ID Penjualan (index 7)
-            tabel_penjualan.getColumnModel().getColumn(7).setMinWidth(0);
-            tabel_penjualan.getColumnModel().getColumn(7).setMaxWidth(0);
-            tabel_penjualan.getColumnModel().getColumn(7).setWidth(0);
 
             rs.close();
             st.close();
@@ -191,7 +251,7 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) tabel_penjualan.getModel();
         model.setRowCount(0); // reset isi tabel
 
-        String[] kolom = {"No", "Nama User", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "ID Penjualan"};
+        String[] kolom = {"ID Penjualan", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "User"};
         model.setColumnIdentifiers(kolom);
         tabel_penjualan.setModel(model);
 
@@ -211,24 +271,17 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
             pst.setDate(2, new java.sql.Date(tglAkhir.getTime()));
             ResultSet rs = pst.executeQuery();
 
-            int no = 1;
             while (rs.next()) {
                 model.addRow(new Object[]{
-                    no++,
-                    rs.getString("nama_user"),
+                    rs.getString("id_Penjualan"),
                     rs.getDate("tanggal"),
                     rs.getString("Nama_barang"),
                     rs.getInt("Jumlah_Jual"),
                     rs.getDouble("Harga_Satuan"),
                     rs.getDouble("Total"),
-                    rs.getString("id_Penjualan") // kolom tersembunyi
+                    rs.getString("nama_user")
                 });
             }
-
-            // Sembunyikan kolom ID Penjualan (index 7)
-            tabel_penjualan.getColumnModel().getColumn(7).setMinWidth(0);
-            tabel_penjualan.getColumnModel().getColumn(7).setMaxWidth(0);
-            tabel_penjualan.getColumnModel().getColumn(7).setWidth(0);
 
             rs.close();
             pst.close();
@@ -236,6 +289,99 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Gagal menampilkan laporan penjualan: " + e.getMessage());
         }
+    }
+
+    public void tampilkanLaporanBerdasarkanID(String idPenjualan) {
+        DefaultTableModel model = (DefaultTableModel) tabel_penjualan.getModel();
+        model.setRowCount(0);
+
+        String[] kolom = {"ID Penjualan", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "User"};
+        model.setColumnIdentifiers(kolom);
+        tabel_penjualan.setModel(model);
+
+        try {
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
+            String sql = "SELECT p.id_Penjualan, u.Nama AS nama_user, p.tanggal, "
+                    + "b.Nama_barang, pr.Jumlah_Jual, pr.Harga_Satuan, pr.Total "
+                    + "FROM penjualan p "
+                    + "JOIN users u ON p.id_user = u.id_user "
+                    + "JOIN penjualanrinci pr ON p.id_Penjualan = pr.id_Penjualan "
+                    + "JOIN barang b ON pr.id_Barang = b.id_Barang "
+                    + "WHERE p.id_Penjualan = ?";
+
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, idPenjualan);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getString("id_Penjualan"),
+                    rs.getDate("tanggal"),
+                    rs.getString("Nama_barang"),
+                    rs.getInt("Jumlah_Jual"),
+                    rs.getDouble("Harga_Satuan"),
+                    rs.getDouble("Total"),
+                    rs.getString("nama_user")
+                });
+            }
+
+            rs.close();
+            pst.close();
+            con.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Gagal mencari data berdasarkan ID Penjualan: " + e.getMessage());
+        }
+    }
+
+// Method untuk load data semua tanpa filter
+    private void loadAllData() {
+        DefaultTableModel model = (DefaultTableModel) tabel_penjualan.getModel();
+        model.setRowCount(0);
+
+        try {
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
+            String sql = "SELECT p.id_Penjualan, u.Nama AS nama_user, p.tanggal, "
+                    + "b.Nama_barang, pr.Jumlah_Jual, pr.Harga_Satuan, pr.Total "
+                    + "FROM penjualan p "
+                    + "JOIN users u ON p.id_user = u.id_user "
+                    + "JOIN penjualanrinci pr ON p.id_Penjualan = pr.id_Penjualan "
+                    + "JOIN barang b ON pr.id_Barang = b.id_Barang "
+                    + "ORDER BY p.tanggal DESC";
+
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getString("id_Penjualan"),
+                    rs.getDate("tanggal"),
+                    rs.getString("Nama_barang"),
+                    rs.getInt("Jumlah_Jual"),
+                    rs.getDouble("Harga_Satuan"),
+                    rs.getDouble("Total"),
+                    rs.getString("nama_user")
+                });
+            }
+
+            rs.close();
+            st.close();
+            con.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Gagal memuat semua data: " + e.getMessage());
+        }
+    }
+
+// Method untuk Clear filter, dipanggil saat tombol Clear diklik
+    public void clearFilters() {
+        t_cari.setText("");
+        cb_user.setSelectedIndex(0);  // Reset ke "-- Pilih User --"
+        JD_Awal.setDate(null);
+        JD_Akhir.setDate(null);
+        loadAllData();
+    }
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {
+        loadUserToComboBox();
     }
 
     private String ambilIdPenjualanDariBaris(int row) {
@@ -256,7 +402,7 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         jPanel1 = new main.gradasiwarna();
         jLabel1 = new javax.swing.JLabel();
         btn_hapus = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
+        label_user = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         JD_Awal = new com.toedter.calendar.JDateChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -264,6 +410,10 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         JD_Akhir = new com.toedter.calendar.JDateChooser();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        t_cari = new javax.swing.JTextField();
+        cb_user = new javax.swing.JComboBox<>();
+        btnClear = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(755, 509));
         setMinimumSize(new java.awt.Dimension(755, 509));
@@ -290,15 +440,15 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
             }
         });
 
-        jLabel5.setBackground(new java.awt.Color(0, 51, 255));
-        jLabel5.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel5.setText("User :");
+        label_user.setBackground(new java.awt.Color(0, 51, 255));
+        label_user.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        label_user.setForeground(new java.awt.Color(255, 255, 255));
+        label_user.setText("User :");
 
         jLabel3.setBackground(new java.awt.Color(0, 51, 255));
         jLabel3.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("08 - 06 - 2025");
+        jLabel3.setText("   ");
 
         tabel_penjualan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -316,6 +466,32 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Akhir");
 
+        t_cari.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                t_cariKeyReleased(evt);
+            }
+        });
+
+        cb_user.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih User", "q", "Dinda", "Awanda", "Randi" }));
+        cb_user.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_userActionPerformed(evt);
+            }
+        });
+
+        btnClear.setBackground(new java.awt.Color(204, 204, 0));
+        btnClear.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnClear.setForeground(new java.awt.Color(255, 255, 255));
+        btnClear.setText("CLEAR");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setText("ID Penjualan");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -323,26 +499,33 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(JD_Awal, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(JD_Akhir, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(JD_Awal, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel2))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btn_hapus)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(405, 405, 405))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(JD_Akhir, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(t_cari, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(cb_user, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel6)))
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnClear)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btn_hapus))
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(label_user, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -351,21 +534,29 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
                 .addGap(14, 14, 14)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
+                        .addComponent(label_user)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3))
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel6))
+                .addGap(7, 7, 7)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(JD_Awal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(JD_Akhir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_hapus))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(JD_Awal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(JD_Akhir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(t_cari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cb_user, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_hapus)
+                        .addComponent(btnClear)))
                 .addContainerGap())
         );
 
@@ -415,18 +606,167 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btn_hapusActionPerformed
 
+    private void cb_userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_userActionPerformed
+        if (sedangMemuatUser) {
+            return;
+        }
+
+        Object selected = cb_user.getSelectedItem();
+        if (selected == null) {
+            return;
+        }
+
+        String namaUser = selected.toString();
+
+        // Jika default dipilih, tampilkan semua data
+        if (namaUser.equals("-- Pilih User --")) {
+            loadAllData();
+            return;
+        }
+
+        // Ambil tanggal dari JDateChooser
+        Date tanggalAwal = JD_Awal.getDate();
+        Date tanggalAkhir = JD_Akhir.getDate();
+
+        DefaultTableModel model = (DefaultTableModel) tabel_penjualan.getModel();
+        model.setRowCount(0);
+
+        try {
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
+
+            String sql = "SELECT p.id_Penjualan, u.Nama AS nama_user, p.tanggal, "
+                    + "b.Nama_barang, pr.Jumlah_Jual, pr.Harga_Satuan, pr.Total "
+                    + "FROM penjualan p "
+                    + "JOIN users u ON p.id_user = u.id_user "
+                    + "JOIN penjualanrinci pr ON p.id_Penjualan = pr.id_Penjualan "
+                    + "JOIN barang b ON pr.id_Barang = b.id_Barang "
+                    + "WHERE u.Nama = ?";
+
+            if (tanggalAwal != null && tanggalAkhir != null) {
+                sql += " AND p.tanggal BETWEEN ? AND ?";
+            }
+
+            sql += " ORDER BY p.tanggal DESC";
+
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, namaUser);
+
+            if (tanggalAwal != null && tanggalAkhir != null) {
+                java.sql.Date sqlTglAwal = new java.sql.Date(tanggalAwal.getTime());
+                java.sql.Date sqlTglAkhir = new java.sql.Date(tanggalAkhir.getTime());
+                pst.setDate(2, sqlTglAwal);
+                pst.setDate(3, sqlTglAkhir);
+            }
+
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getString("id_Penjualan"),
+                    rs.getDate("tanggal"),
+                    rs.getString("Nama_barang"),
+                    rs.getInt("Jumlah_Jual"),
+                    rs.getDouble("Harga_Satuan"),
+                    rs.getDouble("Total"),
+                    rs.getString("nama_user")
+                });
+            }
+
+            rs.close();
+            pst.close();
+            con.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Gagal filter berdasarkan user dan tanggal: " + e.getMessage());
+        }
+    }//GEN-LAST:event_cb_userActionPerformed
+
+    private void t_cariKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_cariKeyReleased
+
+        String id = t_cari.getText();
+
+        DefaultTableModel model = (DefaultTableModel) tabel_penjualan.getModel();
+        model.setRowCount(0);
+
+        String[] kolom = {"ID Penjualan", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "User"};
+        model.setColumnIdentifiers(kolom);
+
+        try {
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
+            String sql = "SELECT p.id_Penjualan, u.Nama AS nama_user, p.tanggal, "
+                    + "b.Nama_barang, pr.Jumlah_Jual, pr.Harga_Satuan, pr.Total "
+                    + "FROM penjualan p "
+                    + "JOIN users u ON p.id_user = u.id_user "
+                    + "JOIN penjualanrinci pr ON p.id_Penjualan = pr.id_Penjualan "
+                    + "JOIN barang b ON pr.id_Barang = b.id_Barang "
+                    + "WHERE p.id_Penjualan LIKE ?";
+
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, "%" + id + "%");
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getString("id_Penjualan"),
+                    rs.getDate("tanggal"),
+                    rs.getString("Nama_barang"),
+                    rs.getInt("Jumlah_Jual"),
+                    rs.getDouble("Harga_Satuan"),
+                    rs.getDouble("Total"),
+                    rs.getString("nama_user")
+                });
+            }
+
+            rs.close();
+            pst.close();
+            con.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Gagal mencari berdasarkan ID: " + e.getMessage());
+        }
+    }//GEN-LAST:event_t_cariKeyReleased
+
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        clearFilters();
+    }//GEN-LAST:event_btnClearActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.toedter.calendar.JDateChooser JD_Akhir;
     private com.toedter.calendar.JDateChooser JD_Awal;
+    private javax.swing.JButton btnClear;
     private javax.swing.JButton btn_hapus;
+    private javax.swing.JComboBox<String> cb_user;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel label_user;
+    private javax.swing.JTextField t_cari;
     private javax.swing.JTable tabel_penjualan;
     // End of variables declaration//GEN-END:variables
+
+    private void tampilkanHariTanggal() {
+        try {
+            ActionListener taskPerformer = new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    // Dapatkan waktu saat ini
+                    Calendar dt = Calendar.getInstance();
+
+                    // Format tanggal dan waktu dalam bahasa Indonesia
+                    SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd MMMM yyyy", new Locale("id", "ID"));
+                    String formattedDate = sdf.format(dt.getTime());
+
+                    // Tampilkan hasil di JLabel
+                    jLabel3.setText(formattedDate);
+                }
+            };
+
+            // Timer untuk memperbarui tampilan setiap detik
+            new javax.swing.Timer(1000, taskPerformer).start();
+        } catch (Exception e) {
+            System.out.println("Error : " + e.getMessage());
+        }
+    }
 }
