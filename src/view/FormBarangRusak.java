@@ -2,17 +2,34 @@ package view;
 
 import Form.FormTambahBarangRusak;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.BorderFactory;
-
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import main.Koneksi;
 
 public class FormBarangRusak extends javax.swing.JPanel {
 
-    
     public FormBarangRusak() {
         initComponents();
         
+        initTableModel();
+         
+
+        
+        
+
         // Style tombol
         btn_tambah.setText("TAMBAH");
         btn_tambah.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
@@ -34,7 +51,7 @@ public class FormBarangRusak extends javax.swing.JPanel {
                 btn_tambah.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
-        
+
         // Style tombol
         btn_edit.setText("EDIT");
         btn_edit.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
@@ -56,7 +73,7 @@ public class FormBarangRusak extends javax.swing.JPanel {
                 btn_edit.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
-        
+
         // Style tombol
         btn_hapus.setText("HAPUS");
         btn_hapus.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
@@ -80,6 +97,70 @@ public class FormBarangRusak extends javax.swing.JPanel {
         });
     }
 
+    private void initTableModel() {
+        DefaultTableModel model = new DefaultTableModel(new Object[]{
+            "ID Barang Rusak", "ID Barang", "Barcode", "Jumlah Rusak", "Tanggal Rusak", "Keterangan"
+        }, 0) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
+        };
+        tbl_barangrusak.setModel(model);
+        setupTableStyle();
+        tampilkanDataBarangRusak();
+    }
+
+    private void setupTableStyle() {
+        JTableHeader header = tbl_barangrusak.getTableHeader();
+        header.setDefaultRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
+                JLabel label = new JLabel(value.toString());
+                label.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
+                label.setOpaque(true);
+                label.setBackground(new Color(0, 123, 255));
+                label.setForeground(Color.WHITE);
+                label.setHorizontalAlignment(SwingConstants.CENTER);
+                label.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+                return label;
+            }
+        });
+
+        tbl_barangrusak.setRowHeight(30);
+        tbl_barangrusak.setShowGrid(true);
+        tbl_barangrusak.setGridColor(Color.LIGHT_GRAY);
+        tbl_barangrusak.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        tbl_barangrusak.setSelectionBackground(new Color(204, 229, 255));
+        tbl_barangrusak.setSelectionForeground(Color.BLACK);
+    }
+
+    public void tampilkanDataBarangRusak() {
+        DefaultTableModel model = (DefaultTableModel) tbl_barangrusak.getModel();
+        model.setRowCount(0); // Hapus isi tabel dulu
+
+        String sql = "SELECT id_barangrusak, id_barang, barcode, jumlah_rusak, Tgl_rusak, keterangan FROM barang_rusak ORDER BY Tgl_rusak DESC";
+
+        try (Connection conn = Koneksi.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Object[] row = {
+                    rs.getString("id_barangrusak"),
+                    rs.getString("id_barang"),
+                    rs.getString("barcode"),
+                    rs.getInt("jumlah_rusak"),
+                    rs.getDate("Tgl_rusak"),
+                    rs.getString("keterangan")
+                };
+                model.addRow(row);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Gagal menampilkan data barang rusak:\n" + e.getMessage());
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -95,7 +176,7 @@ public class FormBarangRusak extends javax.swing.JPanel {
         btn_edit = new javax.swing.JButton();
         btn_hapus = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        table = new javax.swing.JTable();
+        tbl_barangrusak = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
 
@@ -129,7 +210,7 @@ public class FormBarangRusak extends javax.swing.JPanel {
             }
         });
 
-        table.setModel(new javax.swing.table.DefaultTableModel(
+        tbl_barangrusak.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -137,7 +218,7 @@ public class FormBarangRusak extends javax.swing.JPanel {
 
             }
         ));
-        jScrollPane1.setViewportView(table);
+        jScrollPane1.setViewportView(tbl_barangrusak);
 
         jLabel3.setBackground(new java.awt.Color(0, 51, 255));
         jLabel3.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
@@ -199,6 +280,8 @@ public class FormBarangRusak extends javax.swing.JPanel {
         FormTambahBarangRusak form = new FormTambahBarangRusak((java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this), true);
         form.setLocationRelativeTo(this);
         form.setVisible(true);
+        
+       tampilkanDataBarangRusak();
     }//GEN-LAST:event_btn_tambahActionPerformed
 
     private void btn_editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editActionPerformed
@@ -219,6 +302,6 @@ public class FormBarangRusak extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable table;
+    private javax.swing.JTable tbl_barangrusak;
     // End of variables declaration//GEN-END:variables
 }
