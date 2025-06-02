@@ -6,15 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-/**
- *
- * @author User
- */
 public class FormDashboard extends javax.swing.JPanel {
 
-    /**
-     * Creates new form FormSupplier
-     */
     public FormDashboard() {
         initComponents();
         
@@ -51,7 +44,7 @@ public class FormDashboard extends javax.swing.JPanel {
         jLabel3.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("SELAMAT BEKERJA - !!");
+        jLabel3.setText("SELAMAT BEKERJA !!");
 
         jLabel4.setFont(new java.awt.Font("SansSerif", 1, 33)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
@@ -63,26 +56,26 @@ public class FormDashboard extends javax.swing.JPanel {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(522, Short.MAX_VALUE)
+                .addComponent(tgl, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27))
             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, 755, Short.MAX_VALUE)
             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 755, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(tgl, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addComponent(tgl, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(112, 112, 112)
+                .addGap(104, 104, 104)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(24, 24, 24)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(152, Short.MAX_VALUE))
+                .addContainerGap(160, Short.MAX_VALUE))
         );
 
         add(jPanel1, "card2");
@@ -104,16 +97,13 @@ public class FormDashboard extends javax.swing.JPanel {
                     // Dapatkan waktu saat ini
                     Calendar dt = Calendar.getInstance();
 
-                    // Format tanggal dan waktu dalam bahasa Indonesia
                     SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd MMMM yyyy", new Locale("id", "ID"));
                     String formattedDate = sdf.format(dt.getTime());
 
-                    // Tampilkan hasil di JLabel
                     tgl.setText(formattedDate);
                 }
             };
 
-            // Timer untuk memperbarui tampilan setiap detik
             new javax.swing.Timer(1000, taskPerformer).start();
         } catch (Exception e) {
             System.out.println("Error : " + e.getMessage());

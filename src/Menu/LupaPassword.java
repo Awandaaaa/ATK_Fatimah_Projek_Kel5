@@ -70,6 +70,7 @@ public class LupaPassword extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        gradasi1.setColorEnd(new java.awt.Color(0, 153, 255));
         gradasi1.setPreferredSize(new java.awt.Dimension(1280, 690));
         gradasi1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -224,12 +225,12 @@ public class LupaPassword extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jB_Register, javax.swing.GroupLayout.PREFERRED_SIZE, 17, Short.MAX_VALUE)
+                .addComponent(jB_Register, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(21, 21, 21))
         );
 
         jLabel1.setBackground(new java.awt.Color(0, 0, 0));
-        jLabel1.setFont(new java.awt.Font("Imprint MT Shadow", 1, 36)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("SELAMAT DATANG");
 
@@ -324,7 +325,7 @@ public class LupaPassword extends javax.swing.JFrame {
         Connection conn = Koneksi.getConnection();
         String sql = "UPDATE users SET password=? WHERE username=?";
         PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, hashedPassword); // sudah pakai SHA-256
+        ps.setString(1, hashedPassword);
         ps.setString(2, username);
 
         int hasil = ps.executeUpdate();
@@ -332,7 +333,6 @@ public class LupaPassword extends javax.swing.JFrame {
         if (hasil > 0) {
             JOptionPane.showMessageDialog(this, "Password berhasil diubah!");
 
-            // Pindah ke form login
             Login log = new Login();
             log.setLocationRelativeTo(this);
             log.setVisible(true);
@@ -351,9 +351,9 @@ public class LupaPassword extends javax.swing.JFrame {
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         // TODO add your handling code here:
         if (jCheckBox1.isSelected()) {
-            text_password.setEchoChar((char) 0); // Menampilkan password
+            text_password.setEchoChar((char) 0);
         } else {
-            text_password.setEchoChar('*'); // Menyembunyikan password
+            text_password.setEchoChar('*');
         }
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
@@ -378,9 +378,9 @@ public class LupaPassword extends javax.swing.JFrame {
     private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
         // TODO add your handling code here:
         if (jCheckBox2.isSelected()) {
-            text_passwordbaru.setEchoChar((char) 0); // Menampilkan password
+            text_passwordbaru.setEchoChar((char) 0);
         } else {
-            text_passwordbaru.setEchoChar('*'); // Menyembunyikan password
+            text_passwordbaru.setEchoChar('*');
         }
     }//GEN-LAST:event_jCheckBox2ActionPerformed
 

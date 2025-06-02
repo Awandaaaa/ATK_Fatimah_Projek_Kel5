@@ -16,14 +16,10 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.*;
-
 import javax.swing.JComboBox;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 import javax.swing.JTable;
-
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -39,12 +35,9 @@ public class FormKelolaKaryawan extends javax.swing.JPanel {
     
     private String currentUserId;
 
-    
     public FormKelolaKaryawan() {
         initComponents();
-        
-        
-        // Tambahkan listener untuk pencarian dinamis saat mengetik
+
 text_cari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
     public void insertUpdate(javax.swing.event.DocumentEvent e) {
         cariData();
@@ -59,7 +52,6 @@ text_cari.getDocument().addDocumentListener(new javax.swing.event.DocumentListen
     }
 });
 
-// Tambahkan listener jika kriteria combobox diubah
 cb_kriteria.addActionListener(e -> cariData());
 
         
@@ -67,13 +59,11 @@ cb_kriteria.addActionListener(e -> cariData());
         DefaultTableModel model = new DefaultTableModel(new Object[]{"Id_user", "RFID", "Nama", "Username", "Password", "Role", "Jenis Kelamin", "No Telepon", "Alamat"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Semua sel tidak dapat diedit langsung
+                return false;
             }
         };
         table.setModel(model);
-        
-        
-        
+
         JTableHeader header = table.getTableHeader();
         header.setDefaultRenderer(new DefaultTableCellRenderer() {
             @Override
@@ -104,29 +94,21 @@ cb_kriteria.addActionListener(e -> cariData());
         table.setSelectionBackground(new Color(204, 229, 255));
         table.setSelectionForeground(Color.BLACK);
         table.setShowVerticalLines(true);
-        
-        
-        
-        
+ 
         loadData();
         
-        
-        
-        
-        // Style tombol
         btn_tambah.setText("TAMBAH");
-        btn_tambah.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_tambah.setBackground(new java.awt.Color(70, 130, 180)); 
         btn_tambah.setForeground(Color.WHITE);
         btn_tambah.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_tambah.setFocusPainted(false);
         btn_tambah.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_tambah.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_tambah.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_tambah.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_tambah.setBackground(new java.awt.Color(100, 149, 237)); 
             }
 
             @Override
@@ -134,21 +116,19 @@ cb_kriteria.addActionListener(e -> cariData());
                 btn_tambah.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
-        
-        // Style tombol
+
         btn_edit.setText("EDIT");
-        btn_edit.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_edit.setBackground(new java.awt.Color(70, 130, 180));
         btn_edit.setForeground(Color.WHITE);
         btn_edit.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_edit.setFocusPainted(false);
         btn_edit.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_edit.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_edit.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_edit.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_edit.setBackground(new java.awt.Color(100, 149, 237));
             }
 
             @Override
@@ -156,21 +136,19 @@ cb_kriteria.addActionListener(e -> cariData());
                 btn_edit.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
-        
-        // Style tombol
+
         btn_hapus.setText("HAPUS");
-        btn_hapus.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_hapus.setBackground(new java.awt.Color(70, 130, 180));
         btn_hapus.setForeground(Color.WHITE);
         btn_hapus.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_hapus.setFocusPainted(false);
         btn_hapus.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_hapus.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_hapus.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_hapus.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_hapus.setBackground(new java.awt.Color(100, 149, 237));
             }
 
             @Override
@@ -182,7 +160,7 @@ cb_kriteria.addActionListener(e -> cariData());
     
     private void loadData() {
     DefaultTableModel model = (DefaultTableModel) table.getModel();
-    model.setRowCount(0); // clear tabel
+    model.setRowCount(0);
 
     String query = "SELECT Id_user, RFID, Nama, Username, Password, Role, Jenis_kelamin, No_Telepon, Alamat FROM users";
 
@@ -192,11 +170,11 @@ cb_kriteria.addActionListener(e -> cariData());
 
         while (rs.next()) {
             Object[] row = {
-                rs.getString("Id_user"),     // kolom 0 (disembunyikan)
+                rs.getString("Id_user"), 
                 rs.getString("RFID"),
                 rs.getString("Nama"),
                 rs.getString("Username"),
-                rs.getString("Password"),   // kolom 4 (disembunyikan)
+                rs.getString("Password"),
                 rs.getString("Role"),
                 rs.getString("Jenis_kelamin"),
                 rs.getString("No_Telepon"),
@@ -205,12 +183,10 @@ cb_kriteria.addActionListener(e -> cariData());
             model.addRow(row);
         }
 
-        // Sembunyikan kolom Id_user (index 0)
         table.getColumnModel().getColumn(0).setMinWidth(0);
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.getColumnModel().getColumn(0).setWidth(0);
 
-        // Sembunyikan kolom Password (index 4)
         table.getColumnModel().getColumn(4).setMinWidth(0);
         table.getColumnModel().getColumn(4).setMaxWidth(0);
         table.getColumnModel().getColumn(4).setWidth(0);
@@ -219,8 +195,6 @@ cb_kriteria.addActionListener(e -> cariData());
         JOptionPane.showMessageDialog(this, "Error loading data: " + e.getMessage());
     }
 }
-
-
 
  private void updateUser() {
     int selectedRow = table.getSelectedRow();
@@ -247,8 +221,8 @@ cb_kriteria.addActionListener(e -> cariData());
     comboRole.setSelectedItem(role);
     JComboBox<String> comboJK = new JComboBox<>(new String[]{"Laki-laki", "Perempuan"});
     comboJK.setSelectedItem(jenisKelamin);
-    JTextField fieldTelp = new JTextField("+62" + noTelepon); // Awali dengan +62
-    applyPhoneNumberFilter(fieldTelp); // Terapkan DocumentFilter
+    JTextField fieldTelp = new JTextField("+62" + noTelepon); 
+    applyPhoneNumberFilter(fieldTelp);
     JTextField fieldAlamat = new JTextField(alamat);
 
     JPanel panel = new JPanel(new GridLayout(0, 1));
@@ -278,13 +252,10 @@ cb_kriteria.addActionListener(e -> cariData());
         String newTelp = fieldTelp.getText().trim();
         String newAlamat = fieldAlamat.getText().trim();
 
-        // Validasi wajib isi
         if (newRFID.isEmpty() || newNama.isEmpty() || newUsername.isEmpty() || newTelp.isEmpty() || newAlamat.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Semua field harus diisi.");
             return;
         }
-
-        
 
         if (newTelp.length() < 9 || newTelp.length() > 15) {
             JOptionPane.showMessageDialog(this, "Panjang nomor telepon harus antara 9 sampai 13 digit.");
@@ -292,7 +263,6 @@ cb_kriteria.addActionListener(e -> cariData());
         }
 
         String finalTelp = newTelp;
-
 
         try {
             Connection conn = Koneksi.getConnection();
@@ -315,9 +285,6 @@ cb_kriteria.addActionListener(e -> cariData());
         }
     }
 }
-
-
- 
          public class PhoneNumberFilter extends DocumentFilter {
 
     @Override
@@ -359,22 +326,15 @@ cb_kriteria.addActionListener(e -> cariData());
     public void remove(DocumentFilter.FilterBypass fb, int offset, int length)
             throws BadLocationException {
         if (offset < 3) {
-            return; // Blokir penghapusan "+62"
+            return;
         }
         super.remove(fb, offset, length);
     }
 }
-         
-         
           private void applyPhoneNumberFilter(JTextField field) {
     AbstractDocument doc = (AbstractDocument) field.getDocument();
     doc.setDocumentFilter(new FormKelolaKaryawan.PhoneNumberFilter());
 }
-
-
-
-          
-          
           private void hapusUser() {
     int selectedRow = table.getSelectedRow();
     if (selectedRow == -1) {
@@ -385,7 +345,6 @@ cb_kriteria.addActionListener(e -> cariData());
     DefaultTableModel model = (DefaultTableModel) table.getModel();
     String idUser = model.getValueAt(selectedRow, 0).toString();
 
-    // Jika kamu punya session id_user login, misalnya currentUserId
     if (idUser.equals(currentUserId)) {
         JOptionPane.showMessageDialog(this, "Anda tidak dapat menghapus akun Anda sendiri.");
         return;
@@ -421,10 +380,6 @@ cb_kriteria.addActionListener(e -> cariData());
     this.currentUserId = id;
 }
 
-
-          
-          
-
           private void cariData() {
     String keyword = text_cari.getText().trim();
     String kriteria = cb_kriteria.getSelectedItem().toString();
@@ -441,7 +396,7 @@ cb_kriteria.addActionListener(e -> cariData());
     };
 
     DefaultTableModel model = (DefaultTableModel) table.getModel();
-    model.setRowCount(0); // clear isi tabel
+    model.setRowCount(0);
 
     String sql = "SELECT Id_user, RFID, Nama, Username, Password, Role, Jenis_kelamin, No_Telepon, Alamat FROM users "
                + "WHERE " + kolom + " LIKE ?";
@@ -467,7 +422,6 @@ cb_kriteria.addActionListener(e -> cariData());
             model.addRow(row);
         }
 
-        // Sembunyikan kolom Id_user dan Password
         table.getColumnModel().getColumn(0).setMinWidth(0);
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.getColumnModel().getColumn(0).setWidth(0);
@@ -480,8 +434,6 @@ cb_kriteria.addActionListener(e -> cariData());
     }
 }
 
-    
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -626,7 +578,7 @@ cb_kriteria.addActionListener(e -> cariData());
 
     
     
-     loadData(); // Refresh tabel
+     loadData();
     
     }//GEN-LAST:event_btn_tambahActionPerformed
 

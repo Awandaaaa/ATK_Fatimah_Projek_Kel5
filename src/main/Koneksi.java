@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Koneksi {
-    private static final String URL = "jdbc:mysql://localhost:3306/atk?serverTimezone=UTC"; // Tambah zona waktu untuk JDBC 8+
-    private static final String USER = "root"; // Ubah sesuai kebutuhan
-    private static final String PASSWORD = "";  // Ubah sesuai kebutuhan
+    private static final String URL = "jdbc:mysql://localhost:3306/atk?serverTimezone=UTC";
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
 
     static {
         try {

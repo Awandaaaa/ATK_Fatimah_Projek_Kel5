@@ -8,25 +8,17 @@ import javax.swing.ImageIcon;
 import main.MenuUtama;
 
 import main.Session;
-
-
 import main.securityutils;
-
-
 public class Login extends javax.swing.JFrame {
-    
     
 
     public Login() {
         initComponents();
-        
-        
-        
+
         setLocationRelativeTo(null);
     setTitle("ATK Fatimah");
     setIconImage(new ImageIcon(getClass().getResource("/gambar/logoatk.png")).getImage());
 
-        // Tambah isi role ke ComboBox
         jComboBox1.removeAllItems();
         jComboBox1.addItem("admin");
         jComboBox1.addItem("kasir");
@@ -67,6 +59,7 @@ public class Login extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        gradasi1.setColorEnd(new java.awt.Color(0, 153, 255));
         gradasi1.setPreferredSize(new java.awt.Dimension(1280, 690));
         gradasi1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -99,7 +92,7 @@ public class Login extends javax.swing.JFrame {
         });
 
         jB_Register.setBackground(new java.awt.Color(0, 102, 255));
-        jB_Register.setFont(new java.awt.Font("Arial", 0, 8)); // NOI18N
+        jB_Register.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jB_Register.setForeground(new java.awt.Color(255, 255, 255));
         jB_Register.setText("RFID");
         jB_Register.addActionListener(new java.awt.event.ActionListener() {
@@ -109,7 +102,7 @@ public class Login extends javax.swing.JFrame {
         });
 
         btn_login.setBackground(new java.awt.Color(51, 102, 255));
-        btn_login.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        btn_login.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         btn_login.setForeground(new java.awt.Color(255, 255, 255));
         btn_login.setText("LOG-IN");
         btn_login.addActionListener(new java.awt.event.ActionListener() {
@@ -118,7 +111,7 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        jCheckBox1.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
+        jCheckBox1.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         jCheckBox1.setForeground(new java.awt.Color(0, 0, 0));
         jCheckBox1.setText("Show Password");
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -127,7 +120,7 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(0, 0, 0));
         jLabel7.setText("Klik RFID jika ingin login menggunakan kartu pegawai.");
 
@@ -165,12 +158,12 @@ public class Login extends javax.swing.JFrame {
                     .addComponent(jLabel10)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(btn_login)
-                        .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(text_username, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
-                        .addComponent(text_password, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addComponent(text_password, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jCheckBox1))
                     .addComponent(jLabel11)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -219,12 +212,12 @@ public class Login extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jB_Register, javax.swing.GroupLayout.PREFERRED_SIZE, 17, Short.MAX_VALUE)
+                .addComponent(jB_Register, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(19, 19, 19))
         );
 
         jLabel1.setBackground(new java.awt.Color(0, 0, 0));
-        jLabel1.setFont(new java.awt.Font("Imprint MT Shadow", 1, 36)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("SELAMAT DATANG");
 
@@ -249,7 +242,7 @@ public class Login extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(jLabel3)
                     .addComponent(jLabel8))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 345, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 340, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(139, 139, 139))
         );
@@ -269,7 +262,7 @@ public class Login extends javax.swing.JFrame {
                     .addGroup(gradasi1Layout.createSequentialGroup()
                         .addGap(100, 100, 100)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addContainerGap(143, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -304,7 +297,6 @@ public class Login extends javax.swing.JFrame {
         return;
     }
 
-    // 🔐 Hash password yang dimasukkan
     String hashedPassword = securityutils.hashPassword(password);
     if (hashedPassword == null) {
         JOptionPane.showMessageDialog(this, "Gagal melakukan hash password.");
@@ -316,20 +308,19 @@ public class Login extends javax.swing.JFrame {
         String sql = "SELECT * FROM users WHERE Username = ? AND Password = ? AND Role = ?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, username);
-        ps.setString(2, hashedPassword); // dibandingkan dengan hash
+        ps.setString(2, hashedPassword);
         ps.setString(3, selectedRole);
 
         ResultSet rs = ps.executeQuery();
 
         if (rs.next()) {
             // ✅ Simpan session
-            Session.setIdUser(rs.getString("Id_user")); // sesuaikan dengan nama kolom di tabel users
-            Session.setNama(rs.getString("Nama")); // sesuaikan dengan nama kolom nama
-            Session.setRole(rs.getString("Role")); // kolom Role
+            Session.setIdUser(rs.getString("Id_user"));
+            Session.setNama(rs.getString("Nama"));
+            Session.setRole(rs.getString("Role"));
 
             JOptionPane.showMessageDialog(this, "Login berhasil sebagai " + selectedRole);
 
-            // Buka menu utama
             new MenuUtama(selectedRole).setVisible(true);
             this.dispose(); 
         } else {

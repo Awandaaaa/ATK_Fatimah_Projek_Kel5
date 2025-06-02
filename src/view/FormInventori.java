@@ -81,7 +81,7 @@ public class FormInventori extends javax.swing.JPanel {
         DefaultTableModel model = new DefaultTableModel(new Object[]{"No Barang", "Nama Barang", "Kategori", "Satuan", "Harga", "Stok", "Barcode", "ID Supplier"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Semua sel tidak dapat diedit langsung
+                return false;
             }
         };
         table_barang.setModel(model);
@@ -119,7 +119,6 @@ public class FormInventori extends javax.swing.JPanel {
 
         tampilkanBarang();
 
-        // Style tombol
         btn_tambah.setText("TAMBAH");
         btn_tambah.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
         btn_tambah.setForeground(Color.WHITE);
@@ -128,7 +127,6 @@ public class FormInventori extends javax.swing.JPanel {
         btn_tambah.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_tambah.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_tambah.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -141,7 +139,6 @@ public class FormInventori extends javax.swing.JPanel {
             }
         });
 
-        // Style tombol
         btn_hapus.setText("HAPUS");
         btn_hapus.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
         btn_hapus.setForeground(Color.WHITE);
@@ -150,7 +147,6 @@ public class FormInventori extends javax.swing.JPanel {
         btn_hapus.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_hapus.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_hapus.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -162,22 +158,19 @@ public class FormInventori extends javax.swing.JPanel {
                 btn_hapus.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
-        
-        
-        // Style tombol
+
         btn_edit.setText("EDIT");
-        btn_edit.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_edit.setBackground(new java.awt.Color(70, 130, 180));
         btn_edit.setForeground(Color.WHITE);
         btn_edit.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_edit.setFocusPainted(false);
         btn_edit.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_edit.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_edit.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_edit.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_edit.setBackground(new java.awt.Color(100, 149, 237));
             }
 
             @Override
@@ -185,10 +178,9 @@ public class FormInventori extends javax.swing.JPanel {
                 btn_edit.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
-        
-        // Style tombol
+
         btn_cetakbarcode.setText("CETAK BARCODE");
-        btn_cetakbarcode.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_cetakbarcode.setBackground(new java.awt.Color(70, 130, 180));
         btn_cetakbarcode.setForeground(Color.WHITE);
         btn_cetakbarcode.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_cetakbarcode.setFocusPainted(false);
@@ -199,7 +191,7 @@ public class FormInventori extends javax.swing.JPanel {
         btn_cetakbarcode.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_cetakbarcode.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_cetakbarcode.setBackground(new java.awt.Color(100, 149, 237));
             }
 
             @Override
@@ -208,8 +200,6 @@ public class FormInventori extends javax.swing.JPanel {
             }
         });
     }
-    
-    
 
     private String getKolomDariKriteria(String kriteria) {
         switch (kriteria) {
@@ -228,7 +218,7 @@ public class FormInventori extends javax.swing.JPanel {
             case "Supplier":
                 return "s.nama";
             default:
-                return "b.Nama_barang"; // default pencarian
+                return "b.Nama_barang";
         }
     }
 
@@ -276,7 +266,7 @@ public class FormInventori extends javax.swing.JPanel {
 
     public void tampilkanBarang() {
         DefaultTableModel model = (DefaultTableModel) table_barang.getModel();
-        model.setRowCount(0); // reset isi tabel
+        model.setRowCount(0);
 
         try {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
@@ -286,7 +276,6 @@ public class FormInventori extends javax.swing.JPanel {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
 
-            // Formatter untuk harga
             NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
 
             while (rs.next()) {
@@ -297,7 +286,7 @@ public class FormInventori extends javax.swing.JPanel {
                     rs.getString("Nama_barang"),
                     rs.getString("Kategori"),
                     rs.getString("Satuan"),
-                    hargaFormatted, // Tampilkan harga dalam format Rupiah
+                    hargaFormatted,
                     rs.getString("Stok"),
                     rs.getString("barcode"),
                     rs.getString("nama_supplier")
@@ -430,11 +419,6 @@ public class FormInventori extends javax.swing.JPanel {
     }
 }
 
-
-
-
-    
-
     private void hapusBarang() {
         int selectedRow = table_barang.getSelectedRow();
         if (selectedRow == -1) {
@@ -472,35 +456,6 @@ public class FormInventori extends javax.swing.JPanel {
     return rupiahFormat.format(angka);
 }
 
-    
-//    private void deleteSupplier() {
-//        int selectedRow = tbl_supplier.getSelectedRow();
-//        if (selectedRow == -1) {
-//            JOptionPane.showMessageDialog(this, "Pilih data yang ingin dihapus.");
-//            return;
-//        }
-//
-//        int idSupplier = (int) tbl_supplier.getValueAt(selectedRow, 0);
-//        int confirm = JOptionPane.showConfirmDialog(this, "Yakin ingin menghapus data ini?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
-//        if (confirm == JOptionPane.YES_OPTION) {
-//            try {
-//                Connection conn = Koneksi.getConnection();
-//                String sql = "DELETE FROM supplier WHERE Id_Supplier=?";
-//                PreparedStatement pst = conn.prepareStatement(sql);
-//                pst.setInt(1, idSupplier);
-//                pst.executeUpdate();
-//                JOptionPane.showMessageDialog(this, "Data berhasil dihapus.");
-//                loadDataSupplier();
-//            } catch (SQLException e) {
-//                JOptionPane.showMessageDialog(this, "Gagal hapus data: " + e.getMessage());
-//            }
-//        }
-//    }
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -663,8 +618,8 @@ public class FormInventori extends javax.swing.JPanel {
     }
 
     try {
-        String kode = table_barang.getValueAt(selectedRow, 6).toString(); // kolom kode barcode
-        String nama = table_barang.getValueAt(selectedRow, 1).toString(); // kolom nama barang
+        String kode = table_barang.getValueAt(selectedRow, 6).toString();
+        String nama = table_barang.getValueAt(selectedRow, 1).toString(); 
 
         int barcodeWidth = 300;
         int barcodeHeight = 100;
@@ -694,7 +649,6 @@ public class FormInventori extends javax.swing.JPanel {
         g.drawString(kode, kodeX, imageHeight - 10);
         g.dispose();
 
-        // --- Dialog Preview ---
         JDialog previewDialog = new JDialog((Frame) null, "Preview Barcode", true);
         previewDialog.setSize(barcodeWidth + 40, imageHeight + 80);
         previewDialog.setLocationRelativeTo(this);

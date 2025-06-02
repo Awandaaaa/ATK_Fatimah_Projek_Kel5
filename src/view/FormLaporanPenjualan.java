@@ -6,10 +6,8 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import javax.swing.BorderFactory;
-
 import Form.FormTambahBarang;
 import java.awt.Component;
-
 import main.Koneksi;
 import java.sql.*;
 import javax.swing.JLabel;
@@ -19,28 +17,22 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
-
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import java.awt.Graphics2D;
 import java.awt.Font;
 import java.awt.FontMetrics;
-
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -58,7 +50,7 @@ import main.Session;
 
 public class FormLaporanPenjualan extends javax.swing.JPanel {
 
-    private boolean sedangMemuatUser = false; // Mencegah event saat load combobox
+    private boolean sedangMemuatUser = false;
     private Connection conn;
 
     public FormLaporanPenjualan() {
@@ -88,7 +80,7 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         DefaultTableModel model = new DefaultTableModel(new Object[]{"ID Penjualan", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "User"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Semua sel tidak dapat diedit langsung
+                return false;
             }
         };
         tabel_penjualan.setModel(model);
@@ -127,30 +119,28 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         tabel_penjualan.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                int baris = tabel_penjualan.getSelectedRow(); // Ambil baris yang diklik
+                int baris = tabel_penjualan.getSelectedRow();
                 if (baris >= 0) {
-                    String idPenjualan = tabel_penjualan.getValueAt(baris, 0).toString(); // Ambil data dari kolom ke-0 (ID Penjualan)
-                    t_cari.setText(idPenjualan); // Masukkan ke TextField
+                    String idPenjualan = tabel_penjualan.getValueAt(baris, 0).toString();
+                    t_cari.setText(idPenjualan);
                 }
             }
         });
 
         tampilkanLaporanPenjualanLengkap();
 
-        // Style tombol
         btn_hapus.setText("HAPUS");
-        btn_hapus.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_hapus.setBackground(new java.awt.Color(70, 130, 180)); 
         btn_hapus.setForeground(Color.WHITE);
         btn_hapus.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_hapus.setFocusPainted(false);
         btn_hapus.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_hapus.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_hapus.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_hapus.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_hapus.setBackground(new java.awt.Color(100, 149, 237));
             }
 
             @Override
@@ -160,18 +150,17 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         });
 
         btnClear.setText("CLEAR");
-        btnClear.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btnClear.setBackground(new java.awt.Color(70, 130, 180));
         btnClear.setForeground(Color.WHITE);
         btnClear.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btnClear.setFocusPainted(false);
         btnClear.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btnClear.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btnClear.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnClear.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btnClear.setBackground(new java.awt.Color(100, 149, 237));
             }
 
             @Override
@@ -189,13 +178,12 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery("SELECT Nama FROM users ORDER BY Nama ASC");
 
-            cb_user.removeAllItems(); // reset dulu
-            cb_user.addItem("-- Pilih User --"); // pilihan default
+            cb_user.removeAllItems();
+            cb_user.addItem("-- Pilih User --");
 
             while (rs.next()) {
                 cb_user.addItem(rs.getString("Nama"));
             }
-
             rs.close();
             st.close();
             con.close();
@@ -208,7 +196,7 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
 
     public void tampilkanLaporanPenjualanLengkap() {
         DefaultTableModel model = (DefaultTableModel) tabel_penjualan.getModel();
-        model.setRowCount(0); // reset isi
+        model.setRowCount(0);
 
         String[] kolom = {"ID Penjualan", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "User"};
         model.setColumnIdentifiers(kolom);
@@ -249,7 +237,7 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
 
     public void tampilkanLaporanPenjualan(Date tglAwal, Date tglAkhir) {
         DefaultTableModel model = (DefaultTableModel) tabel_penjualan.getModel();
-        model.setRowCount(0); // reset isi tabel
+        model.setRowCount(0);
 
         String[] kolom = {"ID Penjualan", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "User"};
         model.setColumnIdentifiers(kolom);
@@ -332,8 +320,6 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Gagal mencari data berdasarkan ID Penjualan: " + e.getMessage());
         }
     }
-
-// Method untuk load data semua tanpa filter
     private void loadAllData() {
         DefaultTableModel model = (DefaultTableModel) tabel_penjualan.getModel();
         model.setRowCount(0);
@@ -371,10 +357,9 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         }
     }
 
-// Method untuk Clear filter, dipanggil saat tombol Clear diklik
     public void clearFilters() {
         t_cari.setText("");
-        cb_user.setSelectedIndex(0);  // Reset ke "-- Pilih User --"
+        cb_user.setSelectedIndex(0);
         JD_Awal.setDate(null);
         JD_Akhir.setDate(null);
         loadAllData();
@@ -385,9 +370,9 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
     }
 
     private String ambilIdPenjualanDariBaris(int row) {
-        // Misal kamu menyimpan id_Penjualan di kolom ke-7 (kolom ke-0 sampai 6 ditampilkan)
+
         DefaultTableModel model = (DefaultTableModel) tabel_penjualan.getModel();
-        return model.getValueAt(row, 7).toString(); // sesuaikan dengan posisi ID kamu
+        return model.getValueAt(row, 7).toString();
     }
 
     /**
@@ -575,21 +560,16 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         int konfirmasi = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin menghapus data ini?", "Konfirmasi Hapus", JOptionPane.YES_NO_OPTION);
 
         if (konfirmasi == JOptionPane.YES_OPTION) {
-            // Ambil ID Penjualan dari model asli (kolom tersembunyi/real)
-            // Jika sudah diganti ke "No", pastikan id_Penjualan tetap bisa diakses (misal lewat model tambahan/hidden field)
             try {
-                // Misal kita pakai kolom ID Penjualan disimpan secara tersembunyi atau punya cara khusus ambil ID-nya
-                String idPenjualan = ambilIdPenjualanDariBaris(selectedRow); // <-- kamu perlu bikin method ini
+                String idPenjualan = ambilIdPenjualanDariBaris(selectedRow); 
 
                 Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
 
-                // Hapus dulu di tabel penjualanrinci (karena ada foreign key)
                 String deleteRinci = "DELETE FROM penjualanrinci WHERE id_Penjualan = ?";
                 PreparedStatement pstRinci = con.prepareStatement(deleteRinci);
                 pstRinci.setString(1, idPenjualan);
                 pstRinci.executeUpdate();
 
-                // Baru hapus di tabel penjualan
                 String deletePenjualan = "DELETE FROM penjualan WHERE id_Penjualan = ?";
                 PreparedStatement pstPenjualan = con.prepareStatement(deletePenjualan);
                 pstPenjualan.setString(1, idPenjualan);
@@ -600,7 +580,7 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
                 con.close();
 
                 JOptionPane.showMessageDialog(this, "Data berhasil dihapus.");
-                tampilkanLaporanPenjualanLengkap(); // Refresh tabel
+                tampilkanLaporanPenjualanLengkap();
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(this, "Gagal menghapus data: " + e.getMessage());
             }
@@ -619,13 +599,11 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
 
         String namaUser = selected.toString();
 
-        // Jika default dipilih, tampilkan semua data
         if (namaUser.equals("-- Pilih User --")) {
             loadAllData();
             return;
         }
 
-        // Ambil tanggal dari JDateChooser
         Date tanggalAwal = JD_Awal.getDate();
         Date tanggalAkhir = JD_Akhir.getDate();
 
@@ -752,19 +730,16 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         try {
             ActionListener taskPerformer = new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    // Dapatkan waktu saat ini
+
                     Calendar dt = Calendar.getInstance();
 
-                    // Format tanggal dan waktu dalam bahasa Indonesia
                     SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd MMMM yyyy", new Locale("id", "ID"));
                     String formattedDate = sdf.format(dt.getTime());
 
-                    // Tampilkan hasil di JLabel
                     tgl_muncul.setText(formattedDate);
                 }
             };
 
-            // Timer untuk memperbarui tampilan setiap detik
             new javax.swing.Timer(1000, taskPerformer).start();
         } catch (Exception e) {
             System.out.println("Error : " + e.getMessage());

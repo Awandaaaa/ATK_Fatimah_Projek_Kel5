@@ -26,12 +26,7 @@ public class FormBarangRusak extends javax.swing.JPanel {
         initComponents();
         
         initTableModel();
-         
-
-        
-        
-
-        // Style tombol
+ 
         btn_tambah.setText("TAMBAH");
         btn_tambah.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
         btn_tambah.setForeground(Color.WHITE);
@@ -40,7 +35,6 @@ public class FormBarangRusak extends javax.swing.JPanel {
         btn_tambah.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_tambah.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_tambah.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -54,10 +48,8 @@ public class FormBarangRusak extends javax.swing.JPanel {
         });
 
         
-
-        // Style tombol
         btn_hapus.setText("HAPUS");
-        btn_hapus.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_hapus.setBackground(new java.awt.Color(70, 130, 180));
         btn_hapus.setForeground(Color.WHITE);
         btn_hapus.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_hapus.setFocusPainted(false);
@@ -68,7 +60,7 @@ public class FormBarangRusak extends javax.swing.JPanel {
         btn_hapus.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_hapus.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_hapus.setBackground(new java.awt.Color(100, 149, 237));
             }
 
             @Override
@@ -119,7 +111,7 @@ public class FormBarangRusak extends javax.swing.JPanel {
 
     public void tampilkanDataBarangRusak() {
         DefaultTableModel model = (DefaultTableModel) tbl_barangrusak.getModel();
-        model.setRowCount(0); // Hapus isi tabel dulu
+        model.setRowCount(0);
 
         String sql = "SELECT id_barangrusak, id_barang, barcode, jumlah_rusak, Tgl_rusak, keterangan FROM barang_rusak ORDER BY Tgl_rusak DESC";
 
@@ -262,7 +254,6 @@ public class FormBarangRusak extends javax.swing.JPanel {
         return;
     }
 
-    // Ambil id_barangrusak dari kolom pertama (index 0)
     String idBarangRusak = tbl_barangrusak.getValueAt(selectedRow, 0).toString();
 
     int konfirmasi = JOptionPane.showConfirmDialog(this, "Yakin ingin menghapus data ini?", "Konfirmasi Hapus", JOptionPane.YES_NO_OPTION);
@@ -276,7 +267,7 @@ public class FormBarangRusak extends javax.swing.JPanel {
 
             if (rowsDeleted > 0) {
                 JOptionPane.showMessageDialog(this, "Data berhasil dihapus.");
-                tampilkanDataBarangRusak(); // Refresh tabel
+                tampilkanDataBarangRusak();
             } else {
                 JOptionPane.showMessageDialog(this, "Data gagal dihapus.");
             }

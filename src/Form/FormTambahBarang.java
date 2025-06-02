@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import javax.swing.BorderFactory;
-
 import main.Koneksi;
 import java.sql.*;
 import java.util.UUID;
@@ -16,7 +15,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 import view.FormInventori;
-
 import javax.swing.text.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -26,20 +24,12 @@ public class FormTambahBarang extends javax.swing.JDialog {
     public static javax.swing.JComboBox cb_supplier_static;
     private Connection conn;
 
-    /**
-     * Creates new form FormTambahBarang
-     */
     public FormTambahBarang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        // Format untuk text_harga
+
 ((AbstractDocument) text_harga.getDocument()).setDocumentFilter(new RupiahFormattedDocumentFilter());
 
-
-
-
-
-// Format untuk text_stok
 ((AbstractDocument) text_stok.getDocument()).setDocumentFilter(new NumberOnlyDocumentFilter());
         text_barcode.setEnabled(false);
 
@@ -48,7 +38,6 @@ public class FormTambahBarang extends javax.swing.JDialog {
         loadKategoriSatuan();
         updateBarcodeOtomatis();
 
-        // Style tombol
         btn_simpan.setText("SIMPAN");
         btn_simpan.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
         btn_simpan.setForeground(Color.WHITE);
@@ -57,7 +46,6 @@ public class FormTambahBarang extends javax.swing.JDialog {
         btn_simpan.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_simpan.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_simpan.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -70,9 +58,8 @@ public class FormTambahBarang extends javax.swing.JDialog {
             }
         });
 
-        // Style tombol
         btn_batal.setText("BATAL");
-        btn_batal.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_batal.setBackground(new java.awt.Color(70, 130, 180)); 
         btn_batal.setForeground(Color.WHITE);
         btn_batal.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_batal.setFocusPainted(false);
@@ -83,7 +70,7 @@ public class FormTambahBarang extends javax.swing.JDialog {
         btn_batal.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_batal.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_batal.setBackground(new java.awt.Color(100, 149, 237)); 
             }
 
             @Override
@@ -95,7 +82,6 @@ public class FormTambahBarang extends javax.swing.JDialog {
     }
 
     private void loadKategoriSatuan() {
-        // Kategori
         cb_kategori.removeAllItems();
         cb_kategori.addItem("Alat Tulis");
         cb_kategori.addItem("Kertas & Buku");
@@ -103,7 +89,6 @@ public class FormTambahBarang extends javax.swing.JDialog {
         cb_kategori.addItem("Alat Ukur");
         cb_kategori.addItem("Lain - lain");
 
-        // Satuan
         cb_satuan.removeAllItems();
         cb_satuan.addItem("pcs");
         cb_satuan.addItem("pak");
@@ -128,7 +113,7 @@ public class FormTambahBarang extends javax.swing.JDialog {
 
         @Override
         public String toString() {
-            return nama; // supaya hanya nama supplier yang tampil di combo box
+            return nama; 
         }
     }
 
@@ -138,7 +123,7 @@ public class FormTambahBarang extends javax.swing.JDialog {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery("SELECT id_supplier, nama FROM supplier");
 
-            cb_supplier.removeAllItems(); // kosongkan dulu
+            cb_supplier.removeAllItems();
 
             while (rs.next()) {
                 int id = rs.getInt("id_supplier");
@@ -264,8 +249,6 @@ public class FormTambahBarang extends javax.swing.JDialog {
     }
 }
 
-
-    
     public class NumberOnlyDocumentFilter extends DocumentFilter {
     @Override
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
@@ -559,23 +542,20 @@ public class FormTambahBarang extends javax.swing.JDialog {
     }//GEN-LAST:event_btn_batalActionPerformed
 
     private void btn_simpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_simpanActionPerformed
-// Ambil input dari form
+
 String namaBarang = text_namabarang.getText().trim();
 String kategori = cb_kategori.getSelectedItem() != null ? cb_kategori.getSelectedItem().toString() : "";
 String satuan = cb_satuan.getSelectedItem() != null ? cb_satuan.getSelectedItem().toString() : "";
 String harga = text_harga.getText().replace("Rp. ", "").replace(".", "").trim();
 String stok = text_stok.getText().trim();
 
-// Validasi input
 if (namaBarang.isEmpty() || kategori.isEmpty() || satuan.isEmpty() || harga.isEmpty() || stok.isEmpty()) {
     JOptionPane.showMessageDialog(this, "Semua field harus diisi!");
     return;
 }
 
-// Generate ID Barang (random dan rapi)
 String idBarang = "BRG-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
 
-// Generate barcode otomatis
 String prefix = namaBarang.substring(0, Math.min(3, namaBarang.length())).toUpperCase();
 String kat = kategori.substring(0, Math.min(2, kategori.length())).toUpperCase();
 String sat = satuan.substring(0, Math.min(2, satuan.length())).toUpperCase();
@@ -583,7 +563,6 @@ String timeStamp = new java.text.SimpleDateFormat("yyMMddHHmmss").format(new jav
 String barcode = prefix + kat + sat + timeStamp;
 text_barcode.setText(barcode);
 
-// Ambil ID Supplier
 ItemSupplier selectedSupplier = (ItemSupplier) cb_supplier.getSelectedItem();
 int supplierId = selectedSupplier != null ? selectedSupplier.getId() : -1;
 
@@ -609,13 +588,11 @@ try {
 
     ps.executeUpdate();
     JOptionPane.showMessageDialog(this, "Data berhasil disimpan!");
-
-    // Refresh tabel barang jika form induknya FormInventori
     if (getParent() instanceof FormInventori) {
         ((FormInventori) getParent()).tampilkanBarang();
     }
 
-    dispose(); // tutup form
+    dispose();
     ps.close();
     con.close();
 
@@ -664,7 +641,6 @@ try {
         //</editor-fold>
         //</editor-fold>
 
-        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 FormTambahBarang dialog = new FormTambahBarang(new javax.swing.JFrame(), true);

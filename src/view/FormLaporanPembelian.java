@@ -6,10 +6,8 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import javax.swing.BorderFactory;
-
 import Form.FormTambahBarang;
 import java.awt.Component;
-
 import main.Koneksi;
 import java.sql.*;
 import javax.swing.JLabel;
@@ -19,28 +17,22 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
-
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import java.awt.Graphics2D;
 import java.awt.Font;
 import java.awt.FontMetrics;
-
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -90,7 +82,7 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         DefaultTableModel model = new DefaultTableModel(new Object[]{"No", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "Supplier"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Semua sel tidak dapat diedit langsung
+                return false;
             }
         };
         tabel_pembelian.setModel(model);
@@ -131,30 +123,25 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
             public void mouseClicked(MouseEvent e) {
                 int selectedRow = tabel_pembelian.getSelectedRow();
                 if (selectedRow != -1) {
-                    // Ambil ID pembelian dari kolom pertama (indeks 0)
                     String idPembelian = tabel_pembelian.getValueAt(selectedRow, 0).toString();
-                    // Masukkan ke textfield t_cari
                     t_cari.setText(idPembelian);
                 }
             }
         });
 
         tampilkanLaporanPembelianLengkap();
-
-        // Style tombol
         btn_hapus.setText("HAPUS");
-        btn_hapus.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_hapus.setBackground(new java.awt.Color(70, 130, 180));
         btn_hapus.setForeground(Color.WHITE);
         btn_hapus.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_hapus.setFocusPainted(false);
         btn_hapus.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_hapus.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_hapus.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_hapus.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_hapus.setBackground(new java.awt.Color(100, 149, 237));
             }
 
             @Override
@@ -164,18 +151,17 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         });
 
         btnClear.setText("CLEAR");
-        btnClear.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btnClear.setBackground(new java.awt.Color(70, 130, 180));
         btnClear.setForeground(Color.WHITE);
         btnClear.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btnClear.setFocusPainted(false);
         btnClear.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btnClear.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btnClear.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnClear.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btnClear.setBackground(new java.awt.Color(100, 149, 237));
             }
 
             @Override
@@ -193,8 +179,8 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery("SELECT Nama FROM supplier ORDER BY Nama ASC");
 
-            cb_supplier.removeAllItems(); // reset dulu
-            cb_supplier.addItem("-- Pilih Supplier --"); // pilihan default
+            cb_supplier.removeAllItems();
+            cb_supplier.addItem("-- Pilih Supplier --");
 
             while (rs.next()) {
                 cb_supplier.addItem(rs.getString("Nama"));
@@ -299,7 +285,6 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) tabel_pembelian.getModel();
         model.setRowCount(0);
 
-        // Kolom baru tanpa 'No', diganti jadi 'ID Pembelian'
         String[] kolom = {"ID Pembelian", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "Supplier"};
         model.setColumnIdentifiers(kolom);
         tabel_pembelian.setModel(model);
@@ -338,7 +323,6 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         }
     }
 
-// Method untuk load data semua pembelian tanpa filter
     private void loadAllData() {
         DefaultTableModel model = (DefaultTableModel) tabel_pembelian.getModel();
         model.setRowCount(0);
@@ -368,7 +352,7 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
                     rs.getInt("Jumlah_Beli"),
                     rs.getDouble("Harga_Satuan"),
                     rs.getDouble("Total"),
-                    rs.getString("nama_supplier") // ← yang diperbaiki di sini
+                    rs.getString("nama_supplier")
                 });
             }
 
@@ -380,10 +364,9 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         }
     }
 
-// Method untuk Clear filter, dipanggil saat tombol Clear diklik
     public void clearFilters() {
         t_cari.setText("");
-        cb_supplier.setSelectedIndex(0);  // Reset ke "-- Pilih User --"
+        cb_supplier.setSelectedIndex(0);
         JD_Awal.setDate(null);
         JD_Akhir.setDate(null);
         loadAllData();
@@ -395,7 +378,7 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
 
     private String ambilIdPembelianDariBaris(int row) {
         DefaultTableModel model = (DefaultTableModel) tabel_pembelian.getModel();
-        return model.getValueAt(row, 0).toString(); // kolom 0 = ID Pembelian
+        return model.getValueAt(row, 0).toString(); 
     }
 
     /**
@@ -588,12 +571,10 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
 
         if (konfirmasi == JOptionPane.YES_OPTION) {
             try {
-                // Ambil ID pembelianrinci dari kolom tersembunyi (kolom ke-7)
                 String idPembelianrinci = tabel_pembelian.getValueAt(selectedRow, 7).toString();
 
                 Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
 
-                // Hapus dari tabel pembelianrinci berdasarkan id_pembelianrinci
                 String sql = "DELETE FROM pembelianrinci WHERE id_pembelianrinci = ?";
                 PreparedStatement pst = con.prepareStatement(sql);
                 pst.setString(1, idPembelianrinci);
@@ -604,7 +585,7 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
 
                 if (rowsAffected > 0) {
                     JOptionPane.showMessageDialog(this, "Data berhasil dihapus.");
-                    tampilkanLaporanPembelianLengkap(); // refresh tabel
+                    tampilkanLaporanPembelianLengkap();
                 } else {
                     JOptionPane.showMessageDialog(this, "Data tidak ditemukan atau sudah dihapus.");
                 }
@@ -672,13 +653,11 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
 
         String namaSupplier = selected.toString();
 
-// Jika default dipilih, tampilkan semua data
         if (namaSupplier.equals("-- Pilih Supplier --")) {
-            loadAllData(); // pastikan loadAllData() ini memuat data pembelian, bukan penjualan
+            loadAllData();
             return;
         }
 
-// Ambil tanggal dari JDateChooser
         Date tanggalAwal = JD_Awal.getDate();
         Date tanggalAkhir = JD_Akhir.getDate();
 
@@ -761,19 +740,15 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         try {
             ActionListener taskPerformer = new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    // Dapatkan waktu saat ini
                     Calendar dt = Calendar.getInstance();
 
-                    // Format tanggal dan waktu dalam bahasa Indonesia
                     SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd MMMM yyyy", new Locale("id", "ID"));
                     String formattedDate = sdf.format(dt.getTime());
 
-                    // Tampilkan hasil di JLabel
                     jLabel3.setText(formattedDate);
                 }
             };
 
-            // Timer untuk memperbarui tampilan setiap detik
             new javax.swing.Timer(1000, taskPerformer).start();
         } catch (Exception e) {
             System.out.println("Error : " + e.getMessage());

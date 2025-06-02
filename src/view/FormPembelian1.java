@@ -53,15 +53,12 @@ import main.Session;
 
 public class FormPembelian1 extends javax.swing.JPanel {
 
-    /**
-     * Creates new form FormPembelian
-     */
     private boolean sedangFormatHarga = false;
     private boolean sedangMenyimpan = false;
     NumberFormat rupiahFormat = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
 
     public FormPembelian1() {
-        // === Inisialisasi Komponen dan Session ===
+
         initComponents();
         tampilkanHariTanggal();
         initHargaListener();
@@ -71,12 +68,10 @@ public class FormPembelian1 extends javax.swing.JPanel {
         t_kasir.setText(Session.getNama());
         label_users.setText("Login sebagai: " + Session.getRole());
 
-        // === Setup Tabel Pembelian ===
         String[] kolom = {"Barcode", "Nama Barang", "Satuan", "Jumlah", "Harga", "Total", "Supplier", "Tanggal"};
         DefaultTableModel model = new DefaultTableModel(null, kolom);
         tbl_pembelian.setModel(model);
 
-        // Renderer untuk kolom Harga & Total
         DefaultTableCellRenderer rupiahRenderer = new DefaultTableCellRenderer() {
             @Override
             public void setValue(Object value) {
@@ -87,10 +82,9 @@ public class FormPembelian1 extends javax.swing.JPanel {
                 }
             }
         };
-        tbl_pembelian.getColumnModel().getColumn(4).setCellRenderer(rupiahRenderer); // Harga
-        tbl_pembelian.getColumnModel().getColumn(5).setCellRenderer(rupiahRenderer); // Total
+        tbl_pembelian.getColumnModel().getColumn(4).setCellRenderer(rupiahRenderer);
+        tbl_pembelian.getColumnModel().getColumn(5).setCellRenderer(rupiahRenderer);
 
-        // === Keyboard Shortcut: DELETE untuk hapus baris ===
         tbl_pembelian.getInputMap(JTable.WHEN_FOCUSED)
                 .put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "hapusBaris");
         tbl_pembelian.getActionMap().put("hapusBaris", new AbstractAction() {
@@ -100,7 +94,6 @@ public class FormPembelian1 extends javax.swing.JPanel {
             }
         });
 
-        // CTRL + DELETE untuk reset transaksi
         tbl_pembelian.getInputMap(JTable.WHEN_FOCUSED)
                 .put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, KeyEvent.CTRL_DOWN_MASK), "resetTransaksi");
         tbl_pembelian.getActionMap().put("resetTransaksi", new AbstractAction() {
@@ -110,7 +103,6 @@ public class FormPembelian1 extends javax.swing.JPanel {
             }
         });
 
-        // === Validasi Input Diskon ===
         t_diskon.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -130,7 +122,6 @@ public class FormPembelian1 extends javax.swing.JPanel {
             }
         });
 
-        // === Style Header Tabel ===
         JTableHeader header = tbl_pembelian.getTableHeader();
         header.setDefaultRenderer(new DefaultTableCellRenderer() {
             @Override
@@ -169,10 +160,9 @@ public class FormPembelian1 extends javax.swing.JPanel {
         styleButton(btn_hapus, "HAPUS");
     }
 
-// === Fungsi Bantu: Styling Tombol ===
     private void styleButton(JButton button, String text) {
         button.setText(text);
-        button.setBackground(new Color(70, 130, 180)); // Steel Blue
+        button.setBackground(new Color(70, 130, 180)); 
         button.setForeground(Color.WHITE);
         button.setFont(new Font("Serif", Font.BOLD, 12));
         button.setFocusPainted(false);
@@ -182,7 +172,7 @@ public class FormPembelian1 extends javax.swing.JPanel {
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                button.setBackground(new Color(100, 149, 237)); // Cornflower Blue
+                button.setBackground(new Color(100, 149, 237));
             }
 
             @Override
@@ -192,12 +182,11 @@ public class FormPembelian1 extends javax.swing.JPanel {
         });
     }
 
-    // Listener untuk field harga
     private void initHargaListener() {
         t_harga.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                t_harga.removeKeyListener(this); // Cegah loop
+                t_harga.removeKeyListener(this); 
                 String input = t_harga.getText().replaceAll("[^\\d]", "");
                 if (!input.isEmpty()) {
                     double value = Double.parseDouble(input);
@@ -208,7 +197,6 @@ public class FormPembelian1 extends javax.swing.JPanel {
         });
     }
 
-// Listener untuk field bayar
     private void initBayarListener() {
         t_bayar.addKeyListener(new KeyAdapter() {
             @Override
@@ -222,7 +210,7 @@ public class FormPembelian1 extends javax.swing.JPanel {
                     double value = Double.parseDouble(input);
                     t_bayar.setText(formatRupiah(value));
                 }
-                hitungTotalDanKembalian(); // supaya langsung update kembalian
+                hitungTotalDanKembalian(); 
                 sedangFormatHarga = false;
             }
         });
@@ -232,14 +220,14 @@ public class FormPembelian1 extends javax.swing.JPanel {
         t_diskon.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                hitungTotalDanKembalian(); // langsung update saat diskon diketik
+                hitungTotalDanKembalian();
             }
         });
     }
 
     private String formatRupiah(double value) {
         DecimalFormat df = (DecimalFormat) DecimalFormat.getCurrencyInstance(new Locale("id", "ID"));
-        df.setMaximumFractionDigits(0); // hilangkan ",00"
+        df.setMaximumFractionDigits(0);
         return df.format(value);
     }
 
@@ -261,7 +249,6 @@ public class FormPembelian1 extends javax.swing.JPanel {
             WHERE 
                 b.barcode = ?
         """;
-
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, barcode);
             ResultSet rs = pst.executeQuery();
@@ -273,14 +260,12 @@ public class FormPembelian1 extends javax.swing.JPanel {
                 t_stok.setText(String.valueOf(rs.getInt("Stok")));
                 t_satuan.setText(rs.getString("Satuan"));
                 t_supplier.setText(rs.getString("nama_supplier"));
-
-                // Set tanggal hari ini
-                d_tanggal.setDate(new java.util.Date()); // untuk JDateChooser
+                d_tanggal.setDate(new java.util.Date()); 
                 t_jumlah.setText("1");
                 t_jumlah.requestFocus();
 
             } else {
-//                JOptionPane.showMessageDialog(null, "Barang dengan barcode tersebut tidak ditemukan.");
+               JOptionPane.showMessageDialog(null, "Barang dengan barcode tersebut tidak ditemukan.");
                 kosongkanFieldBarang();
             }
 
@@ -332,14 +317,12 @@ public class FormPembelian1 extends javax.swing.JPanel {
             String hargaStr = t_harga.getText().trim();
             String supplier = t_supplier.getText().trim();
 
-            // Validasi field kosong
             if (barcode.isEmpty() || nama.isEmpty() || satuan.isEmpty()
                     || jumlahStr.isEmpty() || hargaStr.isEmpty() || supplier.isEmpty() || d_tanggal.getDate() == null) {
                 JOptionPane.showMessageDialog(this, "Semua field harus diisi terlebih dahulu.", "Validasi", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            // Validasi nilai jumlah dan harga
             int jumlahBaru;
             double harga;
             try {
@@ -350,7 +333,6 @@ public class FormPembelian1 extends javax.swing.JPanel {
                 return;
             }
 
-            // Validasi jumlah tidak boleh 0 atau negatif
             if (jumlahBaru <= 0) {
                 JOptionPane.showMessageDialog(this, "Jumlah harus lebih dari 0.", "Validasi", JOptionPane.WARNING_MESSAGE);
                 return;
@@ -458,7 +440,6 @@ public class FormPembelian1 extends javax.swing.JPanel {
 
         okButton.addActionListener(e -> {
             dialog.dispose();
-            // Fokus kembali ke barcode setelah dialog tertutup
             SwingUtilities.invokeLater(() -> {
                 btn_simpan.setEnabled(true);
                 t_barcode.requestFocus();
@@ -466,14 +447,14 @@ public class FormPembelian1 extends javax.swing.JPanel {
         });
 
         dialog.pack();
-        dialog.setLocationRelativeTo(this); // ⬅️ Tengah form
+        dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
 
     private void restoreFocusAfterDialog() {
         SwingUtilities.invokeLater(() -> {
-            btn_simpan.setEnabled(true);   // Aktifkan kembali tombol simpan
-            t_barcode.requestFocus();      // Fokus ke barcode
+            btn_simpan.setEnabled(true);   
+            t_barcode.requestFocus();     
         });
     }
 
@@ -528,9 +509,9 @@ public class FormPembelian1 extends javax.swing.JPanel {
         }
         try {
             String cleaned = text.replace("Rp", "")
-                    .replace(".", "") // Hilangkan titik ribuan
-                    .replace(",", ".") // Ubah koma jadi titik desimal
-                    .replaceAll("[^\\d.]", ""); // Sisakan angka & titik
+                    .replace(".", "") 
+                    .replace(",", ".") 
+                    .replaceAll("[^\\d.]", ""); 
             return Double.parseDouble(cleaned);
         } catch (NumberFormatException e) {
             return 0.0;
@@ -552,7 +533,7 @@ public class FormPembelian1 extends javax.swing.JPanel {
             ps.setString(1, namaKasir);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getString("id_user"); // Ambil sebagai String
+                    return rs.getString("id_user"); 
                 }
             }
         }
@@ -561,7 +542,7 @@ public class FormPembelian1 extends javax.swing.JPanel {
 
     private String simpanHeaderPembelian(Connection conn, int idSupplier, String idUser, String tanggal,
             double total, double diskon, double bayar, double kembalian) throws SQLException {
-        String idPembelian = generateIdPembelian(conn); // Buat ID manual
+        String idPembelian = generateIdPembelian(conn);
 
         String sql = """
         INSERT INTO pembelian (
@@ -614,8 +595,7 @@ public class FormPembelian1 extends javax.swing.JPanel {
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             Map<String, Integer> supplierCache = new HashMap<>();
 
-            // Dapatkan angka awal ID
-            int counter = getIdPembelianRinciLastNumber(conn); // misalnya return 5 jika PR00005 terakhir
+            int counter = getIdPembelianRinciLastNumber(conn);
             for (int i = 0; i < tbl_pembelian.getRowCount(); i++) {
                 String barcode = tbl_pembelian.getValueAt(i, 0).toString().trim();
                 String namaBarang = tbl_pembelian.getValueAt(i, 1).toString().trim();
@@ -646,7 +626,6 @@ public class FormPembelian1 extends javax.swing.JPanel {
                     tambahkanStok(conn, barcode, jumlah);
                 }
 
-                // 🔥 Buat ID unik per baris
                 String idRinci = String.format("PR%05d", ++counter);
 
                 ps.setString(1, idRinci);
@@ -670,7 +649,6 @@ public class FormPembelian1 extends javax.swing.JPanel {
         if (rupiahStr == null || rupiahStr.isEmpty()) {
             return 0.0;
         }
-        // Hilangkan Rp, titik ribuan, ubah koma jadi titik
         return Double.parseDouble(
                 rupiahStr.replace("Rp", "")
                         .replace(".", "")
@@ -716,17 +694,16 @@ public class FormPembelian1 extends javax.swing.JPanel {
     }
 
     private void resetForm() {
-        // Kosongkan tabel
+
         DefaultTableModel model = (DefaultTableModel) tbl_pembelian.getModel();
         model.setRowCount(0);
 
-        // Kosongkan field
         t_total.setText("");
         t_subtotal.setText("");
         t_diskon.setText("");
         t_bayar.setText("");
         t_kembali.setText("");
-        kosongkanFieldBarang(); // Fungsi yang sudah ada untuk reset input barang
+        kosongkanFieldBarang();
     }
 
     private int ambilAtauBuatIdSupplier(Connection conn, String namaSupplier) throws SQLException {
@@ -739,7 +716,6 @@ public class FormPembelian1 extends javax.swing.JPanel {
             }
         }
 
-        // Jika tidak ditemukan, buat baru tanpa menyet Id_Supplier
         String sqlInsert = "INSERT INTO supplier (Nama) VALUES (?)";
         try (PreparedStatement ps = conn.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, namaSupplier);
@@ -763,7 +739,7 @@ public class FormPembelian1 extends javax.swing.JPanel {
             ps.setString(1, barcode);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getString("Id_barang"); // Ubah ke getString
+                    return rs.getString("Id_barang");
                 }
             }
         }
@@ -827,12 +803,10 @@ public class FormPembelian1 extends javax.swing.JPanel {
 
         yesButton.addActionListener(e -> {
             dialog.dispose();
-            SwingUtilities.invokeLater(onYes); // pastikan dijalankan setelah dialog ditutup
+            SwingUtilities.invokeLater(onYes); 
         });
 
         noButton.addActionListener(e -> dialog.dispose());
-
-        // Set YES sebagai default button untuk ENTER
         dialog.getRootPane().setDefaultButton(yesButton);
 
         dialog.pack();
@@ -857,7 +831,6 @@ public class FormPembelian1 extends javax.swing.JPanel {
     }
 
     private void showInfoDialog(String pesan) {
-        // Hindari loop ENTER -> trigger tombol lagi
         JOptionPane optionPane = new JOptionPane(pesan, JOptionPane.INFORMATION_MESSAGE);
         JDialog dialog = optionPane.createDialog(this, "Informasi");
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -912,15 +885,13 @@ public class FormPembelian1 extends javax.swing.JPanel {
         t_barcode.setText(kode);
         t_namabarang.setText(nama);
         t_satuan.setText(satuan);
-        t_harga.setText(String.format("%.0f", harga)); // Tanpa desimal
+        t_harga.setText(String.format("%.0f", harga)); 
         t_stok.setText(String.valueOf(stok));
         t_supplier.setText(supplier);
         t_jumlah.setText("1");
 
-        // Set tanggal hari ini
         d_tanggal.setDate(new Date());
 
-        // Fokus ke field jumlah
         t_jumlah.requestFocus();
         SwingUtilities.invokeLater(() -> t_jumlah.selectAll());
     }
@@ -1456,19 +1427,15 @@ public class FormPembelian1 extends javax.swing.JPanel {
         try {
             ActionListener taskPerformer = new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    // Dapatkan waktu saat ini
                     Calendar dt = Calendar.getInstance();
 
-                    // Format tanggal dan waktu dalam bahasa Indonesia
                     SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd MMMM yyyy", new Locale("id", "ID"));
                     String formattedDate = sdf.format(dt.getTime());
 
-                    // Tampilkan hasil di JLabel
                     tgl.setText(formattedDate);
                 }
             };
 
-            // Timer untuk memperbarui tampilan setiap detik
             new javax.swing.Timer(1000, taskPerformer).start();
         } catch (Exception e) {
             System.out.println("Error : " + e.getMessage());

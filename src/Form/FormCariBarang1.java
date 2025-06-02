@@ -33,10 +33,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import view.FormPembelian1;
 
-/**
- *
- * @author Agung Fahril Gunawan
- */
 public class FormCariBarang1 extends javax.swing.JDialog {
 
     private FormPembelian1 formPembelian;
@@ -59,9 +55,6 @@ getRootPane().getActionMap().put("TUTUP_DIALOG", new AbstractAction() {
 });
     }
     
-    
-
-
     private void setupUI() {
         styleButton(btn_tambah, "TAMBAH");
         cb_kategori.setSelectedItem("Nama Barang");

@@ -1,7 +1,7 @@
 package main;
 
 public class Session {
-    private static String idUser; // Ubah ke String
+    private static String idUser;
     private static String nama;
     private static String role;
 

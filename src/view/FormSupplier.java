@@ -44,7 +44,6 @@ public class FormSupplier extends javax.swing.JPanel {
         };
         tbl_supplier.setModel(model);
 
-        // Sembunyikan kolom Id_Supplier
         tbl_supplier.getColumnModel().getColumn(0).setMinWidth(0);
         tbl_supplier.getColumnModel().getColumn(0).setMaxWidth(0);
         tbl_supplier.getColumnModel().getColumn(0).setWidth(0);
@@ -150,13 +149,13 @@ public class FormSupplier extends javax.swing.JPanel {
 
     int idSupplier = (int) tbl_supplier.getValueAt(selectedRow, 0);
     String nama = (String) tbl_supplier.getValueAt(selectedRow, 1);
-    String telepon = (String) tbl_supplier.getValueAt(selectedRow, 2); // Sudah dalam format +62
+    String telepon = (String) tbl_supplier.getValueAt(selectedRow, 2); 
     String alamat = (String) tbl_supplier.getValueAt(selectedRow, 3);
     String pemilik = (String) tbl_supplier.getValueAt(selectedRow, 4);
 
     JTextField txtNama = new JTextField(nama);
-    JTextField txtTelepon = new JTextField(telepon); // Tidak perlu +62 lagi
-    applyPhoneNumberFilter(txtTelepon); // Otomatis menambahkan +62 dan validasi
+    JTextField txtTelepon = new JTextField(telepon); 
+    applyPhoneNumberFilter(txtTelepon); 
     JTextField txtAlamat = new JTextField(alamat);
     JTextField txtPemilik = new JTextField(pemilik);
 
@@ -175,7 +174,7 @@ public class FormSupplier extends javax.swing.JPanel {
 
     if (result == JOptionPane.OK_OPTION) {
         String newNama = txtNama.getText().trim();
-        String newTelepon = txtTelepon.getText().trim(); // Sudah terformat +62
+        String newTelepon = txtTelepon.getText().trim(); 
         String newAlamat = txtAlamat.getText().trim();
         String newPemilik = txtPemilik.getText().trim();
 
@@ -184,7 +183,6 @@ public class FormSupplier extends javax.swing.JPanel {
             return;
         }
 
-        // Validasi nomor telepon: harus mulai dengan +628 dan panjang 12–16 karakter
         if (!newTelepon.matches("\\+628\\d{7,10}")) {
             JOptionPane.showMessageDialog(this, "Nomor telepon harus diawali +628 dan panjang 12–13 karakter.");
             return;
@@ -280,20 +278,15 @@ public class FormSupplier extends javax.swing.JPanel {
     public void remove(FilterBypass fb, int offset, int length)
             throws BadLocationException {
         if (offset < 3) {
-            return; // Blokir penghapusan "+62"
+            return; 
         }
         super.remove(fb, offset, length);
     }
 }
-
-
         private void applyPhoneNumberFilter(JTextField field) {
     AbstractDocument doc = (AbstractDocument) field.getDocument();
     doc.setDocumentFilter(new PhoneNumberFilter());
 }
-
-
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -320,7 +313,7 @@ public class FormSupplier extends javax.swing.JPanel {
         jPanel1.setBackground(new java.awt.Color(0, 0, 204));
 
         jLabel1.setBackground(new java.awt.Color(0, 51, 255));
-        jLabel1.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Data Supplier");
 
@@ -437,7 +430,7 @@ public class FormSupplier extends javax.swing.JPanel {
         FormTambahSupplier form = new FormTambahSupplier((java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this), true);
         form.setLocationRelativeTo(this);
         form.setVisible(true);
-        loadDataSupplier(); // refresh data setelah form ditutup
+        loadDataSupplier(); 
     }//GEN-LAST:event_btn_tambahActionPerformed
 
     private void text_cariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_text_cariActionPerformed

@@ -35,11 +35,8 @@ import view.FormBarangRusak;
 
 public class FormTambahBarangRusak extends javax.swing.JDialog {
 
-    /**
-     * Creates new form FormTambahBarangRusak
-     */
     NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
-    private FormBarangRusak parent; // Tambahkan ini di deklarasi class
+    private FormBarangRusak parent;
 
     
     public FormTambahBarangRusak(java.awt.Frame parent, boolean modal) {
@@ -61,23 +58,18 @@ getRootPane().getActionMap().put("TUTUP_DIALOG", new AbstractAction() {
 });
 SwingUtilities.invokeLater(() -> t_jumlah.requestFocus());
 
-
-
-        
-         // Style tombol
         btn_simpan.setText("SIMPAN");
-        btn_simpan.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_simpan.setBackground(new java.awt.Color(70, 130, 180)); 
         btn_simpan.setForeground(Color.WHITE);
         btn_simpan.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_simpan.setFocusPainted(false);
         btn_simpan.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_simpan.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_simpan.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_simpan.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_simpan.setBackground(new java.awt.Color(100, 149, 237)); 
             }
 
             @Override
@@ -86,9 +78,8 @@ SwingUtilities.invokeLater(() -> t_jumlah.requestFocus());
             }
         });
         
-        // Style tombol
         btn_batal.setText("BATAL");
-        btn_batal.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_batal.setBackground(new java.awt.Color(70, 130, 180)); 
         btn_batal.setForeground(Color.WHITE);
         btn_batal.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_batal.setFocusPainted(false);
@@ -99,7 +90,7 @@ SwingUtilities.invokeLater(() -> t_jumlah.requestFocus());
         btn_batal.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_batal.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_batal.setBackground(new java.awt.Color(100, 149, 237));        
             }
 
             @Override
@@ -244,12 +235,12 @@ t_keterangan.setFont(new Font("Segoe UI", Font.PLAIN, 14));
     private void simpanBarangRusak() {
     int selectedRow = tbl_barang.getSelectedRow();
     if (selectedRow == -1) {
-//        JOptionPane.showMessageDialog(this, "Pilih barang yang rusak dari tabel terlebih dahulu!");
+JOptionPane.showMessageDialog(this, "Pilih barang yang rusak dari tabel terlebih dahulu!");
         return;
     }
 
     String idBarang = tbl_barang.getValueAt(selectedRow, 0).toString();
-    String barcode = tbl_barang.getValueAt(selectedRow, 6).toString(); // pastikan urutan benar
+    String barcode = tbl_barang.getValueAt(selectedRow, 6).toString(); 
     int stok = Integer.parseInt(tbl_barang.getValueAt(selectedRow, 5).toString());
 
     String jumlahStr = t_jumlah.getText().trim();
@@ -281,10 +272,8 @@ t_keterangan.setFont(new Font("Segoe UI", Font.PLAIN, 14));
     try (Connection conn = Koneksi.getConnection()) {
         conn.setAutoCommit(false);
 
-        // 1. Generate ID barang rusak
         String idRusak = generateIdBarangRusak(conn);
 
-        // 2. Insert ke tabel barang_rusak
         String insertSql = "INSERT INTO barang_rusak (id_barangrusak, id_barang, jumlah_rusak, Tgl_rusak, keterangan, barcode) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
             ps.setString(1, idRusak);
@@ -296,7 +285,6 @@ t_keterangan.setFont(new Font("Segoe UI", Font.PLAIN, 14));
             ps.executeUpdate();
         }
 
-        // 3. Kurangi stok di tabel barang
         String updateSql = "UPDATE barang SET stok = stok - ? WHERE id_barang = ?";
         try (PreparedStatement ps = conn.prepareStatement(updateSql)) {
             ps.setInt(1, jumlahRusak);
@@ -308,7 +296,7 @@ t_keterangan.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         
         conn.commit();
         JOptionPane.showMessageDialog(this, "Barang rusak berhasil disimpan.");
-        dispose(); // tutup JDialog
+        dispose(); 
     } catch (Exception e) {
         e.printStackTrace();
         JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat menyimpan barang rusak.");
@@ -605,7 +593,6 @@ t_keterangan.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         //</editor-fold>
         //</editor-fold>
 
-        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 FormTambahBarangRusak dialog = new FormTambahBarangRusak(new javax.swing.JFrame(), true);

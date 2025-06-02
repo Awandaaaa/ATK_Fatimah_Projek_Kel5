@@ -54,7 +54,7 @@ public class FormCariBarang extends javax.swing.JDialog {
         DefaultTableModel model = new DefaultTableModel(new Object[]{"No Barang", "Nama Barang", "Kategori", "Satuan", "Harga", "Stok", "Barcode", "ID Supplier"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Semua sel tidak dapat diedit langsung
+                return false; 
             }
         };
         table_barang.setModel(model);
@@ -96,16 +96,14 @@ public class FormCariBarang extends javax.swing.JDialog {
     tampilkanBarang(text_cari.getText().trim());
 });
         
-        cb_kriteria.setSelectedItem("Nama Barang"); // default pencarian
-tampilkanBarang(""); // tampilkan semua data di awal
+        cb_kriteria.setSelectedItem("Nama Barang"); 
+tampilkanBarang(""); 
 
     }
-    
-    
+        
     private void styleButtons() {       
         styleButton(btn_tambah, "TAMBAH");
-       
-    }
+           }
 
     private void styleButton(JButton button, String text) {
         button.setText(text);
@@ -129,10 +127,6 @@ tampilkanBarang(""); // tampilkan semua data di awal
         });
     }
     
-    
-    
-
-     
      private String getKolomDariKriteria(String kriteria) {
     switch (kriteria) {
         case "Nama Barang": return "b.Nama_barang";
@@ -142,15 +136,13 @@ tampilkanBarang(""); // tampilkan semua data di awal
         case "Stok": return "b.Stok";
         case "Barcode": return "b.barcode";
         case "Supplier": return "s.nama";
-        default: return "b.Nama_barang"; // default pencarian
+        default: return "b.Nama_barang"; 
     }
 }
 
-     
-     
      public void tampilkanBarang(String keyword) {
     DefaultTableModel model = (DefaultTableModel) table_barang.getModel();
-    model.setRowCount(0); // reset isi tabel
+    model.setRowCount(0); 
 
     try {
         String kriteria = (String) cb_kriteria.getSelectedItem();
@@ -166,7 +158,6 @@ tampilkanBarang(""); // tampilkan semua data di awal
         ps.setString(1, "%" + keyword + "%");
         ResultSet rs = ps.executeQuery();
 
-        // Formatter untuk Rupiah
         Locale indo = new Locale("id", "ID");
         NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(indo);
 
@@ -179,8 +170,7 @@ tampilkanBarang(""); // tampilkan semua data di awal
                 rs.getString("Nama_barang"),
                 rs.getString("Kategori"),
                 rs.getString("Satuan"),
-                hargaRupiah, // tampilkan harga dalam format Rupiah
-                rs.getString("Stok"),
+                hargaRupiah,                 rs.getString("Stok"),
                 rs.getString("barcode"),
                 rs.getString("nama_supplier")
             });
@@ -193,11 +183,6 @@ tampilkanBarang(""); // tampilkan semua data di awal
         JOptionPane.showMessageDialog(this, "Gagal menampilkan data barang: " + e.getMessage());
     }
 }
-
-
-
-    
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -350,11 +335,11 @@ tampilkanBarang(""); // tampilkan semua data di awal
     public static void main(String[] args) {
     java.awt.EventQueue.invokeLater(new Runnable() {
         public void run() {
-            // Buat instance dummy FormPenjualan
+
             FormPenjualan dummyPenjualan = new FormPenjualan() {
                 @Override
                 public void terimaDataBarang(String kode, String nama, String satuan, double harga, int stok) {
-                    // Cetak ke konsol sebagai simulasi
+
                     System.out.println("Data diterima:");
                     System.out.println("Kode   : " + kode);
                     System.out.println("Nama   : " + nama);
@@ -364,7 +349,6 @@ tampilkanBarang(""); // tampilkan semua data di awal
                 }
             };
 
-            // Buka FormCariBarang dengan dummy FormPenjualan
             FormCariBarang dialog = new FormCariBarang(new javax.swing.JFrame(), true, dummyPenjualan);
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override

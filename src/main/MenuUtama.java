@@ -34,7 +34,7 @@ public class MenuUtama extends javax.swing.JFrame {
         setIconImage(new ImageIcon(getClass().getResource("/gambar/logoatk.png")).getImage());
 
         try {
-            conn = Koneksi.getConnection(); // ✅ dibungkus try-catch
+            conn = Koneksi.getConnection();
         } catch (Exception e) {
             e.printStackTrace();
             javax.swing.JOptionPane.showMessageDialog(this, "Gagal koneksi ke database: " + e.getMessage());
@@ -59,7 +59,6 @@ public class MenuUtama extends javax.swing.JFrame {
     }
 
     private void nonaktifkanAkses(JLabel label, JPanel panel) {
-        // Hapus semua mouse listener dari label (karena hanya label yang interaktif)
         for (MouseListener ml : label.getMouseListeners()) {
             label.removeMouseListener(ml);
         }
@@ -68,16 +67,12 @@ public class MenuUtama extends javax.swing.JFrame {
 
     private void aturAksesMenu() {
         if (role.equalsIgnoreCase("kasir")) {
-            // Tampilkan semua menu
-
             btn_inventaris.setVisible(true);
             btn_barang_rusak.setVisible(true);
             btn_supplier.setVisible(true);
             btn_laporanPenjualan.setVisible(true);
             btn_karyawan.setVisible(true);
             btn_laporanPembelian.setVisible(true);
-
-            // Nonaktifkan akses menu tertentu untuk kasir
 
             nonaktifkanAkses(inventaris, btn_inventaris);
             nonaktifkanAkses(barang_rusak, btn_barang_rusak);
@@ -825,8 +820,8 @@ public class MenuUtama extends javax.swing.JFrame {
             pn_dasarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pn_dasarLayout.createSequentialGroup()
                 .addComponent(pn_kiri, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(pn_utama, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pn_utama, javax.swing.GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE))
         );
         pn_dasarLayout.setVerticalGroup(
             pn_dasarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -989,10 +984,8 @@ public class MenuUtama extends javax.swing.JFrame {
     );
 
     if (pilihan == JOptionPane.YES_OPTION) {
-        // Ubah warna tombol logout (opsional)
         btn_logout.setBackground(new Color(0, 0, 205));
 
-        // Tampilkan form login dan tutup menu utama
         new Login().setVisible(true);
         dispose();
     }

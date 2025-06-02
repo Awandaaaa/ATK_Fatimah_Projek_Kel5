@@ -13,28 +13,23 @@ import javax.swing.BorderFactory;
 
 public class FormPembelian extends javax.swing.JPanel {
 
-    /**
-     * Creates new form FormPembelian
-     */
     public FormPembelian() {
         initComponents();
         
         tampilkanHariTanggal();
-        
-        // Style tombol
+
         btn_simpan.setText("SIMPAN");
-        btn_simpan.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_simpan.setBackground(new java.awt.Color(70, 130, 180));
         btn_simpan.setForeground(Color.WHITE);
         btn_simpan.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_simpan.setFocusPainted(false);
         btn_simpan.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_simpan.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_simpan.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_hapus.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_hapus.setBackground(new java.awt.Color(100, 149, 237));
             }
 
             @Override
@@ -42,21 +37,19 @@ public class FormPembelian extends javax.swing.JPanel {
                 btn_simpan.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
-        
-        // Style tombol
+
         btn_batal.setText("BATAL");
-        btn_batal.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_batal.setBackground(new java.awt.Color(70, 130, 180));
         btn_batal.setForeground(Color.WHITE);
         btn_batal.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_batal.setFocusPainted(false);
         btn_batal.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_batal.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_batal.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_batal.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_batal.setBackground(new java.awt.Color(100, 149, 237));
             }
 
             @Override
@@ -64,21 +57,19 @@ public class FormPembelian extends javax.swing.JPanel {
                 btn_batal.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
-        
-        // Style tombol
+
         btn_tambah.setText("TAMBAH");
-        btn_tambah.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_tambah.setBackground(new java.awt.Color(70, 130, 180));
         btn_tambah.setForeground(Color.WHITE);
         btn_tambah.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_tambah.setFocusPainted(false);
         btn_tambah.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_tambah.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_tambah.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_tambah.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_tambah.setBackground(new java.awt.Color(100, 149, 237));
             }
 
             @Override
@@ -86,21 +77,19 @@ public class FormPembelian extends javax.swing.JPanel {
                 btn_tambah.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
-        
-        // Style tombol
+
         btn_edit.setText("EDIT");
-        btn_edit.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_edit.setBackground(new java.awt.Color(70, 130, 180));
         btn_edit.setForeground(Color.WHITE);
         btn_edit.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_edit.setFocusPainted(false);
         btn_edit.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_edit.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_edit.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_edit.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_edit.setBackground(new java.awt.Color(100, 149, 237));
             }
 
             @Override
@@ -108,21 +97,19 @@ public class FormPembelian extends javax.swing.JPanel {
                 btn_edit.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
-        
-        // Style tombol
+
         btn_hapus.setText("HAPUS");
-        btn_hapus.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_hapus.setBackground(new java.awt.Color(70, 130, 180));
         btn_hapus.setForeground(Color.WHITE);
         btn_hapus.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
         btn_hapus.setFocusPainted(false);
         btn_hapus.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         btn_hapus.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
         btn_hapus.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_hapus.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+                btn_hapus.setBackground(new java.awt.Color(100, 149, 237));
             }
 
             @Override
@@ -550,19 +537,14 @@ public class FormPembelian extends javax.swing.JPanel {
         try {
             ActionListener taskPerformer = new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    // Dapatkan waktu saat ini
                     Calendar dt = Calendar.getInstance();
 
-                    // Format tanggal dan waktu dalam bahasa Indonesia
                     SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd MMMM yyyy", new Locale("id", "ID"));
                     String formattedDate = sdf.format(dt.getTime());
 
-                    // Tampilkan hasil di JLabel
                     tgl_muncul1.setText(formattedDate);
                 }
             };
-
-            // Timer untuk memperbarui tampilan setiap detik
             new javax.swing.Timer(1000, taskPerformer).start();
         } catch (Exception e) {
             System.out.println("Error : " + e.getMessage());

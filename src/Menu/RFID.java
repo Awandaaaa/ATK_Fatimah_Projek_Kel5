@@ -16,18 +16,15 @@ public class RFID extends javax.swing.JFrame {
 
     public RFID() {
         initComponents();
-        setLocationRelativeTo(null); // Tengah layar
+        setLocationRelativeTo(null);
         setTitle("Login via RFID");
 
-        // Set role di ComboBox
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"admin", "kasir"}));
 
-        // Set listener agar cursor kembali ke text_RFID setelah comboBox dipilih
         jComboBox1.addActionListener(e -> {
             text_RFID.requestFocusInWindow();
         });
 
-        // Fokus ke field yang menangkap UID setelah semua komponen siap
         SwingUtilities.invokeLater(() -> text_RFID.requestFocusInWindow());
 
         setupRFIDKeyboardListener();
@@ -39,15 +36,13 @@ public class RFID extends javax.swing.JFrame {
             public void keyTyped(KeyEvent e) {
                 char c = e.getKeyChar();
 
-                // Tangkap angka UID
                 if (Character.isDigit(c)) {
                     bufferUID.append(c);
                 }
 
-                // Jika alat kirim Enter (\n) atau UID sudah cukup panjang
                 if (c == '\n' || bufferUID.length() >= 10) {
                     String uid = bufferUID.toString().trim();
-                    bufferUID.setLength(0); // reset buffer
+                    bufferUID.setLength(0);
                     cekRFID(uid);
                 }
             }
@@ -76,7 +71,6 @@ public class RFID extends javax.swing.JFrame {
             String roleFromDB = rs.getString("Role");
             if (roleFromDB != null && roleFromDB.equalsIgnoreCase(selectedRole)) {
 
-                // Simpan ke Session
                 Session.setIdUser(rs.getString("Id_user"));
                 Session.setNama(rs.getString("Nama"));
                 Session.setRole(roleFromDB);
@@ -133,6 +127,7 @@ public class RFID extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        gradasi1.setColorEnd(new java.awt.Color(0, 153, 255));
         gradasi1.setPreferredSize(new java.awt.Dimension(1280, 690));
         gradasi1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -230,7 +225,7 @@ public class RFID extends javax.swing.JFrame {
         );
 
         jLabel1.setBackground(new java.awt.Color(0, 0, 0));
-        jLabel1.setFont(new java.awt.Font("Imprint MT Shadow", 1, 36)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("SELAMAT DATANG");
 

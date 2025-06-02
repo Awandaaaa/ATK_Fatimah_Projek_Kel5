@@ -16,7 +16,6 @@ public class gradasiwarna extends JPanel {
         int w = getWidth();
         int h = getHeight();
 
-        // Gradasi biru tua ke biru muda
         Color color1 = new Color(0, 87, 158);
         Color color2 = new Color(97, 204, 255);
 
