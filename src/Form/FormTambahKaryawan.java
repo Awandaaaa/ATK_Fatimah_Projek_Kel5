@@ -13,7 +13,6 @@ import javax.swing.JOptionPane;
 import main.Koneksi;
 import main.securityutils; // sesuaikan dengan package Anda
 
-
 public class FormTambahKaryawan extends javax.swing.JDialog {
 
     public Object[] dataKaryawan;
@@ -22,14 +21,12 @@ public class FormTambahKaryawan extends javax.swing.JDialog {
     public boolean loadDataSupplier() {
         return dataDisimpan;
     }
-    
-    
+
     public FormTambahKaryawan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
-        
-         // Style tombol
+
+        // Style tombol
         btn_simpan.setText("SIMPAN");
         btn_simpan.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
         btn_simpan.setForeground(Color.WHITE);
@@ -50,7 +47,7 @@ public class FormTambahKaryawan extends javax.swing.JDialog {
                 btn_simpan.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
-        
+
         // Style tombol
         btn_batal.setText("BATAL");
         btn_batal.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
@@ -72,36 +69,27 @@ public class FormTambahKaryawan extends javax.swing.JDialog {
                 btn_batal.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
-        
-        
-        
-         cb_role.removeAllItems();
-    cb_role.addItem("admin");
-    cb_role.addItem("kasir");
 
-    cb_jeniskelamin.removeAllItems();
-    cb_jeniskelamin.addItem("perempuan");
-    cb_jeniskelamin.addItem("laki laki");
-    
-        
+        cb_role.removeAllItems();
+        cb_role.addItem("admin");
+        cb_role.addItem("kasir");
+
+        cb_jeniskelamin.removeAllItems();
+        cb_jeniskelamin.addItem("perempuan");
+        cb_jeniskelamin.addItem("laki laki");
+
     }
 
-    
-    
-
-    
     private String generateRandomIdUser(int length) {
-    String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    StringBuilder sb = new StringBuilder();
-    Random random = new Random();
-    for (int i = 0; i < length; i++) {
-        sb.append(chars.charAt(random.nextInt(chars.length())));
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
-    return sb.toString();
-}
 
-
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -216,6 +204,11 @@ public class FormTambahKaryawan extends javax.swing.JDialog {
         text_notelepon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 text_noteleponActionPerformed(evt);
+            }
+        });
+        text_notelepon.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                text_noteleponKeyTyped(evt);
             }
         });
 
@@ -399,7 +392,7 @@ public class FormTambahKaryawan extends javax.swing.JDialog {
     }//GEN-LAST:event_text_usernameActionPerformed
 
     private void btn_batalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_batalActionPerformed
-        // TODO add your handling code here:
+        dispose();
     }//GEN-LAST:event_btn_batalActionPerformed
 
     private void text_alamatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_text_alamatActionPerformed
@@ -411,58 +404,77 @@ public class FormTambahKaryawan extends javax.swing.JDialog {
     }//GEN-LAST:event_text_noteleponActionPerformed
 
     private void btn_simpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_simpanActionPerformed
-    String idUser = generateRandomIdUser(10); // ID acak 10 karakter
-    String rfid = text_rfid.getText().trim();
-    String nama = text_nama.getText().trim();
-    String username = text_username.getText().trim();
-    String password = new String(text_password.getPassword()).trim();
-    String role = (String) cb_role.getSelectedItem();
-    String jenisKelamin = (String) cb_jeniskelamin.getSelectedItem();
-    String kodeNegara = cb_kodenegara.getSelectedItem().toString().split(" ")[0];
-    String nomor = text_notelepon.getText().trim();
-    String noTelepon = kodeNegara + nomor;
-    String alamat = text_alamat.getText().trim();
+        String idUser = generateRandomIdUser(10); // ID acak 10 karakter
+        String rfid = text_rfid.getText().trim();
+        String nama = text_nama.getText().trim();
+        String username = text_username.getText().trim();
+        String password = new String(text_password.getPassword()).trim();
+        String role = (String) cb_role.getSelectedItem();
+        String jenisKelamin = (String) cb_jeniskelamin.getSelectedItem();
+        String kodeNegara = cb_kodenegara.getSelectedItem().toString().split(" ")[0];
+        String nomor = text_notelepon.getText().trim();
 
-    // Validasi
-    if (rfid.isEmpty() || nama.isEmpty() || username.isEmpty() || password.isEmpty() || nomor.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Harap lengkapi semua data.");
-        return;
-    }
-
-    // Validasi panjang password maksimal 15 karakter
-    if (password.length() > 20) {
-        JOptionPane.showMessageDialog(this, "Password tidak boleh lebih dari 20 karakter.");
-        return;
-    }
-
-    String hash = securityutils.hashPassword(password);
-
-    if (hash == null) return;
-
-    try {
-        Connection conn = Koneksi.getConnection();
-        String sql = "INSERT INTO users (Id_user, RFID, Nama, Username, Password, Role, Jenis_Kelamin, No_Telepon, Alamat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, idUser);
-        ps.setString(2, rfid);
-        ps.setString(3, nama);
-        ps.setString(4, username);
-        ps.setString(5, hash);
-        ps.setString(6, role);
-        ps.setString(7, jenisKelamin);
-        ps.setString(8, noTelepon);
-        ps.setString(9, alamat);
-
-        if (ps.executeUpdate() > 0) {
-            JOptionPane.showMessageDialog(this, "Data berhasil disimpan.");
-            dispose();
-        } else {
-            JOptionPane.showMessageDialog(this, "Gagal menyimpan data.");
+        if (!nomor.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "Nomor telepon hanya boleh berisi angka.");
+            return;
         }
-        ps.close();
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Error DB: " + e.getMessage());
-    }
+
+        if (!nomor.startsWith("8")) {
+            JOptionPane.showMessageDialog(this, "Nomor telepon harus dimulai dengan angka 8.");
+            return;
+        }
+
+        if (nomor.length() < 9 || nomor.length() > 13) {
+            JOptionPane.showMessageDialog(this, "Nomor telepon harus antara 9 sampai 13 digit.");
+            return;
+        }
+
+        String noTelepon = "+62" + nomor;
+
+        String alamat = text_alamat.getText().trim();
+
+        // Validasi
+        if (rfid.isEmpty() || nama.isEmpty() || username.isEmpty() || password.isEmpty() || nomor.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Harap lengkapi semua data.");
+            return;
+        }
+
+        // Validasi panjang password maksimal 15 karakter
+        if (password.length() > 20) {
+            JOptionPane.showMessageDialog(this, "Password tidak boleh lebih dari 20 karakter.");
+            return;
+        }
+
+        String hash = securityutils.hashPassword(password);
+
+        if (hash == null) {
+            return;
+        }
+
+        try {
+            Connection conn = Koneksi.getConnection();
+            String sql = "INSERT INTO users (Id_user, RFID, Nama, Username, Password, Role, Jenis_Kelamin, No_Telepon, Alamat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, idUser);
+            ps.setString(2, rfid);
+            ps.setString(3, nama);
+            ps.setString(4, username);
+            ps.setString(5, hash);
+            ps.setString(6, role);
+            ps.setString(7, jenisKelamin);
+            ps.setString(8, noTelepon);
+            ps.setString(9, alamat);
+
+            if (ps.executeUpdate() > 0) {
+                JOptionPane.showMessageDialog(this, "Data berhasil disimpan.");
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Gagal menyimpan data.");
+            }
+            ps.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error DB: " + e.getMessage());
+        }
     }//GEN-LAST:event_btn_simpanActionPerformed
 
     private void btn_simpanAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_btn_simpanAncestorAdded
@@ -474,8 +486,7 @@ public class FormTambahKaryawan extends javax.swing.JDialog {
     }//GEN-LAST:event_text_passwordActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        
-        
+
         if (jCheckBox1.isSelected()) {
             text_password.setEchoChar((char) 0); // Menampilkan password
         } else {
@@ -484,16 +495,26 @@ public class FormTambahKaryawan extends javax.swing.JDialog {
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void FormWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_FormWindowOpened
-    cb_role.setModel(new DefaultComboBoxModel<>(new String[]{"Admin", "Kasir"}));
-    cb_jeniskelamin.setModel(new DefaultComboBoxModel<>(new String[]{"Laki-laki", "Perempuan"}));
-    cb_kodenegara.setModel(new DefaultComboBoxModel<>(new String[]{
-        "+62 (Indonesia)", "+60 (Malaysia)", "+65 (Singapore)", "+1 (USA)"
-    }));
+        cb_role.setModel(new DefaultComboBoxModel<>(new String[]{"Admin", "Kasir"}));
+        cb_jeniskelamin.setModel(new DefaultComboBoxModel<>(new String[]{"Laki-laki", "Perempuan"}));
+        cb_kodenegara.setModel(new DefaultComboBoxModel<>(new String[]{
+            "+62"
+        }));
     }//GEN-LAST:event_FormWindowOpened
 
     private void cb_kodenegaraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_kodenegaraActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cb_kodenegaraActionPerformed
+
+    private void text_noteleponKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_text_noteleponKeyTyped
+        char c = evt.getKeyChar();
+        String text = text_notelepon.getText();
+
+        // Blokir non-angka & jika panjang sudah 13 karakter
+        if (!Character.isDigit(c) || text.length() >= 13) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_text_noteleponKeyTyped
 
     /**
      * @param args the command line arguments
@@ -520,6 +541,8 @@ public class FormTambahKaryawan extends javax.swing.JDialog {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(FormTambahKaryawan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 

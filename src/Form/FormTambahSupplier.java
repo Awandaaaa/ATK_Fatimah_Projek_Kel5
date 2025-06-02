@@ -11,29 +11,22 @@ import javax.swing.JOptionPane;
 
 import javax.swing.text.*;
 
-
 public class FormTambahSupplier extends javax.swing.JDialog {
-    
+
     private FormTambahBarang formTambahBarang;
 
-    
     public FormTambahSupplier(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
-       // Setelah semua komponen terbuat
-((javax.swing.text.AbstractDocument) text_notelepon.getDocument())
-    .setDocumentFilter(new PhoneNumberFilter());
 
-text_notelepon.setText("+62");
+        // Setelah semua komponen terbuat
+        ((AbstractDocument) text_notelepon.getDocument()).setDocumentFilter(new PhoneNumberFilter());
 
+        text_notelepon.setText("+62");
 
+        this.formTambahBarang = formTambahBarang;
 
-
-        
-         this.formTambahBarang = formTambahBarang;
-        
-         // Style tombol
+        // Style tombol
         btn_simpan.setText("SIMPAN");
         btn_simpan.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
         btn_simpan.setForeground(Color.WHITE);
@@ -54,7 +47,7 @@ text_notelepon.setText("+62");
                 btn_simpan.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
-        
+
         // Style tombol
         btn_batal.setText("BATAL");
         btn_batal.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
@@ -78,39 +71,65 @@ text_notelepon.setText("+62");
         });
     }
 
-    
-    class PhoneNumberFilter extends DocumentFilter {
-    @Override
-    public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
-            throws BadLocationException {
-        replace(fb, offset, 0, string, attr);
-    }
+    public class PhoneNumberFilter extends DocumentFilter {
 
-    @Override
-    public void replace(FilterBypass fb, int offset, int length, String string, AttributeSet attr)
-            throws BadLocationException {
-        Document doc = fb.getDocument();
-        String currentText = doc.getText(0, doc.getLength());
-        StringBuilder newText = new StringBuilder(currentText);
-        newText.replace(offset, offset + length, string);
-
-        // Pastikan selalu mulai dengan +62
-        if (!newText.toString().startsWith("+62")) {
-            newText.insert(0, "+62");
+        @Override
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
+                throws BadLocationException {
+            replace(fb, offset, 0, string, attr);
         }
 
-        // Hanya angka setelah +62
-        String onlyDigits = newText.toString().substring(3).replaceAll("[^\\d]", "");
-        fb.replace(0, doc.getLength(), "+62" + onlyDigits, attr);
-    }
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String string, AttributeSet attr)
+                throws BadLocationException {
+            Document doc = fb.getDocument();
+            String currentText = doc.getText(0, doc.getLength());
+            StringBuilder newText = new StringBuilder(currentText);
+            newText.replace(offset, offset + length, string);
 
-    @Override
-    public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
-        if (offset < 3) return; // Blok penghapusan +62
-        super.remove(fb, offset, length);
+            // Hapus semua karakter kecuali angka
+            String cleaned = newText.toString().replaceAll("[^\\d]", "");
+
+            // Pastikan awalan +62
+            if (!cleaned.startsWith("62")) {
+                cleaned = "62" + cleaned;
+            }
+
+            // Ambil bagian setelah +62
+            String afterPrefix = cleaned.substring(2); // ambil setelah "62"
+
+            // Validasi: harus mulai dengan 8
+            if (!afterPrefix.isEmpty() && afterPrefix.charAt(0) != '8') {
+                // Blokir jika tidak dimulai dengan 8
+                java.awt.Toolkit.getDefaultToolkit().beep();
+                return;
+            }
+
+            // Validasi panjang maksimum 13 digit (setelah +62)
+            if (afterPrefix.length() > 13) {
+                java.awt.Toolkit.getDefaultToolkit().beep();
+                return;
+            }
+
+            fb.replace(0, doc.getLength(), "+" + cleaned, attr);
+        }
+
+        @Override
+        public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+            if (offset < 3) {
+                return; // Blokir penghapusan "+62"
+            }
+            super.remove(fb, offset, length);
+        }
     }
-}
     
+    
+    
+    
+
+
+
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -182,9 +201,19 @@ text_notelepon.setText("+62");
         jLabel10.setText("No Telepon");
 
         text_notelepon.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        text_notelepon.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                text_noteleponFocusLost(evt);
+            }
+        });
         text_notelepon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 text_noteleponActionPerformed(evt);
+            }
+        });
+        text_notelepon.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                text_noteleponKeyReleased(evt);
             }
         });
 
@@ -315,56 +344,73 @@ text_notelepon.setText("+62");
     }//GEN-LAST:event_text_namapemilikActionPerformed
 
     private void btn_simpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_simpanActionPerformed
-    String nama = text_nama.getText().trim();
-    String telepon = text_notelepon.getText().trim();
-    String alamat = text_alamat.getText().trim();
-    String pemilik = text_namapemilik.getText().trim();
+        String nama = text_nama.getText().trim();
+        String telepon = text_notelepon.getText().trim();
+        String alamat = text_alamat.getText().trim();
+        String pemilik = text_namapemilik.getText().trim();
 
-    if (nama.isEmpty() || telepon.length() <= 3 || alamat.isEmpty() || pemilik.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Semua field harus diisi!");
-        return;
-    }
-if (telepon.equals("+62") || telepon.length() <= 3) {
-    JOptionPane.showMessageDialog(this, "No Telepon belum diisi dengan benar!");
-    return;
-}
-
-    
-    
-    try {
-        Connection conn = Koneksi.getConnection();
-        String sql = "INSERT INTO supplier (Nama, Nomor_Telepon, Alamat, Nama_Pemilik) VALUES (?, ?, ?, ?)";
-        PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, nama);
-        pst.setString(2, telepon);
-        pst.setString(3, alamat);
-        pst.setString(4, pemilik);
-        pst.executeUpdate();
-
-        JOptionPane.showMessageDialog(this, "Data berhasil disimpan!");
-
-        // Tambahkan ke combobox jika FormTambahBarang masih aktif
-        if (FormTambahBarang.cb_supplier_static != null) {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT MAX(id_supplier) AS id FROM supplier");
-            if (rs.next()) {
-                int idTerakhir = rs.getInt("id");
-                FormTambahBarang.cb_supplier_static.addItem(new FormTambahBarang.ItemSupplier(idTerakhir, nama));
-            }
-            rs.close();
-            stmt.close();
+        if (!telepon.startsWith("+628")) {
+            JOptionPane.showMessageDialog(this, "Nomor telepon harus diawali dengan +628.");
+            return;
         }
 
-        this.dispose();
-    } catch (SQLException ex) {
-        ex.printStackTrace(); // Penting untuk debug!
-        JOptionPane.showMessageDialog(this, "Gagal menyimpan data: " + ex.getMessage());
-    }
+        String onlyDigits = telepon.replace("+62", "");
+        if (onlyDigits.length() < 9 || onlyDigits.length() > 13) {
+            JOptionPane.showMessageDialog(this, "Nomor telepon harus antara 9 sampai 13 digit setelah +62.");
+            return;
+        }
+
+        if (nama.isEmpty() || telepon.length() <= 3 || alamat.isEmpty() || pemilik.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Semua field harus diisi!");
+            return;
+        }
+        if (telepon.equals("+62") || telepon.length() <= 3) {
+            JOptionPane.showMessageDialog(this, "No Telepon belum diisi dengan benar!");
+            return;
+        }
+
+        try {
+            Connection conn = Koneksi.getConnection();
+            String sql = "INSERT INTO supplier (Nama, Nomor_Telepon, Alamat, Nama_Pemilik) VALUES (?, ?, ?, ?)";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, nama);
+            pst.setString(2, telepon);
+            pst.setString(3, alamat);
+            pst.setString(4, pemilik);
+            pst.executeUpdate();
+
+            JOptionPane.showMessageDialog(this, "Data berhasil disimpan!");
+
+            // Tambahkan ke combobox jika FormTambahBarang masih aktif
+            if (FormTambahBarang.cb_supplier_static != null) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT MAX(id_supplier) AS id FROM supplier");
+                if (rs.next()) {
+                    int idTerakhir = rs.getInt("id");
+                    FormTambahBarang.cb_supplier_static.addItem(new FormTambahBarang.ItemSupplier(idTerakhir, nama));
+                }
+                rs.close();
+                stmt.close();
+            }
+
+            this.dispose();
+        } catch (SQLException ex) {
+            ex.printStackTrace(); // Penting untuk debug!
+            JOptionPane.showMessageDialog(this, "Gagal menyimpan data: " + ex.getMessage());
+        }
     }//GEN-LAST:event_btn_simpanActionPerformed
 
     private void btn_batalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_batalActionPerformed
-        // TODO add your handling code here:
+        dispose();
     }//GEN-LAST:event_btn_batalActionPerformed
+
+    private void text_noteleponKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_text_noteleponKeyReleased
+
+    }//GEN-LAST:event_text_noteleponKeyReleased
+
+    private void text_noteleponFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_text_noteleponFocusLost
+        
+    }//GEN-LAST:event_text_noteleponFocusLost
 
     /**
      * @param args the command line arguments
@@ -391,6 +437,7 @@ if (telepon.equals("+62") || telepon.length() <= 3) {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(FormTambahSupplier.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */

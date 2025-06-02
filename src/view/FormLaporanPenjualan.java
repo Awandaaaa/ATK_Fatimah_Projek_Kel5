@@ -403,7 +403,7 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         btn_hapus = new javax.swing.JButton();
         label_user = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        tgl_muncul = new javax.swing.JLabel();
         JD_Awal = new com.toedter.calendar.JDateChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabel_penjualan = new javax.swing.JTable();
@@ -445,10 +445,10 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         label_user.setForeground(new java.awt.Color(255, 255, 255));
         label_user.setText("User :");
 
-        jLabel3.setBackground(new java.awt.Color(0, 51, 255));
-        jLabel3.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("   ");
+        tgl_muncul.setBackground(new java.awt.Color(0, 51, 255));
+        tgl_muncul.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        tgl_muncul.setForeground(new java.awt.Color(255, 255, 255));
+        tgl_muncul.setText("   ");
 
         tabel_penjualan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -524,8 +524,9 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
                                 .addComponent(btnClear)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btn_hapus))
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(label_user, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(tgl_muncul, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(label_user, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -536,7 +537,7 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(label_user)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3))
+                        .addComponent(tgl_muncul))
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -737,7 +738,6 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> cb_user;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
@@ -745,6 +745,7 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
     private javax.swing.JLabel label_user;
     private javax.swing.JTextField t_cari;
     private javax.swing.JTable tabel_penjualan;
+    private javax.swing.JLabel tgl_muncul;
     // End of variables declaration//GEN-END:variables
 
     private void tampilkanHariTanggal() {
@@ -759,7 +760,7 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
                     String formattedDate = sdf.format(dt.getTime());
 
                     // Tampilkan hasil di JLabel
-                    jLabel3.setText(formattedDate);
+                    tgl_muncul.setText(formattedDate);
                 }
             };
 

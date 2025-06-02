@@ -3,6 +3,11 @@ package view;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 import javax.swing.BorderFactory;
 
 
@@ -13,6 +18,8 @@ public class FormPembelian extends javax.swing.JPanel {
      */
     public FormPembelian() {
         initComponents();
+        
+        tampilkanHariTanggal();
         
         // Style tombol
         btn_simpan.setText("SIMPAN");
@@ -135,7 +142,6 @@ public class FormPembelian extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel1 = new main.gradasiwarna();
-        jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         btn_simpan = new javax.swing.JButton();
@@ -171,15 +177,11 @@ public class FormPembelian extends javax.swing.JPanel {
         btn_hapus = new javax.swing.JButton();
         jLabel19 = new javax.swing.JLabel();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        tgl_muncul1 = new javax.swing.JLabel();
 
         setLayout(new java.awt.CardLayout());
 
         jPanel1.setBackground(new java.awt.Color(0, 51, 255));
-
-        jLabel3.setBackground(new java.awt.Color(0, 51, 255));
-        jLabel3.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("08 - 06 - 2025");
 
         jLabel5.setBackground(new java.awt.Color(0, 51, 255));
         jLabel5.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
@@ -304,6 +306,9 @@ public class FormPembelian extends javax.swing.JPanel {
         jLabel19.setForeground(new java.awt.Color(255, 255, 255));
         jLabel19.setText("Tanggal");
 
+        tgl_muncul1.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        tgl_muncul1.setForeground(new java.awt.Color(255, 255, 255));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -352,8 +357,10 @@ public class FormPembelian extends javax.swing.JPanel {
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(29, 29, 29))
+                            .addComponent(tgl_muncul1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -404,12 +411,12 @@ public class FormPembelian extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel3))
-                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(tgl_muncul1))
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -516,7 +523,6 @@ public class FormPembelian extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -537,5 +543,29 @@ public class FormPembelian extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextField9;
+    private javax.swing.JLabel tgl_muncul1;
     // End of variables declaration//GEN-END:variables
+    
+    private void tampilkanHariTanggal() {
+        try {
+            ActionListener taskPerformer = new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    // Dapatkan waktu saat ini
+                    Calendar dt = Calendar.getInstance();
+
+                    // Format tanggal dan waktu dalam bahasa Indonesia
+                    SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd MMMM yyyy", new Locale("id", "ID"));
+                    String formattedDate = sdf.format(dt.getTime());
+
+                    // Tampilkan hasil di JLabel
+                    tgl_muncul1.setText(formattedDate);
+                }
+            };
+
+            // Timer untuk memperbarui tampilan setiap detik
+            new javax.swing.Timer(1000, taskPerformer).start();
+        } catch (Exception e) {
+            System.out.println("Error : " + e.getMessage());
+        }
+    }
 }

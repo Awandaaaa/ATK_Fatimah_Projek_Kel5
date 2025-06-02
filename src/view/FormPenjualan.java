@@ -15,6 +15,7 @@ import main.Session;
 import java.awt.print.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.HierarchyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -32,6 +33,8 @@ import javax.swing.table.JTableHeader;
 
 import javax.swing.text.*;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -41,6 +44,8 @@ public class FormPenjualan extends javax.swing.JPanel {
 
     public FormPenjualan() {
         initComponents();
+        
+        tampilkanHariTanggal();
         inisialisasiForm();
         applyRupiahFilter();
 
@@ -817,6 +822,7 @@ public class FormPenjualan extends javax.swing.JPanel {
         text_tanggal = new com.toedter.calendar.JDateChooser();
         btn_cari = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        tgl_muncul = new javax.swing.JLabel();
 
         setLayout(new java.awt.CardLayout());
 
@@ -1002,6 +1008,10 @@ public class FormPenjualan extends javax.swing.JPanel {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("%");
 
+        tgl_muncul.setBackground(new java.awt.Color(0, 51, 255));
+        tgl_muncul.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        tgl_muncul.setForeground(new java.awt.Color(255, 255, 255));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -1048,8 +1058,9 @@ public class FormPenjualan extends javax.swing.JPanel {
                                 .addGap(0, 55, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(label_user)
-                                .addGap(8, 8, 8))))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(tgl_muncul, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label_user)))))
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -1094,17 +1105,23 @@ public class FormPenjualan extends javax.swing.JPanel {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(label_user))
+                .addGap(3, 3, 3)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(text_kasir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(label_user))
-                        .addGap(18, 18, 18)
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(text_satuan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(tgl_muncul, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1120,11 +1137,7 @@ public class FormPenjualan extends javax.swing.JPanel {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel12)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(text_stok, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(text_satuan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(text_stok, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -1149,7 +1162,7 @@ public class FormPenjualan extends javax.swing.JPanel {
                     .addComponent(btn_edit)
                     .addComponent(btn_hapus))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1313,7 +1326,30 @@ public class FormPenjualan extends javax.swing.JPanel {
     private javax.swing.JTextField text_subtotal;
     private com.toedter.calendar.JDateChooser text_tanggal;
     private javax.swing.JTextField text_total;
+    private javax.swing.JLabel tgl_muncul;
     // End of variables declaration//GEN-END:variables
+    
+    private void tampilkanHariTanggal() {
+        try {
+            ActionListener taskPerformer = new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    // Dapatkan waktu saat ini
+                    Calendar dt = Calendar.getInstance();
 
+                    // Format tanggal dan waktu dalam bahasa Indonesia
+                    SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd MMMM yyyy", new Locale("id", "ID"));
+                    String formattedDate = sdf.format(dt.getTime());
+
+                    // Tampilkan hasil di JLabel
+                    tgl_muncul.setText(formattedDate);
+                }
+            };
+
+            // Timer untuk memperbarui tampilan setiap detik
+            new javax.swing.Timer(1000, taskPerformer).start();
+        } catch (Exception e) {
+            System.out.println("Error : " + e.getMessage());
+        }
+    }
 }
 

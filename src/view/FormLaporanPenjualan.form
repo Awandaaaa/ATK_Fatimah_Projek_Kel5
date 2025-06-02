@@ -89,8 +89,10 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btn_hapus" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="jLabel3" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Component id="label_user" alignment="1" min="-2" pref="125" max="-2" attributes="0"/>
+                              <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="tgl_muncul" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="label_user" alignment="1" pref="125" max="32767" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
                   </Group>
@@ -106,7 +108,7 @@
                       <Group type="102" attributes="0">
                           <Component id="label_user" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                          <Component id="tgl_muncul" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="jLabel1" max="32767" attributes="0"/>
                   </Group>
@@ -186,7 +188,7 @@
             <Property name="text" type="java.lang.String" value="User :"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel3">
+        <Component class="javax.swing.JLabel" name="tgl_muncul">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="33" red="0" type="rgb"/>
