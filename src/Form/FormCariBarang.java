@@ -31,6 +31,7 @@ public class FormCariBarang extends javax.swing.JDialog {
     public FormCariBarang(java.awt.Frame parent, boolean modal, FormPenjualan formPenjualan) { 
     super(parent, modal);
     this.formPenjualan = formPenjualan;
+    
     initComponents();
     
     text_cari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
@@ -196,7 +197,6 @@ tampilkanBarang(""); // tampilkan semua data di awal
 
 
     
-    
 
 
     /**
@@ -321,7 +321,7 @@ tampilkanBarang(""); // tampilkan semua data di awal
     }//GEN-LAST:event_text_cariActionPerformed
 
     private void btn_tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_tambahActionPerformed
-int selectedRow = table_barang.getSelectedRow();
+ int selectedRow = table_barang.getSelectedRow();
     if (selectedRow >= 0) {
         try {
             String barcode = table_barang.getValueAt(selectedRow, 6).toString();
@@ -329,17 +329,13 @@ int selectedRow = table_barang.getSelectedRow();
             String satuan = table_barang.getValueAt(selectedRow, 3).toString();
 
             String hargaStr = table_barang.getValueAt(selectedRow, 4).toString();
-            hargaStr = hargaStr.replace("Rp", "")
-                               .replace(".", "")
-                               .replace(",", ".")
-                               .trim();
+            hargaStr = hargaStr.replace("Rp", "").replace(".", "").replace(",", ".").trim();
             double harga = Double.parseDouble(hargaStr);
 
             int stok = Integer.parseInt(table_barang.getValueAt(selectedRow, 5).toString());
 
-            // Kirim data ke FormPenjualan
             formPenjualan.terimaDataBarang(barcode, nama, satuan, harga, stok);
-            dispose(); // Tutup form cari
+            dispose();
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Format harga tidak valid!");
         }
@@ -392,4 +388,5 @@ int selectedRow = table_barang.getSelectedRow();
     private javax.swing.JTable table_barang;
     private javax.swing.JTextField text_cari;
     // End of variables declaration//GEN-END:variables
+
 }
