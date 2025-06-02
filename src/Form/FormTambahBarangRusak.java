@@ -3,66 +3,55 @@ package Form;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.UUID;
 import javax.swing.BorderFactory;
-
+import javax.swing.JOptionPane;
+import view.FormInventori;
 
 public class FormTambahBarangRusak extends javax.swing.JDialog {
-
-    /**
-     * Creates new form FormTambahBarangRusak
-     */
+    
     public FormTambahBarangRusak(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         
-         // Style tombol
-        btn_simpan.setText("SIMPAN");
-        btn_simpan.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
-        btn_simpan.setForeground(Color.WHITE);
-        btn_simpan.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
-        btn_simpan.setFocusPainted(false);
-        btn_simpan.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
-        btn_simpan.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
-        btn_simpan.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_simpan.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
-            }
+        setButtonStyle(btn_simpan, "SIMPAN");
 
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btn_simpan.setBackground(new java.awt.Color(70, 130, 180));
-            }
-        });
+        addHoverEffect(btn_simpan, new java.awt.Color(100, 149, 237), new java.awt.Color(70, 130, 180));
         
-        // Style tombol
-        btn_batal.setText("BATAL");
-        btn_batal.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
-        btn_batal.setForeground(Color.WHITE);
-        btn_batal.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
-        btn_batal.setFocusPainted(false);
-        btn_batal.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
-        btn_batal.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover effect
-        btn_batal.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_batal.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
-            }
+        setButtonStyle(btn_batal, "BATAL");
+        
 
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btn_batal.setBackground(new java.awt.Color(70, 130, 180));
-            }
-        });
-        
-        
-        
+        addHoverEffect(btn_batal, new java.awt.Color(100, 149, 237), new java.awt.Color(70, 130, 180));
+    } // <-- Add this closing brace to end the constructor
+
+    private void setButtonStyle(javax.swing.JButton button, String text) {
+        button.setText(text);
+        button.setBackground(new java.awt.Color(70, 130, 180)); // Steel Blue
+        button.setForeground(Color.WHITE);
+        button.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
+    private void addHoverEffect(javax.swing.JButton button, Color hoverColor, Color defaultColor) {
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(hoverColor);
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(defaultColor);
+            }
+        });
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -77,17 +66,17 @@ public class FormTambahBarangRusak extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        barcode = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        text_namabarang = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        StokBarangRusakTxt = new javax.swing.JTextField();
         btn_batal = new javax.swing.JButton();
         btn_simpan = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        kodebarang = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
+        jumlah = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -126,10 +115,10 @@ public class FormTambahBarangRusak extends javax.swing.JDialog {
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Barcode");
 
-        jTextField1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        barcode.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        barcode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                barcodeActionPerformed(evt);
             }
         });
 
@@ -137,10 +126,10 @@ public class FormTambahBarangRusak extends javax.swing.JDialog {
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Nama Barang");
 
-        jTextField2.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        text_namabarang.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        text_namabarang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                text_namabarangActionPerformed(evt);
             }
         });
 
@@ -148,10 +137,10 @@ public class FormTambahBarangRusak extends javax.swing.JDialog {
         jLabel7.setForeground(new java.awt.Color(0, 0, 0));
         jLabel7.setText("Stok");
 
-        jTextField4.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+        StokBarangRusakTxt.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        StokBarangRusakTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
+                StokBarangRusakTxtActionPerformed(evt);
             }
         });
 
@@ -175,10 +164,10 @@ public class FormTambahBarangRusak extends javax.swing.JDialog {
         jLabel9.setForeground(new java.awt.Color(0, 0, 0));
         jLabel9.setText("Kode Barang");
 
-        jTextField5.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jTextField5.addActionListener(new java.awt.event.ActionListener() {
+        kodebarang.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        kodebarang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField5ActionPerformed(evt);
+                kodebarangActionPerformed(evt);
             }
         });
 
@@ -186,10 +175,10 @@ public class FormTambahBarangRusak extends javax.swing.JDialog {
         jLabel10.setForeground(new java.awt.Color(0, 0, 0));
         jLabel10.setText("Jumlah");
 
-        jTextField6.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
+        jumlah.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jumlah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
+                jumlahActionPerformed(evt);
             }
         });
 
@@ -204,26 +193,26 @@ public class FormTambahBarangRusak extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(kodebarang, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(text_namabarang, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(barcode, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(StokBarangRusakTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                         .addComponent(btn_simpan, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -237,23 +226,23 @@ public class FormTambahBarangRusak extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(kodebarang, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(text_namabarang, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(StokBarangRusakTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(barcode, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_batal)
@@ -275,131 +264,105 @@ public class FormTambahBarangRusak extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void barcodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_barcodeActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_barcodeActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void text_namabarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_text_namabarangActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_text_namabarangActionPerformed
 
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+    private void StokBarangRusakTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StokBarangRusakTxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
+    }//GEN-LAST:event_StokBarangRusakTxtActionPerformed
 
     private void btn_batalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_batalActionPerformed
         // TODO add your handling code here:
-          int confirm = javax.swing.JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin membatalkan?", "Konfirmasi", javax.swing.JOptionPane.YES_NO_OPTION);
-    if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-        dispose();
+int confirm = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin membatalkan?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            dispose();
+        }
     }
-        
-    }//GEN-LAST:event_btn_batalActionPerformed
+    //GEN-LAST:event_btn_batalActionPerformed
 
     private void btn_simpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_simpanActionPerformed
         // TODO add your handling code here:
-        
-    String kodeBarang = jTextField5.getText().trim();
-    String namaBarang = jTextField2.getText().trim();
-    String stok = jTextField4.getText().trim();
-    String jumlah = jTextField6.getText().trim();
-    String barcode = jTextField1.getText().trim();
+        String kodeBarang = kodebarang.getText().trim();
+        String namaBarang = text_namabarang.getText().trim();
+        String stok = StokBarangRusakTxt.getText().trim();
+        String jumlahInput = jumlah.getText().trim();
+        String barcodeInput = barcode.getText().trim();
 
-    if (kodeBarang.isEmpty() || namaBarang.isEmpty() || stok.isEmpty() || jumlah.isEmpty() || barcode.isEmpty()) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Semua field harus diisi!", "Peringatan", javax.swing.JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-    if (!stok.matches("\\d+")) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Stok harus berupa angka!", "Validasi", javax.swing.JOptionPane.WARNING_MESSAGE);
-        jTextField4.requestFocus();
-        return;
-    }
+        // Validasi input
+        if (kodeBarang.isEmpty() || namaBarang.isEmpty() || barcodeInput.isEmpty() ||
+            jumlahInput.isEmpty() || stok.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Semua field harus diisi!");
+            return;
+        }
 
-    if (!jumlah.matches("\\d+")) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Jumlah harus berupa angka!", "Validasi", javax.swing.JOptionPane.WARNING_MESSAGE);
-        jTextField6.requestFocus();
-        return;
-    }
-    
-    System.out.println("Data Disimpan:");
-    System.out.println("Kode Barang: " + kodeBarang);
-    System.out.println("Nama Barang: " + namaBarang);
-    System.out.println("Stok: " + stok);
-    System.out.println("Jumlah: " + jumlah);
-    System.out.println("Barcode: " + barcode);
+        // Generate unique ID for barang rusak
+        String idBarangRusak = UUID.randomUUID().toString();
 
-    javax.swing.JOptionPane.showMessageDialog(this, "Data berhasil disimpan!", "Informasi", javax.swing.JOptionPane.INFORMATION_MESSAGE);
-    dispose();
-    
-    
+        try {
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
+            String sql = "INSERT INTO barang_rusak (id_barangrusak, Id_barang, jumlah_rusak, Tgl_rusak, keterangan) VALUES (?, ?, ?, NOW(), ?)";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, idBarangRusak);
+            ps.setString(2, kodeBarang);
+            ps.setString(3, jumlahInput); // Use jumlahInput for jumlah_rusak
+            ps.setString(4, barcodeInput); // Insert barcode as keterangan or change as needed
+            ps.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Data berhasil disimpan!");
+            // Refresh tabel barang
+            if (getParent() instanceof FormInventori) {
+                ((FormInventori) getParent()).tampilkanBarang();
+            }
+            dispose();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Gagal menyimpan data: " + e.getMessage());
+        }
     }//GEN-LAST:event_btn_simpanActionPerformed
 
-    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
+    private void kodebarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kodebarangActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField5ActionPerformed
+    }//GEN-LAST:event_kodebarangActionPerformed
 
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
+    private void jumlahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jumlahActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField6ActionPerformed
+    }//GEN-LAST:event_jumlahActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FormTambahBarangRusak.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FormTambahBarangRusak.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FormTambahBarangRusak.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FormTambahBarangRusak.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                FormTambahBarangRusak dialog = new FormTambahBarangRusak(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
+    java.awt.EventQueue.invokeLater(() -> {
+        FormTambahBarangRusak dialog = new FormTambahBarangRusak(new javax.swing.JFrame(), true);
+        dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                System.exit(0);
             }
         });
-    }
+        dialog.setVisible(true);
+    });
+}
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btn_batal;
-    private javax.swing.JButton btn_simpan;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    // End of variables declaration//GEN-END:variables
+// Variables declaration - do not modify//GEN-BEGIN:variables
+private javax.swing.JTextField StokBarangRusakTxt;
+private javax.swing.JTextField barcode;
+private javax.swing.JButton btn_batal;
+private javax.swing.JButton btn_simpan;
+private javax.swing.JLabel jLabel1;
+private javax.swing.JLabel jLabel10;
+private javax.swing.JLabel jLabel2;
+private javax.swing.JLabel jLabel3;
+private javax.swing.JLabel jLabel4;
+private javax.swing.JLabel jLabel7;
+private javax.swing.JLabel jLabel9;
+private javax.swing.JPanel jPanel1;
+private javax.swing.JPanel jPanel2;
+private javax.swing.JTextField jumlah;
+private javax.swing.JTextField kodebarang;
+private javax.swing.JTextField text_namabarang;
+// End of variables declaration//GEN-END:variables
 }

@@ -385,9 +385,6 @@ public class FormInventori extends javax.swing.JPanel {
         }
     }
 }
-
-
-
     
 
     private void hapusBarang() {
@@ -531,6 +528,11 @@ public class FormInventori extends javax.swing.JPanel {
         jLabel2.setText("Cari  :");
 
         cb_kriteria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nama Barang", "Kategori", "Satuan", "Harga", "Stok", "Barcode", "Supplier", " " }));
+        cb_kriteria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_kriteriaActionPerformed(evt);
+            }
+        });
 
         btn_edit.setText("EDIT");
         btn_edit.addActionListener(new java.awt.event.ActionListener() {
@@ -712,6 +714,10 @@ public class FormInventori extends javax.swing.JPanel {
     private void btn_editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editActionPerformed
         updatebarang();
     }//GEN-LAST:event_btn_editActionPerformed
+
+    private void cb_kriteriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_kriteriaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_kriteriaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

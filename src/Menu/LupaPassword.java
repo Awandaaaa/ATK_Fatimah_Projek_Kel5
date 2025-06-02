@@ -92,6 +92,7 @@ public class LupaPassword extends javax.swing.JFrame {
         jCheckBox2.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         jCheckBox2.setForeground(new java.awt.Color(0, 0, 0));
         jCheckBox2.setText("Show Password");
+        jCheckBox2.setActionCommand("Show Konfirmasi Password");
         jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox2ActionPerformed(evt);
@@ -101,8 +102,12 @@ public class LupaPassword extends javax.swing.JFrame {
         jLabel4.setForeground(new java.awt.Color(51, 51, 51));
         jLabel4.setText("Konfirmasi Password Baru");
 
+        BtnBatal.setBackground(new java.awt.Color(0, 102, 255));
+        BtnBatal.setForeground(new java.awt.Color(255, 255, 255));
         BtnBatal.setLabel("Batal");
 
+        BtnKonfirmasi.setBackground(new java.awt.Color(0, 102, 255));
+        BtnKonfirmasi.setForeground(new java.awt.Color(255, 255, 255));
         BtnKonfirmasi.setLabel("Simpan");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -207,7 +212,7 @@ public class LupaPassword extends javax.swing.JFrame {
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel7)))
-                .addContainerGap(134, Short.MAX_VALUE))
+                .addContainerGap(189, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -218,7 +223,7 @@ public class LupaPassword extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(gradasi1, javax.swing.GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)
+            .addComponent(gradasi1, javax.swing.GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE)
         );
 
         pack();
