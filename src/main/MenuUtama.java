@@ -1,7 +1,6 @@
 package main;
 
 import Menu.Login;
-import Menu.Login;
 import java.awt.Color;
 import java.awt.event.MouseListener;
 import javax.swing.ImageIcon;
@@ -15,6 +14,7 @@ import view.FormPembelian;
 import view.FormPenjualan;
 import java.sql.Connection;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import view.FormLaporanPembelian;
 import view.FormPembelian1;
@@ -69,19 +69,21 @@ public class MenuUtama extends javax.swing.JFrame {
     private void aturAksesMenu() {
         if (role.equalsIgnoreCase("kasir")) {
             // Tampilkan semua menu
-            btn_pembelian.setVisible(true);
+
             btn_inventaris.setVisible(true);
             btn_barang_rusak.setVisible(true);
             btn_supplier.setVisible(true);
             btn_laporanPenjualan.setVisible(true);
             btn_karyawan.setVisible(true);
+            btn_laporanPembelian.setVisible(true);
 
             // Nonaktifkan akses menu tertentu untuk kasir
-            nonaktifkanAkses(pembelian, btn_pembelian);
+
             nonaktifkanAkses(inventaris, btn_inventaris);
             nonaktifkanAkses(barang_rusak, btn_barang_rusak);
             nonaktifkanAkses(supplier, btn_supplier);
             nonaktifkanAkses(laporan_penjualan, btn_laporanPenjualan);
+            nonaktifkanAkses(laporan_pembelian, btn_laporanPembelian);
             nonaktifkanAkses(karyawan, btn_karyawan);
         }
     }
@@ -140,7 +142,7 @@ public class MenuUtama extends javax.swing.JFrame {
         jLabel27 = new javax.swing.JLabel();
         btn_laporanPembelian = new javax.swing.JPanel();
         logo_laporan1 = new javax.swing.JLabel();
-        laporan_penjualan1 = new javax.swing.JLabel();
+        laporan_pembelian = new javax.swing.JLabel();
 
         dashboard.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         dashboard.setForeground(new java.awt.Color(255, 255, 255));
@@ -676,18 +678,18 @@ public class MenuUtama extends javax.swing.JFrame {
 
         logo_laporan1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gambar/laporan_penjualan.png"))); // NOI18N
 
-        laporan_penjualan1.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        laporan_penjualan1.setForeground(new java.awt.Color(255, 255, 255));
-        laporan_penjualan1.setText("Laporan Pembelian");
-        laporan_penjualan1.addMouseListener(new java.awt.event.MouseAdapter() {
+        laporan_pembelian.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        laporan_pembelian.setForeground(new java.awt.Color(255, 255, 255));
+        laporan_pembelian.setText("Laporan Pembelian");
+        laporan_pembelian.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                laporan_penjualan1MouseClicked(evt);
+                laporan_pembelianMouseClicked(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                laporan_penjualan1MouseEntered(evt);
+                laporan_pembelianMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                laporan_penjualan1MouseExited(evt);
+                laporan_pembelianMouseExited(evt);
             }
         });
 
@@ -699,7 +701,7 @@ public class MenuUtama extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(logo_laporan1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(laporan_penjualan1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(laporan_pembelian, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         btn_laporanPembelianLayout.setVerticalGroup(
@@ -708,7 +710,7 @@ public class MenuUtama extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(btn_laporanPembelianLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(logo_laporan1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(laporan_penjualan1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(laporan_pembelian, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -978,11 +980,22 @@ public class MenuUtama extends javax.swing.JFrame {
     }//GEN-LAST:event_dashboardMouseClicked
 
     private void logoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoutMouseClicked
+        int pilihan = JOptionPane.showConfirmDialog(
+        this,
+        "Apakah kamu yakin ingin logout?",
+        "Konfirmasi Logout",
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE
+    );
+
+    if (pilihan == JOptionPane.YES_OPTION) {
+        // Ubah warna tombol logout (opsional)
         btn_logout.setBackground(new Color(0, 0, 205));
 
+        // Tampilkan form login dan tutup menu utama
         new Login().setVisible(true);
-        dispose(); // jika ingin menutup MenuUtama
-
+        dispose();
+    }
     }//GEN-LAST:event_logoutMouseClicked
 
     private void logoutMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoutMouseEntered
@@ -1118,22 +1131,22 @@ public class MenuUtama extends javax.swing.JFrame {
 
     }//GEN-LAST:event_formWindowOpened
 
-    private void laporan_penjualan1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_laporan_penjualan1MouseClicked
+    private void laporan_pembelianMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_laporan_pembelianMouseClicked
         btn_laporanPembelian.setBackground(new Color(0, 0, 205));
 
         pn_utama.removeAll();
         pn_utama.add(new FormLaporanPembelian());
         pn_utama.repaint();
         pn_utama.revalidate();
-    }//GEN-LAST:event_laporan_penjualan1MouseClicked
+    }//GEN-LAST:event_laporan_pembelianMouseClicked
 
-    private void laporan_penjualan1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_laporan_penjualan1MouseEntered
+    private void laporan_pembelianMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_laporan_pembelianMouseEntered
         btn_laporanPembelian.setBackground(new Color(0, 0, 205));
-    }//GEN-LAST:event_laporan_penjualan1MouseEntered
+    }//GEN-LAST:event_laporan_pembelianMouseEntered
 
-    private void laporan_penjualan1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_laporan_penjualan1MouseExited
+    private void laporan_pembelianMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_laporan_pembelianMouseExited
         btn_laporanPembelian.setBackground(new Color(0, 153, 221));
-    }//GEN-LAST:event_laporan_penjualan1MouseExited
+    }//GEN-LAST:event_laporan_pembelianMouseExited
 
     private void btn_laporanPembelianMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_laporanPembelianMouseClicked
         // TODO add your handling code here:
@@ -1211,8 +1224,8 @@ public class MenuUtama extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel karyawan;
+    private javax.swing.JLabel laporan_pembelian;
     private javax.swing.JLabel laporan_penjualan;
-    private javax.swing.JLabel laporan_penjualan1;
     private javax.swing.JLabel logo_barang_rusak;
     private javax.swing.JLabel logo_dashboard;
     private javax.swing.JLabel logo_inventaris;

@@ -118,7 +118,6 @@ public class RFID extends javax.swing.JFrame {
         panel = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jB_Register = new javax.swing.JButton();
-        jB_Login = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -157,16 +156,6 @@ public class RFID extends javax.swing.JFrame {
             }
         });
 
-        jB_Login.setBackground(new java.awt.Color(51, 102, 255));
-        jB_Login.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        jB_Login.setForeground(new java.awt.Color(255, 255, 255));
-        jB_Login.setText("LOG-IN");
-        jB_Login.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jB_LoginActionPerformed(evt);
-            }
-        });
-
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(0, 0, 0));
         jLabel7.setText("Klik Manual jika ingin login menggunakan  username dan password.");
@@ -191,15 +180,15 @@ public class RFID extends javax.swing.JFrame {
             .addGroup(panelLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel10)
-                    .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jB_Login)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelLayout.createSequentialGroup()
-                            .addComponent(jLabel4)
-                            .addGap(0, 204, Short.MAX_VALUE)))
-                    .addComponent(jLabel11)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(25, 25, 25))
+                    .addGroup(panelLayout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(0, 229, Short.MAX_VALUE))
+                    .addGroup(panelLayout.createSequentialGroup()
+                        .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel11)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(25, 25, 25))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -233,9 +222,7 @@ public class RFID extends javax.swing.JFrame {
                 .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(text_RFID, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(jB_Login)
-                .addGap(18, 18, 18)
+                .addGap(71, 71, 71)
                 .addComponent(jLabel7)
                 .addGap(0, 0, 0)
                 .addComponent(jB_Register, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -309,10 +296,6 @@ public class RFID extends javax.swing.JFrame {
 
     }//GEN-LAST:event_gradasi1MouseClicked
 
-    private void jB_LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_LoginActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jB_LoginActionPerformed
-
     private void jB_RegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_RegisterActionPerformed
         // TODO add your handling code here:
         Login lgn = new Login();
@@ -364,7 +347,6 @@ public class RFID extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private Menu.Gradasi gradasi1;
-    private javax.swing.JButton jB_Login;
     private javax.swing.JButton jB_Register;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;

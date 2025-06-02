@@ -113,7 +113,6 @@ public class FormPenjualan extends javax.swing.JPanel {
     private void styleButtons() {
         styleButton(btn_simpan, "SIMPAN");
         styleButton(btn_tambah, "TAMBAH");
-        styleButton(btn_edit, "EDIT");
         styleButton(btn_hapus, "HAPUS");
         styleButton(btn_cari, "Cari Barang");
     }
@@ -816,7 +815,6 @@ public class FormPenjualan extends javax.swing.JPanel {
         text_bayar = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
         btn_tambah = new javax.swing.JButton();
-        btn_edit = new javax.swing.JButton();
         btn_hapus = new javax.swing.JButton();
         jLabel19 = new javax.swing.JLabel();
         text_tanggal = new com.toedter.calendar.JDateChooser();
@@ -976,13 +974,6 @@ public class FormPenjualan extends javax.swing.JPanel {
             }
         });
 
-        btn_edit.setText("edit");
-        btn_edit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_editActionPerformed(evt);
-            }
-        });
-
         btn_hapus.setText("hapus");
         btn_hapus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1088,8 +1079,6 @@ public class FormPenjualan extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btn_tambah, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btn_edit, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btn_hapus, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -1159,7 +1148,6 @@ public class FormPenjualan extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_tambah)
-                    .addComponent(btn_edit)
                     .addComponent(btn_hapus))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
@@ -1194,20 +1182,6 @@ public class FormPenjualan extends javax.swing.JPanel {
         tambahAtauUpdateTabel();
 
     }//GEN-LAST:event_btn_tambahActionPerformed
-
-    private void btn_editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editActionPerformed
-        int row = table.getSelectedRow();
-        if (row >= 0) {
-            text_barcode.setText(table.getValueAt(row, 0).toString());
-            text_nama.setText(table.getValueAt(row, 1).toString());
-            text_harga.setText(table.getValueAt(row, 2).toString());
-            text_stok.setText(table.getValueAt(row, 3).toString());
-            text_satuan.setText(table.getValueAt(row, 4).toString());
-            text_jumlah.setText(table.getValueAt(row, 5).toString());
-        } else {
-            JOptionPane.showMessageDialog(this, "Pilih item di tabel terlebih dahulu.");
-        }
-    }//GEN-LAST:event_btn_editActionPerformed
 
     private void btn_hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_hapusActionPerformed
         int row = table.getSelectedRow();
@@ -1290,7 +1264,6 @@ public class FormPenjualan extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_cari;
-    private javax.swing.JButton btn_edit;
     private javax.swing.JButton btn_hapus;
     private javax.swing.JButton btn_simpan;
     private javax.swing.JButton btn_tambah;

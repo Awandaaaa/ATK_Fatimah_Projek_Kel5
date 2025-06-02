@@ -18,6 +18,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import main.Koneksi;
+import java.sql.*;
 
 public class FormBarangRusak extends javax.swing.JPanel {
 
@@ -52,27 +53,7 @@ public class FormBarangRusak extends javax.swing.JPanel {
             }
         });
 
-        // Style tombol
-        btn_edit.setText("EDIT");
-        btn_edit.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
-        btn_edit.setForeground(Color.WHITE);
-        btn_edit.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
-        btn_edit.setFocusPainted(false);
-        btn_edit.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
-        btn_edit.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        // Hover effect
-        btn_edit.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_edit.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btn_edit.setBackground(new java.awt.Color(70, 130, 180));
-            }
-        });
+        
 
         // Style tombol
         btn_hapus.setText("HAPUS");
@@ -173,7 +154,6 @@ public class FormBarangRusak extends javax.swing.JPanel {
         jPanel1 = new main.gradasiwarna();
         jLabel1 = new javax.swing.JLabel();
         btn_tambah = new javax.swing.JButton();
-        btn_edit = new javax.swing.JButton();
         btn_hapus = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl_barangrusak = new javax.swing.JTable();
@@ -193,13 +173,6 @@ public class FormBarangRusak extends javax.swing.JPanel {
         btn_tambah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_tambahActionPerformed(evt);
-            }
-        });
-
-        btn_edit.setText("EDIT");
-        btn_edit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_editActionPerformed(evt);
             }
         });
 
@@ -241,8 +214,6 @@ public class FormBarangRusak extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btn_tambah, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_edit, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_hapus, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -266,7 +237,6 @@ public class FormBarangRusak extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_tambah)
-                    .addComponent(btn_edit)
                     .addComponent(btn_hapus))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
@@ -284,17 +254,41 @@ public class FormBarangRusak extends javax.swing.JPanel {
        tampilkanDataBarangRusak();
     }//GEN-LAST:event_btn_tambahActionPerformed
 
-    private void btn_editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_editActionPerformed
-
     private void btn_hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_hapusActionPerformed
-        // TODO add your handling code here:
+         int selectedRow = tbl_barangrusak.getSelectedRow();
+
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Pilih data yang ingin dihapus terlebih dahulu.");
+        return;
+    }
+
+    // Ambil id_barangrusak dari kolom pertama (index 0)
+    String idBarangRusak = tbl_barangrusak.getValueAt(selectedRow, 0).toString();
+
+    int konfirmasi = JOptionPane.showConfirmDialog(this, "Yakin ingin menghapus data ini?", "Konfirmasi Hapus", JOptionPane.YES_NO_OPTION);
+
+    if (konfirmasi == JOptionPane.YES_OPTION) {
+        String sql = "DELETE FROM barang_rusak WHERE id_barangrusak = ?";
+
+        try (Connection conn = Koneksi.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, idBarangRusak);
+            int rowsDeleted = stmt.executeUpdate();
+
+            if (rowsDeleted > 0) {
+                JOptionPane.showMessageDialog(this, "Data berhasil dihapus.");
+                tampilkanDataBarangRusak(); // Refresh tabel
+            } else {
+                JOptionPane.showMessageDialog(this, "Data gagal dihapus.");
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat menghapus data:\n" + e.getMessage());
+        }
+    }
     }//GEN-LAST:event_btn_hapusActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btn_edit;
     private javax.swing.JButton btn_hapus;
     private javax.swing.JButton btn_tambah;
     private javax.swing.JLabel jLabel1;

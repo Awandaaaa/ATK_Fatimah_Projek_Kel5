@@ -923,7 +923,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="logo_laporan1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="laporan_penjualan1" min="-2" pref="192" max="-2" attributes="0"/>
+                              <Component id="laporan_pembelian" min="-2" pref="192" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
@@ -934,7 +934,7 @@
                               <EmptySpace max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="logo_laporan1" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="laporan_penjualan1" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="laporan_pembelian" alignment="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -949,7 +949,7 @@
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="laporan_penjualan1">
+                    <Component class="javax.swing.JLabel" name="laporan_pembelian">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="SansSerif" size="12" style="1"/>
@@ -960,9 +960,9 @@
                         <Property name="text" type="java.lang.String" value="Laporan Pembelian"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="laporan_penjualan1MouseClicked"/>
-                        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="laporan_penjualan1MouseEntered"/>
-                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="laporan_penjualan1MouseExited"/>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="laporan_pembelianMouseClicked"/>
+                        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="laporan_pembelianMouseEntered"/>
+                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="laporan_pembelianMouseExited"/>
                       </Events>
                     </Component>
                   </SubComponents>

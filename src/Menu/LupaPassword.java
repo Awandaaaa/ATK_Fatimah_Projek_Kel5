@@ -136,7 +136,7 @@ public class LupaPassword extends javax.swing.JFrame {
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel10.setText("Silahkan masukkan username dan password baru anda ");
+        jLabel10.setText("Silahkan masukkan username lama dan password baru anda ");
 
         jCheckBox2.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
         jCheckBox2.setForeground(new java.awt.Color(0, 0, 0));
