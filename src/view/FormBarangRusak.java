@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -24,11 +23,11 @@ public class FormBarangRusak extends javax.swing.JPanel {
 
     public FormBarangRusak() {
         initComponents();
-        tampilkanBarangRusak(""); // Display all items initially
         // Style buttons
         styleButton(btn_tambah, "TAMBAH");
         styleButton(btn_edit, "EDIT");
         styleButton(btn_hapus, "HAPUS");
+        // tampilkanBarangRusak("") should be called after construction, e.g., by the parent component
     }
 
     private void styleButton(JButton button, String text) {
@@ -154,7 +153,6 @@ public class FormBarangRusak extends javax.swing.JPanel {
         }
     }
 
-    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
