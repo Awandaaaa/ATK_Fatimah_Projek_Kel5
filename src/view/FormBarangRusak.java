@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -56,7 +55,8 @@ public class FormBarangRusak extends javax.swing.JPanel {
         model.setRowCount(0);
 
         try (Connection con = Koneksi.getConnection()) {
-            String sql = "SELECT br.id_barangrusak, br.id_barang, br.jumlah_rusak, br.Tgl_rusak, br.keterangan " +
+            // Query menampilkan barcode dan keterangan terpisah
+            String sql = "SELECT br.id_barangrusak, br.id_barang, br.jumlah_rusak, br.Tgl_rusak, br.barcode, br.keterangan " +
                          "FROM barang_rusak br WHERE br.id_barang LIKE ? ORDER BY br.Tgl_rusak ASC";
             try (PreparedStatement ps = con.prepareStatement(sql)) {
                 ps.setString(1, "%" + keyword + "%");
@@ -68,6 +68,7 @@ public class FormBarangRusak extends javax.swing.JPanel {
                         rs.getString("id_barang"),
                         rs.getInt("jumlah_rusak"),
                         rs.getDate("Tgl_rusak"),
+                        rs.getString("barcode"),
                         rs.getString("keterangan")
                     });
                 }
@@ -185,6 +186,21 @@ public class FormBarangRusak extends javax.swing.JPanel {
 
         btn_hapus.setText("HAPUS");
         btn_hapus.addActionListener(evt -> btn_hapusActionPerformed(evt));
+
+        // Model tabel: tambahkan kolom Barcode dan Keterangan
+        table_barangrusak.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {},
+            new String [] {
+                "ID Barang Rusak", "ID Barang", "Jumlah Rusak", "Tanggal Rusak", "Barcode", "Keterangan"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit[columnIndex];
+            }
+        });
 
         jScrollPane1.setViewportView(table_barangrusak);
 
