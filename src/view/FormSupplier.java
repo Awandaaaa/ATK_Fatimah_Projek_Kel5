@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.GridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -15,12 +16,21 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import main.Koneksi;
 import java.sql.*;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
 
 public class FormSupplier extends javax.swing.JPanel {
 
     public FormSupplier() {
         initComponents();
 
+
+        
         cb_kriteria.addItem("Nama");
         cb_kriteria.addItem("Nomor_Telepon");
         cb_kriteria.addItem("Alamat");
@@ -140,34 +150,67 @@ public class FormSupplier extends javax.swing.JPanel {
 
     int idSupplier = (int) tbl_supplier.getValueAt(selectedRow, 0);
     String nama = (String) tbl_supplier.getValueAt(selectedRow, 1);
-    String telepon = String.valueOf(tbl_supplier.getValueAt(selectedRow, 2)).replace("+62", "").trim(); // ← perbaikan
+    String telepon = (String) tbl_supplier.getValueAt(selectedRow, 2); // Sudah dalam format +62
     String alamat = (String) tbl_supplier.getValueAt(selectedRow, 3);
     String pemilik = (String) tbl_supplier.getValueAt(selectedRow, 4);
 
-    String newNama = JOptionPane.showInputDialog(this, "Nama:", nama);
-    String newTelepon = JOptionPane.showInputDialog(this, "Telepon:", telepon);
-    String newAlamat = JOptionPane.showInputDialog(this, "Alamat:", alamat);
-    String newPemilik = JOptionPane.showInputDialog(this, "Pemilik:", pemilik);
+    JTextField txtNama = new JTextField(nama);
+    JTextField txtTelepon = new JTextField(telepon); // Tidak perlu +62 lagi
+    applyPhoneNumberFilter(txtTelepon); // Otomatis menambahkan +62 dan validasi
+    JTextField txtAlamat = new JTextField(alamat);
+    JTextField txtPemilik = new JTextField(pemilik);
 
-    
+    JPanel panel = new JPanel(new GridLayout(0, 1));
+    panel.add(new JLabel("Nama Supplier:"));
+    panel.add(txtNama);
+    panel.add(new JLabel("Nomor Telepon (+62 otomatis):"));
+    panel.add(txtTelepon);
+    panel.add(new JLabel("Alamat:"));
+    panel.add(txtAlamat);
+    panel.add(new JLabel("Nama Pemilik:"));
+    panel.add(txtPemilik);
 
-    try {
-        Connection conn = Koneksi.getConnection();
-        String sql = "UPDATE supplier SET Nama=?, Nomor_Telepon=?, Alamat=?, Nama_Pemilik=? WHERE Id_Supplier=?";
-        PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, newNama);
-        pst.setString(2, newTelepon);
-        pst.setString(3, newAlamat);
-        pst.setString(4, newPemilik);
-        pst.setInt(5, idSupplier);
-        pst.executeUpdate();
+    int result = JOptionPane.showConfirmDialog(this, panel, "Edit Data Supplier",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-        JOptionPane.showMessageDialog(this, "Data berhasil diupdate.");
-        loadDataSupplier();
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Gagal update data: " + e.getMessage());
+    if (result == JOptionPane.OK_OPTION) {
+        String newNama = txtNama.getText().trim();
+        String newTelepon = txtTelepon.getText().trim(); // Sudah terformat +62
+        String newAlamat = txtAlamat.getText().trim();
+        String newPemilik = txtPemilik.getText().trim();
+
+        if (newNama.isEmpty() || newTelepon.isEmpty() || newAlamat.isEmpty() || newPemilik.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Semua field harus diisi.");
+            return;
+        }
+
+        // Validasi nomor telepon: harus mulai dengan +628 dan panjang 12–16 karakter
+        if (!newTelepon.matches("\\+628\\d{7,10}")) {
+            JOptionPane.showMessageDialog(this, "Nomor telepon harus diawali +628 dan panjang 12–13 karakter.");
+            return;
+        }
+
+        try {
+            Connection conn = Koneksi.getConnection();
+            String sql = "UPDATE supplier SET Nama=?, Nomor_Telepon=?, Alamat=?, Nama_Pemilik=? WHERE Id_Supplier=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, newNama);
+            pst.setString(2, newTelepon);
+            pst.setString(3, newAlamat);
+            pst.setString(4, newPemilik);
+            pst.setInt(5, idSupplier);
+            pst.executeUpdate();
+
+            JOptionPane.showMessageDialog(this, "Data supplier berhasil diupdate.");
+            loadDataSupplier();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Gagal update data: " + e.getMessage());
+        }
     }
 }
+
+
+    
 
 
     private void deleteSupplier() {
@@ -193,6 +236,62 @@ public class FormSupplier extends javax.swing.JPanel {
             }
         }
     }
+
+
+    
+     public class PhoneNumberFilter extends DocumentFilter {
+
+    @Override
+    public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
+            throws BadLocationException {
+        replace(fb, offset, 0, string, attr);
+    }
+
+    @Override
+    public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+            throws BadLocationException {
+        Document doc = fb.getDocument();
+        String currentText = doc.getText(0, doc.getLength());
+        StringBuilder newText = new StringBuilder(currentText);
+        newText.replace(offset, offset + length, text);
+
+        String cleaned = newText.toString().replaceAll("[^\\d]", "");
+
+        if (!cleaned.startsWith("62")) {
+            cleaned = "62" + cleaned;
+        }
+
+        String afterPrefix = cleaned.substring(2);
+
+        if (!afterPrefix.isEmpty() && afterPrefix.charAt(0) != '8') {
+            java.awt.Toolkit.getDefaultToolkit().beep();
+            return;
+        }
+
+        if (afterPrefix.length() > 13) {
+            java.awt.Toolkit.getDefaultToolkit().beep();
+            return;
+        }
+
+        fb.replace(0, doc.getLength(), "+" + cleaned, attrs);
+    }
+
+    @Override
+    public void remove(FilterBypass fb, int offset, int length)
+            throws BadLocationException {
+        if (offset < 3) {
+            return; // Blokir penghapusan "+62"
+        }
+        super.remove(fb, offset, length);
+    }
+}
+
+
+        private void applyPhoneNumberFilter(JTextField field) {
+    AbstractDocument doc = (AbstractDocument) field.getDocument();
+    doc.setDocumentFilter(new PhoneNumberFilter());
+}
+
 
 
 

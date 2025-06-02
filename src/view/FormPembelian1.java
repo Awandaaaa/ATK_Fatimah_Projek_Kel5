@@ -932,7 +932,6 @@ public class FormPembelian1 extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel1 = new main.gradasiwarna();
-        jLabel3 = new javax.swing.JLabel();
         label_users = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         btn_simpan = new javax.swing.JButton();
@@ -974,11 +973,6 @@ public class FormPembelian1 extends javax.swing.JPanel {
         setLayout(new java.awt.CardLayout());
 
         jPanel1.setBackground(new java.awt.Color(0, 51, 255));
-
-        jLabel3.setBackground(new java.awt.Color(0, 51, 255));
-        jLabel3.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("08 - 06 - 2025");
 
         label_users.setBackground(new java.awt.Color(0, 51, 255));
         label_users.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
@@ -1188,9 +1182,6 @@ public class FormPembelian1 extends javax.swing.JPanel {
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(jLabel3))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel19)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1243,10 +1234,7 @@ public class FormPembelian1 extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(label_users)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3))
+                    .addComponent(label_users)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -1419,7 +1407,6 @@ public class FormPembelian1 extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;

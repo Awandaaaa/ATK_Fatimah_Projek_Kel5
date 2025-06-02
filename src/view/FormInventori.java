@@ -1,6 +1,5 @@
 package view;
 
-import Form.FormTambahBarang;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -22,7 +21,6 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 
 import javax.swing.JLabel;
-import java.text.NumberFormat;
 import java.util.Locale;
 
 import java.awt.Graphics2D;
@@ -56,6 +54,7 @@ import javax.swing.JTextField;
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import java.text.NumberFormat;
+import java.text.ParseException;
 
 
 public class FormInventori extends javax.swing.JPanel {
@@ -163,7 +162,30 @@ public class FormInventori extends javax.swing.JPanel {
                 btn_hapus.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
+        
+        
+        // Style tombol
+        btn_edit.setText("EDIT");
+        btn_edit.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
+        btn_edit.setForeground(Color.WHITE);
+        btn_edit.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
+        btn_edit.setFocusPainted(false);
+        btn_edit.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+        btn_edit.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+        // Hover effect
+        btn_edit.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btn_edit.setBackground(new java.awt.Color(100, 149, 237)); // Cornflower Blue
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btn_edit.setBackground(new java.awt.Color(70, 130, 180));
+            }
+        });
+        
         // Style tombol
         btn_cetakbarcode.setText("CETAK BARCODE");
         btn_cetakbarcode.setBackground(new java.awt.Color(70, 130, 180)); // warna biru steel blue
@@ -302,20 +324,23 @@ public class FormInventori extends javax.swing.JPanel {
     String namabarang = table_barang.getValueAt(selectedRow, 1).toString();
     String kategori = table_barang.getValueAt(selectedRow, 2).toString();
     String satuan = table_barang.getValueAt(selectedRow, 3).toString();
-    String hargaStr = table_barang.getValueAt(selectedRow, 4).toString().replace("Rp", "").replace(".", "").replace(",", "").trim();
+    String hargaFormatted = table_barang.getValueAt(selectedRow, 4).toString();
     String stokStr = table_barang.getValueAt(selectedRow, 5).toString();
 
     double harga;
     int stok;
+
     try {
-        harga = Double.parseDouble(hargaStr);
+        NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
+        Number hargaNumber = formatRupiah.parse(hargaFormatted);
+        harga = hargaNumber.doubleValue();
         stok = Integer.parseInt(stokStr);
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Format harga atau stok tidak valid.");
+    } catch (NumberFormatException | ParseException e) {
+        JOptionPane.showMessageDialog(this, "Format harga atau stok tidak valid: " + e.getMessage());
         return;
     }
 
-    // Input fields
+    // Komponen input
     JTextField txtNama = new JTextField(namabarang);
 
     String[] kategoriOptions = {"Alat Tulis", "Kertas & Buku", "Perekat", "Alat Ukur"};
@@ -326,11 +351,9 @@ public class FormInventori extends javax.swing.JPanel {
     JComboBox<String> cbSatuan = new JComboBox<>(satuanOptions);
     cbSatuan.setSelectedItem(satuan);
 
-    // Format harga dengan grouping
     NumberFormat numberFormat = NumberFormat.getNumberInstance();
     numberFormat.setGroupingUsed(true);
     numberFormat.setMaximumFractionDigits(0);
-
     NumberFormatter numberFormatter = new NumberFormatter(numberFormat);
     numberFormatter.setAllowsInvalid(false);
     numberFormatter.setMinimum(0.0);
@@ -340,7 +363,6 @@ public class FormInventori extends javax.swing.JPanel {
 
     JTextField txtStok = new JTextField(String.valueOf(stok));
 
-    // Buat panel form
     JPanel panel = new JPanel(new GridLayout(0, 1));
     panel.add(new JLabel("Nama Barang:"));
     panel.add(txtNama);
@@ -359,11 +381,33 @@ public class FormInventori extends javax.swing.JPanel {
     if (result == JOptionPane.OK_OPTION) {
         try {
             String newNama = txtNama.getText().trim();
+            if (newNama.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Nama barang tidak boleh kosong.");
+                return;
+            }
+
             String newKategori = cbKategori.getSelectedItem().toString();
             String newSatuan = cbSatuan.getSelectedItem().toString();
+
             Number hargaValue = (Number) txtHarga.getValue();
-            double newHarga = hargaValue != null ? hargaValue.doubleValue() : 0.0;
-            int newStok = Integer.parseInt(txtStok.getText().trim());
+            if (hargaValue == null || hargaValue.doubleValue() < 0) {
+                JOptionPane.showMessageDialog(this, "Harga harus berupa angka ≥ 0.");
+                return;
+            }
+
+            double newHarga = hargaValue.doubleValue();
+
+            String stokInput = txtStok.getText().trim();
+            if (stokInput.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Stok tidak boleh kosong.");
+                return;
+            }
+
+            int newStok = Integer.parseInt(stokInput);
+            if (newStok < 0) {
+                JOptionPane.showMessageDialog(this, "Stok tidak boleh negatif.");
+                return;
+            }
 
             Connection conn = Koneksi.getConnection();
             String sql = "UPDATE barang SET Nama_barang=?, Kategori=?, Satuan=?, Harga=?, Stok=? WHERE Id_barang=?";
@@ -385,6 +429,7 @@ public class FormInventori extends javax.swing.JPanel {
         }
     }
 }
+
 
 
 
