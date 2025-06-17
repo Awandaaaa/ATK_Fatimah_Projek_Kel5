@@ -297,7 +297,7 @@ public class Login extends javax.swing.JFrame {
         return;
     }
 
-    String hashedPassword = securityutils.hashPassword(password);
+    String hashedPassword = securityutils.hashPassword(password); 
     if (hashedPassword == null) {
         JOptionPane.showMessageDialog(this, "Gagal melakukan hash password.");
         return;

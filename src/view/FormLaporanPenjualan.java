@@ -129,25 +129,25 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
 
         tampilkanLaporanPenjualanLengkap();
 
-        btn_hapus.setText("HAPUS");
-        btn_hapus.setBackground(new java.awt.Color(70, 130, 180)); 
-        btn_hapus.setForeground(Color.WHITE);
-        btn_hapus.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
-        btn_hapus.setFocusPainted(false);
-        btn_hapus.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
-        btn_hapus.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        btn_hapus.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_hapus.setBackground(new java.awt.Color(100, 149, 237));
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btn_hapus.setBackground(new java.awt.Color(70, 130, 180));
-            }
-        });
+//        btn_hapus.setText("HAPUS");
+//        btn_hapus.setBackground(new java.awt.Color(70, 130, 180)); 
+//        btn_hapus.setForeground(Color.WHITE);
+//        btn_hapus.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
+//        btn_hapus.setFocusPainted(false);
+//        btn_hapus.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+//        btn_hapus.setCursor(new Cursor(Cursor.HAND_CURSOR));
+//
+//        btn_hapus.addMouseListener(new java.awt.event.MouseAdapter() {
+//            @Override
+//            public void mouseEntered(java.awt.event.MouseEvent evt) {
+//                btn_hapus.setBackground(new java.awt.Color(100, 149, 237));
+//            }
+//
+//            @Override
+//            public void mouseExited(java.awt.event.MouseEvent evt) {
+//                btn_hapus.setBackground(new java.awt.Color(70, 130, 180));
+//            }
+//        });
 
         btnClear.setText("CLEAR");
         btnClear.setBackground(new java.awt.Color(70, 130, 180));
@@ -386,7 +386,6 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
 
         jPanel1 = new main.gradasiwarna();
         jLabel1 = new javax.swing.JLabel();
-        btn_hapus = new javax.swing.JButton();
         label_user = new javax.swing.JLabel();
         tgl_muncul = new javax.swing.JLabel();
         JD_Awal = new com.toedter.calendar.JDateChooser();
@@ -414,16 +413,6 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Laporan Data Penjualan");
-
-        btn_hapus.setBackground(new java.awt.Color(204, 0, 0));
-        btn_hapus.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btn_hapus.setForeground(new java.awt.Color(255, 255, 255));
-        btn_hapus.setText("HAPUS");
-        btn_hapus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_hapusActionPerformed(evt);
-            }
-        });
 
         label_user.setBackground(new java.awt.Color(0, 51, 255));
         label_user.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
@@ -503,15 +492,12 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
                                         .addComponent(cb_user, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jLabel6)))
                             .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 107, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(btnClear)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btn_hapus))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(tgl_muncul, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(label_user, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)))))
+                                .addComponent(label_user, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE))
+                            .addComponent(btnClear, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -529,9 +515,9 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
                     .addComponent(jLabel2)
                     .addComponent(jLabel4)
                     .addComponent(jLabel6))
-                .addGap(7, 7, 7)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(7, 7, 7)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(JD_Awal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(JD_Akhir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -539,53 +525,16 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
                                 .addComponent(t_cari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(cb_user, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btn_hapus)
-                        .addComponent(btnClear)))
-                .addContainerGap())
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnClear)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         add(jPanel1, "card2");
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btn_hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_hapusActionPerformed
-        int selectedRow = tabel_penjualan.getSelectedRow();
-
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Pilih dulu baris yang ingin dihapus.");
-            return;
-        }
-
-        int konfirmasi = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin menghapus data ini?", "Konfirmasi Hapus", JOptionPane.YES_NO_OPTION);
-
-        if (konfirmasi == JOptionPane.YES_OPTION) {
-            try {
-                String idPenjualan = ambilIdPenjualanDariBaris(selectedRow); 
-
-                Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
-
-                String deleteRinci = "DELETE FROM penjualanrinci WHERE id_Penjualan = ?";
-                PreparedStatement pstRinci = con.prepareStatement(deleteRinci);
-                pstRinci.setString(1, idPenjualan);
-                pstRinci.executeUpdate();
-
-                String deletePenjualan = "DELETE FROM penjualan WHERE id_Penjualan = ?";
-                PreparedStatement pstPenjualan = con.prepareStatement(deletePenjualan);
-                pstPenjualan.setString(1, idPenjualan);
-                pstPenjualan.executeUpdate();
-
-                pstRinci.close();
-                pstPenjualan.close();
-                con.close();
-
-                JOptionPane.showMessageDialog(this, "Data berhasil dihapus.");
-                tampilkanLaporanPenjualanLengkap();
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(this, "Gagal menghapus data: " + e.getMessage());
-            }
-        }
-    }//GEN-LAST:event_btn_hapusActionPerformed
 
     private void cb_userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_userActionPerformed
         if (sedangMemuatUser) {
@@ -712,7 +661,6 @@ public class FormLaporanPenjualan extends javax.swing.JPanel {
     private com.toedter.calendar.JDateChooser JD_Akhir;
     private com.toedter.calendar.JDateChooser JD_Awal;
     private javax.swing.JButton btnClear;
-    private javax.swing.JButton btn_hapus;
     private javax.swing.JComboBox<String> cb_user;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

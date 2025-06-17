@@ -72,7 +72,7 @@ public class FormBarangRusak extends javax.swing.JPanel {
 
     private void initTableModel() {
         DefaultTableModel model = new DefaultTableModel(new Object[]{
-            "ID Barang Rusak", "ID Barang", "Barcode", "Jumlah Rusak", "Tanggal Rusak", "Keterangan"
+            "ID Barang Rusak", "Nama Barang", "Barcode", "Jumlah Rusak", "Tanggal Rusak", "Keterangan"
         }, 0) {
             @Override
             public boolean isCellEditable(int row, int col) {
@@ -80,6 +80,11 @@ public class FormBarangRusak extends javax.swing.JPanel {
             }
         };
         tbl_barangrusak.setModel(model);
+         // Sembunyikan kolom ID Barang Rusak
+    tbl_barangrusak.getColumnModel().getColumn(0).setMinWidth(0);
+    tbl_barangrusak.getColumnModel().getColumn(0).setMaxWidth(0);
+    tbl_barangrusak.getColumnModel().getColumn(0).setWidth(0);
+        
         setupTableStyle();
         tampilkanDataBarangRusak();
     }
@@ -109,31 +114,63 @@ public class FormBarangRusak extends javax.swing.JPanel {
         tbl_barangrusak.setSelectionForeground(Color.BLACK);
     }
 
-    public void tampilkanDataBarangRusak() {
-        DefaultTableModel model = (DefaultTableModel) tbl_barangrusak.getModel();
-        model.setRowCount(0);
+//    public void tampilkanDataBarangRusak() {
+//        DefaultTableModel model = (DefaultTableModel) tbl_barangrusak.getModel();
+//        model.setRowCount(0);
+//
+//        String sql = "SELECT id_barangrusak, id_barang, barcode, jumlah_rusak, Tgl_rusak, keterangan FROM barang_rusak ORDER BY Tgl_rusak DESC";
+//
+//        try (Connection conn = Koneksi.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+//
+//            while (rs.next()) {
+//                Object[] row = {
+//                    rs.getString("id_barangrusak"),
+//                    rs.getString("id_barang"),
+//                    rs.getString("barcode"),
+//                    rs.getInt("jumlah_rusak"),
+//                    rs.getDate("Tgl_rusak"),
+//                    rs.getString("keterangan")
+//                };
+//                model.addRow(row);
+//            }
+//
+//        } catch (SQLException e) {
+//            JOptionPane.showMessageDialog(this, "Gagal menampilkan data barang rusak:\n" + e.getMessage());
+//        }
+//    }
 
-        String sql = "SELECT id_barangrusak, id_barang, barcode, jumlah_rusak, Tgl_rusak, keterangan FROM barang_rusak ORDER BY Tgl_rusak DESC";
+    
+        public void tampilkanDataBarangRusak() {
+    DefaultTableModel model = (DefaultTableModel) tbl_barangrusak.getModel();
+    model.setRowCount(0);
 
-        try (Connection conn = Koneksi.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+    String sql = "SELECT br.id_barangrusak, b.nama_barang, br.barcode, br.jumlah_rusak, br.Tgl_rusak, br.keterangan " +
+                 "FROM barang_rusak br " +
+                 "JOIN barang b ON br.id_barang = b.id_barang " +
+                 "ORDER BY br.Tgl_rusak DESC";
 
-            while (rs.next()) {
-                Object[] row = {
-                    rs.getString("id_barangrusak"),
-                    rs.getString("id_barang"),
-                    rs.getString("barcode"),
-                    rs.getInt("jumlah_rusak"),
-                    rs.getDate("Tgl_rusak"),
-                    rs.getString("keterangan")
-                };
-                model.addRow(row);
-            }
+    try (Connection conn = Koneksi.getConnection(); 
+         Statement stmt = conn.createStatement(); 
+         ResultSet rs = stmt.executeQuery(sql)) {
 
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Gagal menampilkan data barang rusak:\n" + e.getMessage());
+        while (rs.next()) {
+            Object[] row = {
+                rs.getString("id_barangrusak"),
+                rs.getString("nama_barang"),  // tampilkan nama barang, bukan id
+                rs.getString("barcode"),
+                rs.getInt("jumlah_rusak"),
+                rs.getDate("Tgl_rusak"),
+                rs.getString("keterangan")
+            };
+            model.addRow(row);
         }
-    }
 
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Gagal menampilkan data barang rusak:\n" + e.getMessage());
+    }
+}
+
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

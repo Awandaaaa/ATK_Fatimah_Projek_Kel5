@@ -130,25 +130,25 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         });
 
         tampilkanLaporanPembelianLengkap();
-        btn_hapus.setText("HAPUS");
-        btn_hapus.setBackground(new java.awt.Color(70, 130, 180));
-        btn_hapus.setForeground(Color.WHITE);
-        btn_hapus.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
-        btn_hapus.setFocusPainted(false);
-        btn_hapus.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
-        btn_hapus.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        btn_hapus.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_hapus.setBackground(new java.awt.Color(100, 149, 237));
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btn_hapus.setBackground(new java.awt.Color(70, 130, 180));
-            }
-        });
+//        btn_hapus.setText("HAPUS");
+//        btn_hapus.setBackground(new java.awt.Color(70, 130, 180));
+//        btn_hapus.setForeground(Color.WHITE);
+//        btn_hapus.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
+//        btn_hapus.setFocusPainted(false);
+//        btn_hapus.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+//        btn_hapus.setCursor(new Cursor(Cursor.HAND_CURSOR));
+//
+//        btn_hapus.addMouseListener(new java.awt.event.MouseAdapter() {
+//            @Override
+//            public void mouseEntered(java.awt.event.MouseEvent evt) {
+//                btn_hapus.setBackground(new java.awt.Color(100, 149, 237));
+//            }
+//
+//            @Override
+//            public void mouseExited(java.awt.event.MouseEvent evt) {
+//                btn_hapus.setBackground(new java.awt.Color(70, 130, 180));
+//            }
+//        });
 
         btnClear.setText("CLEAR");
         btnClear.setBackground(new java.awt.Color(70, 130, 180));
@@ -392,7 +392,6 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
 
         jPanel1 = new main.gradasiwarna();
         jLabel1 = new javax.swing.JLabel();
-        btn_hapus = new javax.swing.JButton();
         label_user = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -420,16 +419,6 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Laporan Data Pembelian");
-
-        btn_hapus.setBackground(new java.awt.Color(204, 0, 0));
-        btn_hapus.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btn_hapus.setForeground(new java.awt.Color(255, 255, 255));
-        btn_hapus.setText("HAPUS");
-        btn_hapus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_hapusActionPerformed(evt);
-            }
-        });
 
         label_user.setBackground(new java.awt.Color(0, 51, 255));
         label_user.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
@@ -490,32 +479,30 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(JD_Awal, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel2))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(JD_Akhir, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(t_cari, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(cb_supplier, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel7))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(label_user, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(JD_Awal, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(JD_Akhir, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(t_cari, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cb_supplier, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel7))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
-                        .addComponent(btnClear)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_hapus)))
+                            .addComponent(label_user, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnClear, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -535,21 +522,15 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
                         .addComponent(jLabel2))
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(JD_Awal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(JD_Akhir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(t_cari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(cb_supplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btn_hapus)
-                            .addComponent(btnClear))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(JD_Awal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JD_Akhir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(t_cari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cb_supplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnClear)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -557,44 +538,6 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
 
         add(jPanel1, "card2");
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btn_hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_hapusActionPerformed
-
-        int selectedRow = tabel_pembelian.getSelectedRow();
-
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Pilih dulu baris yang ingin dihapus.");
-            return;
-        }
-
-        int konfirmasi = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin menghapus data ini?", "Konfirmasi Hapus", JOptionPane.YES_NO_OPTION);
-
-        if (konfirmasi == JOptionPane.YES_OPTION) {
-            try {
-                String idPembelianrinci = tabel_pembelian.getValueAt(selectedRow, 7).toString();
-
-                Connection con = DriverManager.getConnection("jdbc:mysql://localhost/atk", "root", "");
-
-                String sql = "DELETE FROM pembelianrinci WHERE id_pembelianrinci = ?";
-                PreparedStatement pst = con.prepareStatement(sql);
-                pst.setString(1, idPembelianrinci);
-                int rowsAffected = pst.executeUpdate();
-
-                pst.close();
-                con.close();
-
-                if (rowsAffected > 0) {
-                    JOptionPane.showMessageDialog(this, "Data berhasil dihapus.");
-                    tampilkanLaporanPembelianLengkap();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Data tidak ditemukan atau sudah dihapus.");
-                }
-
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(this, "Gagal menghapus data: " + e.getMessage());
-            }
-        }
-    }//GEN-LAST:event_btn_hapusActionPerformed
 
     private void t_cariKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_cariKeyReleased
         String id = t_cari.getText();
@@ -722,7 +665,6 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
     private com.toedter.calendar.JDateChooser JD_Akhir;
     private com.toedter.calendar.JDateChooser JD_Awal;
     private javax.swing.JButton btnClear;
-    private javax.swing.JButton btn_hapus;
     private javax.swing.JComboBox<String> cb_supplier;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

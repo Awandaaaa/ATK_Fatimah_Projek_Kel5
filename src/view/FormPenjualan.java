@@ -17,6 +17,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.HierarchyEvent;
+import java.io.InputStream;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
@@ -35,8 +36,15 @@ import javax.swing.text.*;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 
 
 
@@ -55,6 +63,23 @@ public class FormPenjualan extends javax.swing.JPanel {
             }
         });
 
+        DefaultTableCellRenderer rupiahRenderer = new DefaultTableCellRenderer() {
+    @Override
+    protected void setValue(Object value) {
+        if (value instanceof Number) {
+            NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
+            setText(nf.format(value));
+        } else {
+            setText(value != null ? value.toString() : "");
+        }
+    }
+};
+
+// Terapkan pada kolom harga dan total
+table.getColumnModel().getColumn(2).setCellRenderer(rupiahRenderer); // Harga
+table.getColumnModel().getColumn(6).setCellRenderer(rupiahRenderer); // Total
+
+        
     }
 
     private void inisialisasiForm() {
@@ -162,101 +187,101 @@ public class FormPenjualan extends javax.swing.JPanel {
 
     }
 
-    private void cetakStrukThermal(String idPenjualan, String tanggal, String kasir, int total, int diskon, int bayar, int kembalian) {
-        PrinterJob job = PrinterJob.getPrinterJob();
-        job.setJobName("Struk Penjualan");
-
-        Printable printable = (Graphics g, PageFormat pf, int pageIndex) -> {
-            if (pageIndex > 0) {
-                return Printable.NO_SUCH_PAGE;
-            }
-
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.translate(pf.getImageableX(), pf.getImageableY());
-            g2d.setFont(new Font("Monospaced", Font.PLAIN, 9));
-
-            int y = 10;
-            int lineHeight = 12;
-
-            // Header toko
-            g2d.drawString(centerText("===TOKO ATK FATIMAH===", 32), 0, y);
-            y += lineHeight;
-            g2d.drawString(centerText("Jl. Jember No.1 - 08122222222", 32), 0, y);
-            y += lineHeight;
-            g2d.drawString("--------------------------------", 0, y);
-            y += lineHeight;
-
-            // Info Transaksi
-            g2d.drawString("No Faktur : " + idPenjualan, 0, y);
-            y += lineHeight;
-            g2d.drawString("Tanggal   : " + tanggal, 0, y);
-            y += lineHeight;
-            g2d.drawString("Kasir     : " + kasir, 0, y);
-            y += lineHeight;
-            g2d.drawString("--------------------------------", 0, y);
-            y += lineHeight;
-
-            // Header item
-            g2d.drawString(String.format("%-12s %3s %8s", "Nama", "Jml", "Total"), 0, y);
-            y += lineHeight;
-
-            // Item loop
-            DefaultTableModel model = (DefaultTableModel) table.getModel();
-            for (int i = 0; i < model.getRowCount(); i++) {
-                String nama = model.getValueAt(i, 1).toString();
-                String jumlah = model.getValueAt(i, 5).toString();
-                String totalBarang = model.getValueAt(i, 6).toString();
-
-                // Potong nama jika kepanjangan
-                if (nama.length() > 12) {
-                    nama = nama.substring(0, 12);
-                }
-
-                g2d.drawString(String.format("%-12s %3s %8s", nama, jumlah, formatRupiah(totalBarang)), 0, y);
-                y += lineHeight;
-            }
-
-            g2d.drawString("--------------------------------", 0, y);
-            y += lineHeight;
-
-            // Ringkasan
-            g2d.drawString(formatLine("Subtotal", total), 0, y);
-            y += lineHeight;
-            g2d.drawString(formatLine("Diskon", diskon), 0, y);
-            y += lineHeight;
-            g2d.drawString(formatLine("Bayar", bayar), 0, y);
-            y += lineHeight;
-            g2d.drawString(formatLine("Kembalian", kembalian), 0, y);
-            y += lineHeight;
-
-            g2d.drawString("--------------------------------", 0, y);
-            y += lineHeight;
-            g2d.drawString(centerText("Terima Kasih", 32), 0, y);
-            y += lineHeight;
-            g2d.drawString(centerText("Barang yang sudah dibeli", 32), 0, y);
-            y += lineHeight;
-            g2d.drawString(centerText("tidak dapat dikembalikan.", 32), 0, y);
-            y += lineHeight;
-
-            return Printable.PAGE_EXISTS;
-        };
-
-        PageFormat pf = job.defaultPage();
-        Paper paper = new Paper();
-        double width = 180; // lebar 58mm
-        double height = 500;
-        paper.setSize(width, height);
-        paper.setImageableArea(0, 0, width, height);
-        pf.setPaper(paper);
-
-        job.setPrintable(printable, pf);
-
-        try {
-            job.print();
-        } catch (PrinterException ex) {
-            JOptionPane.showMessageDialog(this, "Gagal mencetak: " + ex.getMessage());
-        }
-    }
+//    private void cetakStrukThermal(String idPenjualan, String tanggal, String kasir, int total, int diskon, int bayar, int kembalian) {
+//        PrinterJob job = PrinterJob.getPrinterJob();
+//        job.setJobName("Struk Penjualan");
+//
+//        Printable printable = (Graphics g, PageFormat pf, int pageIndex) -> {
+//            if (pageIndex > 0) {
+//                return Printable.NO_SUCH_PAGE;
+//            }
+//
+//            Graphics2D g2d = (Graphics2D) g;
+//            g2d.translate(pf.getImageableX(), pf.getImageableY());
+//            g2d.setFont(new Font("Monospaced", Font.PLAIN, 9));
+//
+//            int y = 10;
+//            int lineHeight = 12;
+//
+//            // Header toko
+//            g2d.drawString(centerText("===TOKO ATK FATIMAH===", 32), 0, y);
+//            y += lineHeight;
+//            g2d.drawString(centerText("Jl. Jember No.1 - 08122222222", 32), 0, y);
+//            y += lineHeight;
+//            g2d.drawString("--------------------------------", 0, y);
+//            y += lineHeight;
+//
+//            // Info Transaksi
+//            g2d.drawString("No Faktur : " + idPenjualan, 0, y);
+//            y += lineHeight;
+//            g2d.drawString("Tanggal   : " + tanggal, 0, y);
+//            y += lineHeight;
+//            g2d.drawString("Kasir     : " + kasir, 0, y);
+//            y += lineHeight;
+//            g2d.drawString("--------------------------------", 0, y);
+//            y += lineHeight;
+//
+//            // Header item
+//            g2d.drawString(String.format("%-12s %3s %8s", "Nama", "Jml", "Total"), 0, y);
+//            y += lineHeight;
+//
+//            // Item loop
+//            DefaultTableModel model = (DefaultTableModel) table.getModel();
+//            for (int i = 0; i < model.getRowCount(); i++) {
+//                String nama = model.getValueAt(i, 1).toString();
+//                String jumlah = model.getValueAt(i, 5).toString();
+//                String totalBarang = model.getValueAt(i, 6).toString();
+//
+//                // Potong nama jika kepanjangan
+//                if (nama.length() > 12) {
+//                    nama = nama.substring(0, 12);
+//                }
+//
+//                g2d.drawString(String.format("%-12s %3s %8s", nama, jumlah, formatRupiah(totalBarang)), 0, y);
+//                y += lineHeight;
+//            }
+//
+//            g2d.drawString("--------------------------------", 0, y);
+//            y += lineHeight;
+//
+//            // Ringkasan
+//            g2d.drawString(formatLine("Subtotal", total), 0, y);
+//            y += lineHeight;
+//            g2d.drawString(formatLine("Diskon", diskon), 0, y);
+//            y += lineHeight;
+//            g2d.drawString(formatLine("Bayar", bayar), 0, y);
+//            y += lineHeight;
+//            g2d.drawString(formatLine("Kembalian", kembalian), 0, y);
+//            y += lineHeight;
+//
+//            g2d.drawString("--------------------------------", 0, y);
+//            y += lineHeight;
+//            g2d.drawString(centerText("Terima Kasih", 32), 0, y);
+//            y += lineHeight;
+//            g2d.drawString(centerText("Barang yang sudah dibeli", 32), 0, y);
+//            y += lineHeight;
+//            g2d.drawString(centerText("tidak dapat dikembalikan.", 32), 0, y);
+//            y += lineHeight;
+//
+//            return Printable.PAGE_EXISTS;
+//        };
+//
+//        PageFormat pf = job.defaultPage();
+//        Paper paper = new Paper();
+//        double width = 180; // lebar 58mm
+//        double height = 500;
+//        paper.setSize(width, height);
+//        paper.setImageableArea(0, 0, width, height);
+//        pf.setPaper(paper);
+//
+//        job.setPrintable(printable, pf);
+//
+//        try {
+//            job.print();
+//        } catch (PrinterException ex) {
+//            JOptionPane.showMessageDialog(this, "Gagal mencetak: " + ex.getMessage());
+//        }
+//    }
 
     private String formatRupiah(String nominalStr) {
         try {
@@ -312,7 +337,65 @@ public class FormPenjualan extends javax.swing.JPanel {
 }
 
     
-   private void tambahAtauUpdateTabel() {
+//   private void tambahAtauUpdateTabel() {
+//    try {
+//        String barcode = text_barcode.getText().trim();
+//        String nama = text_nama.getText();
+//        String satuan = text_satuan.getText();
+//        double harga = Double.parseDouble(text_harga.getText().trim());
+//        int jumlah = Integer.parseInt(text_jumlah.getText().trim());
+//        int stok = Integer.parseInt(text_stok.getText().trim());
+//
+//        if (jumlah > stok) {
+//            JOptionPane.showMessageDialog(this, "Jumlah melebihi stok tersedia!");
+//            return;
+//        }
+//
+//        DefaultTableModel model = (DefaultTableModel) table.getModel();
+//        boolean barangAda = false;
+//
+//        for (int i = 0; i < model.getRowCount(); i++) {
+//            if (barcode.equals(model.getValueAt(i, 0))) {
+//                int jumlahLama = Integer.parseInt(model.getValueAt(i, 5).toString());
+//                int jumlahBaru = jumlahLama + jumlah;
+//
+//                if (jumlahBaru > stok) {
+//                    JOptionPane.showMessageDialog(this, "Jumlah total melebihi stok!");
+//                    return;
+//                }
+//
+//                double totalBaru = harga * jumlahBaru;
+//                model.setValueAt(jumlahBaru, i, 5);
+//                model.setValueAt(formatRupiah(totalBaru), i, 6); // Format Rp
+//                barangAda = true;
+//                break;
+//            }
+//        }
+//
+//        if (!barangAda) {
+//            double total = harga * jumlah;
+//            model.addRow(new Object[]{
+//                barcode,
+//                nama,
+//                formatRupiah(harga),  // Format Rp
+//                stok,
+//                satuan,
+//                jumlah,
+//                formatRupiah(total)   // Format Rp
+//            });
+//        }
+//
+//        kosongkanInputBarang();
+//        hitungTotalHarga();
+//
+//    } catch (NumberFormatException e) {
+//        JOptionPane.showMessageDialog(this, "Input harga atau jumlah tidak valid!", "Error", JOptionPane.ERROR_MESSAGE);
+//    }
+//
+//    text_barcode.requestFocus();
+//}
+
+    private void tambahAtauUpdateTabel() {
     try {
         String barcode = text_barcode.getText().trim();
         String nama = text_nama.getText();
@@ -331,7 +414,7 @@ public class FormPenjualan extends javax.swing.JPanel {
 
         for (int i = 0; i < model.getRowCount(); i++) {
             if (barcode.equals(model.getValueAt(i, 0))) {
-                int jumlahLama = Integer.parseInt(model.getValueAt(i, 5).toString());
+                int jumlahLama = (int) model.getValueAt(i, 5);
                 int jumlahBaru = jumlahLama + jumlah;
 
                 if (jumlahBaru > stok) {
@@ -341,7 +424,7 @@ public class FormPenjualan extends javax.swing.JPanel {
 
                 double totalBaru = harga * jumlahBaru;
                 model.setValueAt(jumlahBaru, i, 5);
-                model.setValueAt(formatRupiah(totalBaru), i, 6); // Format Rp
+                model.setValueAt(totalBaru, i, 6);  // total angka asli
                 barangAda = true;
                 break;
             }
@@ -352,11 +435,11 @@ public class FormPenjualan extends javax.swing.JPanel {
             model.addRow(new Object[]{
                 barcode,
                 nama,
-                formatRupiah(harga),  // Format Rp
+                harga,     // angka asli
                 stok,
                 satuan,
                 jumlah,
-                formatRupiah(total)   // Format Rp
+                total      // angka asli
             });
         }
 
@@ -371,60 +454,99 @@ public class FormPenjualan extends javax.swing.JPanel {
 }
 
    
-   private double parseRupiah(String text) {
-    if (text == null || text.isEmpty()) return 0.0;
-    // Hapus "Rp", spasi, titik ribuan, ubah koma jadi titik
-    text = text.replace("Rp", "").replace(".", "").replace(",", ".").trim();
+//   private double parseRupiah(String text) {
+//    if (text == null || text.isEmpty()) return 0.0;
+//    // Hapus "Rp", spasi, titik ribuan, ubah koma jadi titik
+//    text = text.replace("Rp", "").replace(".", "").replace(",", ".").trim();
+//    try {
+//        return Double.parseDouble(text);
+//    } catch (NumberFormatException e) {
+//        e.printStackTrace();
+//        return 0.0;
+//    }
+//}
+
+
+//    private void hitungTotalHarga() {
+//        DefaultTableModel model = (DefaultTableModel) table.getModel();
+//        double subtotal = 0.0;
+//
+//        for (int i = 0; i < model.getRowCount(); i++) {
+//            try {
+//                subtotal += parseRupiah(model.getValueAt(i, 6).toString());
+//
+//            } catch (NumberFormatException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        text_subtotal.setText("Rp " + NumberFormat.getInstance(new Locale("id", "ID")).format(subtotal));
+//
+//        // Ambil diskon persen
+//        double persenDiskon = 0.0;
+//        try {
+//            persenDiskon = Double.parseDouble(text_diskon.getText().trim());
+//        } catch (NumberFormatException e) {
+//            persenDiskon = 0.0;
+//        }
+//
+//        if (persenDiskon < 0 || persenDiskon > 100) {
+//            JOptionPane.showMessageDialog(this, "Diskon harus antara 0% - 100%!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+//            persenDiskon = 0.0;
+//            text_diskon.setText("0");
+//        }
+//
+//        // Hitung diskon nominal dari subtotal
+//        int diskonNominal = (int) Math.round((persenDiskon / 100.0) * subtotal);
+//        int totalBersih = (int) subtotal - diskonNominal;
+//
+//        text_total.setText("Rp " + NumberFormat.getInstance(new Locale("id", "ID")).format(totalBersih));
+//
+//        // Hitung ulang kembalian jika sudah ada input bayar
+//        if (!text_bayar.getText().trim().isEmpty()) {
+//            hitungKembalian();
+//        }
+//    }
+
+   
+   
+        private void hitungTotalHarga() {
+    DefaultTableModel model = (DefaultTableModel) table.getModel();
+    double subtotal = 0.0;
+
+    for (int i = 0; i < model.getRowCount(); i++) {
+        subtotal += (double) model.getValueAt(i, 6);  // kolom Total
+    }
+
+    text_subtotal.setText("Rp " + NumberFormat.getInstance(new Locale("id", "ID")).format(subtotal));
+
+    // Ambil diskon persen
+    double persenDiskon = 0.0;
     try {
-        return Double.parseDouble(text);
+        persenDiskon = Double.parseDouble(text_diskon.getText().trim());
     } catch (NumberFormatException e) {
-        e.printStackTrace();
-        return 0.0;
+        persenDiskon = 0.0;
+    }
+
+    if (persenDiskon < 0 || persenDiskon > 100) {
+        JOptionPane.showMessageDialog(this, "Diskon harus antara 0% - 100%!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+        persenDiskon = 0.0;
+        text_diskon.setText("0");
+    }
+
+    int diskonNominal = (int) Math.round((persenDiskon / 100.0) * subtotal);
+    int totalBersih = (int) subtotal - diskonNominal;
+
+    text_total.setText("Rp " + NumberFormat.getInstance(new Locale("id", "ID")).format(totalBersih));
+
+    if (!text_bayar.getText().trim().isEmpty()) {
+        hitungKembalian();
     }
 }
 
-
-    private void hitungTotalHarga() {
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-        double subtotal = 0.0;
-
-        for (int i = 0; i < model.getRowCount(); i++) {
-            try {
-                subtotal += parseRupiah(model.getValueAt(i, 6).toString());
-
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-        }
-
-        text_subtotal.setText("Rp " + NumberFormat.getInstance(new Locale("id", "ID")).format(subtotal));
-
-        // Ambil diskon persen
-        double persenDiskon = 0.0;
-        try {
-            persenDiskon = Double.parseDouble(text_diskon.getText().trim());
-        } catch (NumberFormatException e) {
-            persenDiskon = 0.0;
-        }
-
-        if (persenDiskon < 0 || persenDiskon > 100) {
-            JOptionPane.showMessageDialog(this, "Diskon harus antara 0% - 100%!", "Peringatan", JOptionPane.WARNING_MESSAGE);
-            persenDiskon = 0.0;
-            text_diskon.setText("0");
-        }
-
-        // Hitung diskon nominal dari subtotal
-        int diskonNominal = (int) Math.round((persenDiskon / 100.0) * subtotal);
-        int totalBersih = (int) subtotal - diskonNominal;
-
-        text_total.setText("Rp " + NumberFormat.getInstance(new Locale("id", "ID")).format(totalBersih));
-
-        // Hitung ulang kembalian jika sudah ada input bayar
-        if (!text_bayar.getText().trim().isEmpty()) {
-            hitungKembalian();
-        }
-    }
-
+   
+   
+   
     private void hitungKembalian() {
         try {
             String totalStr = text_total.getText().trim();
@@ -516,126 +638,261 @@ public class FormPenjualan extends javax.swing.JPanel {
     
    
 
+//    private void simpanTransaksi() {
+//        if (table.getRowCount() == 0) {
+//            JOptionPane.showMessageDialog(this, "Belum ada barang yang dibeli!");
+//            return;
+//        }
+//
+//        if (text_tanggal.getDate() == null) {
+//            JOptionPane.showMessageDialog(this, "Tanggal transaksi belum dipilih!");
+//            return;
+//        }
+//
+//        try {
+//            String tanggal = new java.text.SimpleDateFormat("yyyy-MM-dd").format(text_tanggal.getDate());
+//            String kasir = text_kasir.getText();
+//            int subtotal = RupiahUtils.parseToInt(text_subtotal.getText()); // Ambil dari subtotal asli
+//            int bayar = RupiahUtils.parseToInt(text_bayar.getText());
+//
+//            // Ambil diskon persen
+//            int diskonPersen = text_diskon.getText().trim().isEmpty() ? 0 : Integer.parseInt(text_diskon.getText().trim());
+//            int diskon = (int) Math.round((diskonPersen / 100.0) * subtotal);
+//
+//            int totalSetelahDiskon = subtotal - diskon;
+//            int kembalian = bayar - totalSetelahDiskon;
+//
+//            if (bayar < totalSetelahDiskon) {
+//                JOptionPane.showMessageDialog(this, "Jumlah bayar kurang dari total setelah diskon!");
+//                return;
+//            }
+//
+//            try (Connection conn = Koneksi.getConnection()) {
+//                conn.setAutoCommit(false);
+//
+//                String idUser = "";
+//                String sqlUser = "SELECT id_user FROM users WHERE nama = ?";
+//                try (PreparedStatement psUser = conn.prepareStatement(sqlUser)) {
+//                    psUser.setString(1, kasir);
+//                    ResultSet rs = psUser.executeQuery();
+//                    if (rs.next()) {
+//                        idUser = rs.getString("id_user");
+//                    } else {
+//                        JOptionPane.showMessageDialog(this, "User tidak ditemukan!");
+//                        conn.rollback();
+//                        return;
+//                    }
+//                }
+//
+//                // Generate ID penjualan
+//                String idPenjualan = generateUniqueDetailID(conn);
+//
+//                // Simpan ke tabel penjualan
+//                String sqlPenjualan = "INSERT INTO penjualan (id_penjualan, id_user, tanggal, total, diskon, bayar, kembalian) VALUES (?, ?, ?, ?, ?, ?, ?)";
+//                try (PreparedStatement ps = conn.prepareStatement(sqlPenjualan)) {
+//                    ps.setString(1, idPenjualan);
+//                    ps.setString(2, idUser);
+//                    ps.setDate(3, java.sql.Date.valueOf(tanggal));
+//                    ps.setInt(4, subtotal);         // total asli tanpa diskon
+//                    ps.setInt(5, diskon);           // nilai diskon nominal
+//                    ps.setInt(6, bayar);
+//                    ps.setInt(7, kembalian);
+//                    ps.executeUpdate();
+//                }
+//
+//                // Simpan ke tabel penjualanrinci
+//                String sqlRinci = "INSERT INTO penjualanrinci (id_detail, Jumlah_Jual, Satuan, Harga_Satuan, Total, Id_Penjualan, Id_Barang, barcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+//                try (PreparedStatement psRinci = conn.prepareStatement(sqlRinci)) {
+//                    for (int i = 0; i < table.getRowCount(); i++) {
+//                        String barcode = table.getValueAt(i, 0).toString();
+//                        String satuan = table.getValueAt(i, 4).toString();
+//                        double harga = RupiahUtils.parseToDouble(table.getValueAt(i, 2).toString());
+//                        int jumlah = Integer.parseInt(table.getValueAt(i, 5).toString());
+//                        double totalItem = RupiahUtils.parseToDouble(table.getValueAt(i, 6).toString());
+//
+//                        String idBarang = ambilIdBarangDariBarcode(conn, barcode);
+//                        if (idBarang == null) {
+//                            conn.rollback();
+//                            JOptionPane.showMessageDialog(this, "Barang dengan barcode " + barcode + " tidak ditemukan.");
+//                            return;
+//                        }
+//
+//                        String idDetail = generateUniqueDetailID(conn);
+//
+//                        psRinci.setString(1, idDetail);
+//                        psRinci.setInt(2, jumlah);
+//                        psRinci.setString(3, satuan);
+//                        psRinci.setDouble(4, harga);
+//                        psRinci.setDouble(5, totalItem);
+//                        psRinci.setString(6, idPenjualan);
+//                        psRinci.setString(7, idBarang);
+//                        psRinci.setString(8, barcode);
+//                        psRinci.addBatch();
+//
+//                        kurangiStok(conn, barcode, jumlah);
+//                    }
+//                    psRinci.executeBatch();
+//                }
+//
+//                conn.commit();
+//
+//                // Tampilkan konfirmasi
+//                int pilihan = JOptionPane.showConfirmDialog(
+//                        this,
+//                        "Transaksi berhasil disimpan.\nApakah Anda ingin mencetak struk?",
+//                        "Cetak Struk",
+//                        JOptionPane.YES_NO_OPTION
+//                );
+//
+////                if (pilihan == JOptionPane.YES_OPTION) {
+////                    cetakStrukThermal(idPenjualan, tanggal, kasir, subtotal, diskon, bayar, kembalian);
+////                } else {
+////                    JOptionPane.showMessageDialog(this, "Transaksi disimpan tanpa mencetak struk.");
+////                }
+//
+//                if (pilihan == JOptionPane.YES_OPTION) {
+//                    cetakNotaJasper(idPenjualan); // gunakan Jasper
+//                } else {
+//                    JOptionPane.showMessageDialog(this, "Transaksi disimpan tanpa mencetak struk.");
+//                }
+//
+//                resetForm();
+//
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            JOptionPane.showMessageDialog(this, "Gagal menyimpan transaksi: " + e.getMessage());
+//        }
+//    }
+    
+    
+    
     private void simpanTransaksi() {
-        if (table.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this, "Belum ada barang yang dibeli!");
+    if (table.getRowCount() == 0) {
+        JOptionPane.showMessageDialog(this, "Belum ada barang yang dibeli!");
+        return;
+    }
+
+    if (text_tanggal.getDate() == null) {
+        JOptionPane.showMessageDialog(this, "Tanggal transaksi belum dipilih!");
+        return;
+    }
+
+    try {
+        String tanggal = new java.text.SimpleDateFormat("yyyy-MM-dd").format(text_tanggal.getDate());
+        String kasir = text_kasir.getText();
+
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        double subtotal = 0.0;
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            subtotal += (double) model.getValueAt(i, 6); // Ambil total asli dari kolom Total
+        }
+
+        int bayar = RupiahUtils.parseToInt(text_bayar.getText());
+
+        int diskonPersen = text_diskon.getText().trim().isEmpty() ? 0 : Integer.parseInt(text_diskon.getText().trim());
+        int diskonNominal = (int) Math.round((diskonPersen / 100.0) * subtotal);
+        int totalSetelahDiskon = (int) subtotal - diskonNominal;
+        int kembalian = bayar - totalSetelahDiskon;
+
+        if (bayar < totalSetelahDiskon) {
+            JOptionPane.showMessageDialog(this, "Jumlah bayar kurang dari total setelah diskon!");
             return;
         }
 
-        if (text_tanggal.getDate() == null) {
-            JOptionPane.showMessageDialog(this, "Tanggal transaksi belum dipilih!");
-            return;
-        }
+        try (Connection conn = Koneksi.getConnection()) {
+            conn.setAutoCommit(false);
 
-        try {
-            String tanggal = new java.text.SimpleDateFormat("yyyy-MM-dd").format(text_tanggal.getDate());
-            String kasir = text_kasir.getText();
-            int subtotal = RupiahUtils.parseToInt(text_subtotal.getText()); // Ambil dari subtotal asli
-            int bayar = RupiahUtils.parseToInt(text_bayar.getText());
-
-            // Ambil diskon persen
-            int diskonPersen = text_diskon.getText().trim().isEmpty() ? 0 : Integer.parseInt(text_diskon.getText().trim());
-            int diskon = (int) Math.round((diskonPersen / 100.0) * subtotal);
-
-            int totalSetelahDiskon = subtotal - diskon;
-            int kembalian = bayar - totalSetelahDiskon;
-
-            if (bayar < totalSetelahDiskon) {
-                JOptionPane.showMessageDialog(this, "Jumlah bayar kurang dari total setelah diskon!");
-                return;
+            String idUser = "";
+            String sqlUser = "SELECT id_user FROM users WHERE nama = ?";
+            try (PreparedStatement psUser = conn.prepareStatement(sqlUser)) {
+                psUser.setString(1, kasir);
+                ResultSet rs = psUser.executeQuery();
+                if (rs.next()) {
+                    idUser = rs.getString("id_user");
+                } else {
+                    JOptionPane.showMessageDialog(this, "User tidak ditemukan!");
+                    conn.rollback();
+                    return;
+                }
             }
 
-            try (Connection conn = Koneksi.getConnection()) {
-                conn.setAutoCommit(false);
+            String idPenjualan = generateUniqueDetailID(conn);
 
-                String idUser = "";
-                String sqlUser = "SELECT id_user FROM users WHERE nama = ?";
-                try (PreparedStatement psUser = conn.prepareStatement(sqlUser)) {
-                    psUser.setString(1, kasir);
-                    ResultSet rs = psUser.executeQuery();
-                    if (rs.next()) {
-                        idUser = rs.getString("id_user");
-                    } else {
-                        JOptionPane.showMessageDialog(this, "User tidak ditemukan!");
+            // Simpan ke tabel penjualan
+            String sqlPenjualan = "INSERT INTO penjualan (id_penjualan, id_user, tanggal, total, diskon, bayar, kembalian) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement ps = conn.prepareStatement(sqlPenjualan)) {
+                ps.setString(1, idPenjualan);
+                ps.setString(2, idUser);
+                ps.setDate(3, java.sql.Date.valueOf(tanggal));
+                ps.setInt(4, (int) subtotal);       // total asli tanpa diskon
+                ps.setInt(5, diskonNominal);        // nilai diskon nominal
+                ps.setInt(6, bayar);
+                ps.setInt(7, kembalian);
+                ps.executeUpdate();
+            }
+
+            // Simpan ke tabel penjualanrinci
+            String sqlRinci = "INSERT INTO penjualanrinci (id_detail, Jumlah_Jual, Satuan, Harga_Satuan, Total, Id_Penjualan, Id_Barang, barcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement psRinci = conn.prepareStatement(sqlRinci)) {
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    String barcode = model.getValueAt(i, 0).toString();
+                    String satuan = model.getValueAt(i, 4).toString();
+                    double harga = (double) model.getValueAt(i, 2);
+                    int jumlah = (int) model.getValueAt(i, 5);
+                    double totalItem = (double) model.getValueAt(i, 6);
+
+                    String idBarang = ambilIdBarangDariBarcode(conn, barcode);
+                    if (idBarang == null) {
                         conn.rollback();
+                        JOptionPane.showMessageDialog(this, "Barang dengan barcode " + barcode + " tidak ditemukan.");
                         return;
                     }
+
+                    String idDetail = generateUniqueDetailID(conn);
+
+                    psRinci.setString(1, idDetail);
+                    psRinci.setInt(2, jumlah);
+                    psRinci.setString(3, satuan);
+                    psRinci.setDouble(4, harga);
+                    psRinci.setDouble(5, totalItem);
+                    psRinci.setString(6, idPenjualan);
+                    psRinci.setString(7, idBarang);
+                    psRinci.setString(8, barcode);
+                    psRinci.addBatch();
+
+                    kurangiStok(conn, barcode, jumlah);
                 }
-
-                // Generate ID penjualan
-                String idPenjualan = generateUniqueDetailID(conn);
-
-                // Simpan ke tabel penjualan
-                String sqlPenjualan = "INSERT INTO penjualan (id_penjualan, id_user, tanggal, total, diskon, bayar, kembalian) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                try (PreparedStatement ps = conn.prepareStatement(sqlPenjualan)) {
-                    ps.setString(1, idPenjualan);
-                    ps.setString(2, idUser);
-                    ps.setDate(3, java.sql.Date.valueOf(tanggal));
-                    ps.setInt(4, subtotal);         // total asli tanpa diskon
-                    ps.setInt(5, diskon);           // nilai diskon nominal
-                    ps.setInt(6, bayar);
-                    ps.setInt(7, kembalian);
-                    ps.executeUpdate();
-                }
-
-                // Simpan ke tabel penjualanrinci
-                String sqlRinci = "INSERT INTO penjualanrinci (id_detail, Jumlah_Jual, Satuan, Harga_Satuan, Total, Id_Penjualan, Id_Barang, barcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-                try (PreparedStatement psRinci = conn.prepareStatement(sqlRinci)) {
-                    for (int i = 0; i < table.getRowCount(); i++) {
-                        String barcode = table.getValueAt(i, 0).toString();
-                        String satuan = table.getValueAt(i, 4).toString();
-                        double harga = RupiahUtils.parseToDouble(table.getValueAt(i, 2).toString());
-                        int jumlah = Integer.parseInt(table.getValueAt(i, 5).toString());
-                        double totalItem = RupiahUtils.parseToDouble(table.getValueAt(i, 6).toString());
-
-                        String idBarang = ambilIdBarangDariBarcode(conn, barcode);
-                        if (idBarang == null) {
-                            conn.rollback();
-                            JOptionPane.showMessageDialog(this, "Barang dengan barcode " + barcode + " tidak ditemukan.");
-                            return;
-                        }
-
-                        String idDetail = generateUniqueDetailID(conn);
-
-                        psRinci.setString(1, idDetail);
-                        psRinci.setInt(2, jumlah);
-                        psRinci.setString(3, satuan);
-                        psRinci.setDouble(4, harga);
-                        psRinci.setDouble(5, totalItem);
-                        psRinci.setString(6, idPenjualan);
-                        psRinci.setString(7, idBarang);
-                        psRinci.setString(8, barcode);
-                        psRinci.addBatch();
-
-                        kurangiStok(conn, barcode, jumlah);
-                    }
-                    psRinci.executeBatch();
-                }
-
-                conn.commit();
-
-                // Tampilkan konfirmasi
-                int pilihan = JOptionPane.showConfirmDialog(
-                        this,
-                        "Transaksi berhasil disimpan.\nApakah Anda ingin mencetak struk?",
-                        "Cetak Struk",
-                        JOptionPane.YES_NO_OPTION
-                );
-
-                if (pilihan == JOptionPane.YES_OPTION) {
-                    cetakStrukThermal(idPenjualan, tanggal, kasir, subtotal, diskon, bayar, kembalian);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Transaksi disimpan tanpa mencetak struk.");
-                }
-
-                resetForm();
-
+                psRinci.executeBatch();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Gagal menyimpan transaksi: " + e.getMessage());
+
+            conn.commit();
+
+            int pilihan = JOptionPane.showConfirmDialog(
+                    this,
+                    "Transaksi berhasil disimpan.\nApakah Anda ingin mencetak struk?",
+                    "Cetak Struk",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (pilihan == JOptionPane.YES_OPTION) {
+                cetakNotaJasper(idPenjualan);
+            } else {
+                JOptionPane.showMessageDialog(this, "Transaksi disimpan tanpa mencetak struk.");
+            }
+
+            resetForm();
+
         }
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Gagal menyimpan transaksi: " + e.getMessage());
     }
+}
+
+    
+    
 
     private void hanyaAngka(java.awt.event.KeyEvent evt) {
         char c = evt.getKeyChar();
@@ -774,6 +1031,49 @@ public class FormPenjualan extends javax.swing.JPanel {
 }
 
 
+    
+   private void cetakNotaJasper(String idPenjualan) {
+    try {
+        // Load file .jrxml dari resource
+        InputStream reportStream = getClass().getResourceAsStream("/CetakStruk/report/strukk.jrxml");
+        if (reportStream == null) {
+            JOptionPane.showMessageDialog(this, "File struk.jrxml tidak ditemukan.");
+            return;
+        }
+
+        // Compile .jrxml ke JasperReport
+        JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+
+        // Buat parameter
+        Map<String, Object> params = new HashMap<>();
+        params.put("id_penjualan", idPenjualan);
+
+        // Tambahkan logo sebagai InputStream
+         InputStream logoStream = getClass().getResourceAsStream("/CetakStruk/report/logo.png");
+        if (logoStream != null) {
+            params.put("logoPath", logoStream); // Pastikan tipe param = java.io.InputStream
+        } else {
+            System.out.println("Logo tidak ditemukan");
+        }
+
+
+        // Koneksi ke database
+        Connection conn = Koneksi.getConnection();
+
+        // Isi laporan
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, conn);
+
+        // Tampilkan preview
+        JasperViewer.viewReport(jasperPrint, true);
+
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Gagal mencetak nota: " + ex.getMessage());
+    }
+}
+
+
+    
     
     /**
      * This method is called from within the constructor to initialize the form.

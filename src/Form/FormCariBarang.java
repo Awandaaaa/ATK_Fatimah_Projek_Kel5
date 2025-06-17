@@ -170,7 +170,8 @@ tampilkanBarang("");
                 rs.getString("Nama_barang"),
                 rs.getString("Kategori"),
                 rs.getString("Satuan"),
-                hargaRupiah,                 rs.getString("Stok"),
+                hargaRupiah,                
+                rs.getString("Stok"),
                 rs.getString("barcode"),
                 rs.getString("nama_supplier")
             });
