@@ -61,24 +61,18 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         loadAllData();
         tampilkanHariTanggal();
         label_user.setText("Login sebagai: " + Session.getRole());
-        
-        JD_Awal.getDateEditor().addPropertyChangeListener("date", new PropertyChangeListener() {
+
+        JD_Tanggal.getDateEditor().addPropertyChangeListener("date", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                if (JD_Awal.getDate() != null && JD_Akhir.getDate() != null) {
-                    tampilkanLaporanPembelian(JD_Awal.getDate(), JD_Akhir.getDate());
+                if (JD_Tanggal.getDate() != null) {
+                    tampilkanLaporanPembelian(JD_Tanggal.getDate());
+                } else {
+                    loadAllData();
                 }
             }
         });
 
-        JD_Akhir.getDateEditor().addPropertyChangeListener("date", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (JD_Awal.getDate() != null && JD_Akhir.getDate() != null) {
-                    tampilkanLaporanPembelian(JD_Awal.getDate(), JD_Akhir.getDate());
-                }
-            }
-        });
         DefaultTableModel model = new DefaultTableModel(new Object[]{"No", "Tanggal", "Nama Barang", "Jumlah", "Harga", "Total", "Supplier"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -130,45 +124,38 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         });
 
         tampilkanLaporanPembelianLengkap();
-//        btn_hapus.setText("HAPUS");
-//        btn_hapus.setBackground(new java.awt.Color(70, 130, 180));
-//        btn_hapus.setForeground(Color.WHITE);
-//        btn_hapus.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
-//        btn_hapus.setFocusPainted(false);
-//        btn_hapus.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
-//        btn_hapus.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//
-//        btn_hapus.addMouseListener(new java.awt.event.MouseAdapter() {
-//            @Override
-//            public void mouseEntered(java.awt.event.MouseEvent evt) {
-//                btn_hapus.setBackground(new java.awt.Color(100, 149, 237));
-//            }
-//
-//            @Override
-//            public void mouseExited(java.awt.event.MouseEvent evt) {
-//                btn_hapus.setBackground(new java.awt.Color(70, 130, 180));
-//            }
-//        });
 
-        btnClear.setText("CLEAR");
-        btnClear.setBackground(new java.awt.Color(70, 130, 180));
-        btnClear.setForeground(Color.WHITE);
-        btnClear.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
-        btnClear.setFocusPainted(false);
-        btnClear.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
-        btnClear.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnREFRESH.setText("REFRESH");
+        btnREFRESH.setBackground(new java.awt.Color(70, 130, 180));
+        btnREFRESH.setForeground(Color.WHITE);
+        btnREFRESH.setFont(new java.awt.Font("Serif", Font.BOLD, 12));
+        btnREFRESH.setFocusPainted(false);
+        btnREFRESH.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+        btnREFRESH.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        btnClear.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnREFRESH.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnClear.setBackground(new java.awt.Color(100, 149, 237));
+                btnREFRESH.setBackground(new java.awt.Color(100, 149, 237));
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnClear.setBackground(new java.awt.Color(70, 130, 180));
+                btnREFRESH.setBackground(new java.awt.Color(70, 130, 180));
             }
         });
+
+        t_total.setEditable(false);           // Tidak bisa diedit
+        t_total.setFocusable(false);          // Tidak bisa difokus
+        t_total.setHighlighter(null);         // Tidak bisa diselect/highlight
+        t_total.setCursor(Cursor.getDefaultCursor()); // Cursor normal (bukan text cursor)
+
+        t_total.setBackground(new Color(245, 245, 245)); // Abu-abu sangat terang
+        t_total.setForeground(Color.BLACK);
+        t_total.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.GRAY, 1),
+                BorderFactory.createEmptyBorder(2, 5, 2, 5)
+        ));
     }
 
     private void loadSupplierToComboBox() {
@@ -237,7 +224,7 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         }
     }
 
-    public void tampilkanLaporanPembelian(Date tglAwal, Date tglAkhir) {
+    public void tampilkanLaporanPembelian(Date tanggal) {
         DefaultTableModel model = (DefaultTableModel) tabel_pembelian.getModel();
         model.setRowCount(0);
 
@@ -253,12 +240,11 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
                     + "JOIN supplier s ON p.id_Supplier = s.id_Supplier "
                     + "JOIN pembelianrinci pr ON p.id_pembelian = pr.id_pembelian "
                     + "JOIN barang b ON pr.id_Barang = b.id_Barang "
-                    + "WHERE p.Tgl_Pembelian BETWEEN ? AND ? "
+                    + "WHERE DATE(p.Tgl_Pembelian) = ? "
                     + "ORDER BY p.Tgl_Pembelian DESC";
 
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setDate(1, new java.sql.Date(tglAwal.getTime()));
-            pst.setDate(2, new java.sql.Date(tglAkhir.getTime()));
+            pst.setDate(1, new java.sql.Date(tanggal.getTime()));
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
@@ -276,9 +262,40 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
             rs.close();
             pst.close();
             con.close();
+
+            hitungTotalPembelian();
+
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Gagal menampilkan laporan pembelian: " + e.getMessage());
         }
+    }
+
+    private void hitungTotalPembelian() {
+        double totalKeseluruhan = 0.0;
+        DefaultTableModel model = (DefaultTableModel) tabel_pembelian.getModel();
+
+        // Loop melalui semua baris di tabel
+        for (int i = 0; i < model.getRowCount(); i++) {
+            // Ambil nilai dari kolom Total (kolom index 5)
+            Object totalObj = model.getValueAt(i, 5);
+            if (totalObj != null) {
+                try {
+                    double total = Double.parseDouble(totalObj.toString());
+                    totalKeseluruhan += total;
+                } catch (NumberFormatException e) {
+                    // Jika ada error parsing, skip baris ini
+                    continue;
+                }
+            }
+        }
+
+        // Format total dengan mata uang Rupiah
+        java.text.DecimalFormat formatter = new java.text.DecimalFormat("#,##0.00");
+        String formattedTotal = "Rp " + formatter.format(totalKeseluruhan);
+
+        // Tampilkan di field t_total
+        t_total.setText(formattedTotal);
+        t_total.setEditable(false); // Buat field tidak bisa diedit
     }
 
     public void tampilkanLaporanBerdasarkanID(String idPembelian) {
@@ -359,6 +376,10 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
             rs.close();
             st.close();
             con.close();
+
+            // Kosongkan field total ketika belum difilter
+            t_total.setText("");
+
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Gagal memuat semua data pembelian: " + e.getMessage());
         }
@@ -367,8 +388,7 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
     public void clearFilters() {
         t_cari.setText("");
         cb_supplier.setSelectedIndex(0);
-        JD_Awal.setDate(null);
-        JD_Akhir.setDate(null);
+        JD_Tanggal.setDate(null);
         loadAllData();
     }
 
@@ -378,7 +398,7 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
 
     private String ambilIdPembelianDariBaris(int row) {
         DefaultTableModel model = (DefaultTableModel) tabel_pembelian.getModel();
-        return model.getValueAt(row, 0).toString(); 
+        return model.getValueAt(row, 0).toString();
     }
 
     /**
@@ -396,14 +416,14 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabel_pembelian = new javax.swing.JTable();
-        JD_Awal = new com.toedter.calendar.JDateChooser();
-        JD_Akhir = new com.toedter.calendar.JDateChooser();
-        btnClear = new javax.swing.JButton();
+        JD_Tanggal = new com.toedter.calendar.JDateChooser();
+        btnREFRESH = new javax.swing.JButton();
         t_cari = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         cb_supplier = new javax.swing.JComboBox<>();
         jLabel7 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        t_total = new javax.swing.JTextField();
 
         setMaximumSize(new java.awt.Dimension(755, 509));
         setMinimumSize(new java.awt.Dimension(755, 509));
@@ -440,13 +460,13 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tabel_pembelian);
 
-        btnClear.setBackground(new java.awt.Color(204, 204, 0));
-        btnClear.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnClear.setForeground(new java.awt.Color(255, 255, 255));
-        btnClear.setText("CLEAR");
-        btnClear.addActionListener(new java.awt.event.ActionListener() {
+        btnREFRESH.setBackground(new java.awt.Color(204, 204, 0));
+        btnREFRESH.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnREFRESH.setForeground(new java.awt.Color(255, 255, 255));
+        btnREFRESH.setText("REFRESH");
+        btnREFRESH.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearActionPerformed(evt);
+                btnREFRESHActionPerformed(evt);
             }
         });
 
@@ -457,10 +477,7 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         });
 
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Awal");
-
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Akhir");
+        jLabel2.setText("Tanggal");
 
         cb_supplier.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih Supplier", " " }));
         cb_supplier.addActionListener(new java.awt.event.ActionListener() {
@@ -472,6 +489,16 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("ID Pembelian");
 
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel5.setText("Total :");
+
+        t_total.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_totalActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -479,30 +506,31 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(JD_Awal, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(JD_Akhir, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(t_cari, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(cb_supplier, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jLabel7))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(label_user, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnClear, javax.swing.GroupLayout.Alignment.TRAILING))))
+                            .addComponent(label_user, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(JD_Tanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(t_cari, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cb_supplier, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnREFRESH))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_total, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -516,22 +544,23 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
                         .addComponent(jLabel3))
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(13, 13, 13)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jLabel2))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(JD_Awal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(JD_Akhir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JD_Tanggal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(t_cari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cb_supplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnClear)))
+                        .addComponent(btnREFRESH)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(t_total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addContainerGap(7, Short.MAX_VALUE))
         );
 
         jLabel3.getAccessibleContext().setAccessibleName("          ");
@@ -579,6 +608,9 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
             rs.close();
             pst.close();
             con.close();
+
+            // Hitung total setelah filter
+            hitungTotalPembelian();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Gagal mencari berdasarkan ID Pembelian: " + e.getMessage());
         }
@@ -601,8 +633,7 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
             return;
         }
 
-        Date tanggalAwal = JD_Awal.getDate();
-        Date tanggalAkhir = JD_Akhir.getDate();
+        Date tanggal = JD_Tanggal.getDate();
 
         DefaultTableModel model = (DefaultTableModel) tabel_pembelian.getModel();
         model.setRowCount(0);
@@ -618,8 +649,8 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
                     + "JOIN barang b ON pr.id_Barang = b.id_Barang "
                     + "WHERE s.Nama = ?";
 
-            if (tanggalAwal != null && tanggalAkhir != null) {
-                sql += " AND p.Tgl_Pembelian BETWEEN ? AND ?";
+            if (tanggal != null) {
+                sql += " AND DATE(p.Tgl_Pembelian) = DATE(?)";
             }
 
             sql += " ORDER BY p.Tgl_Pembelian DESC";
@@ -627,11 +658,9 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, namaSupplier);
 
-            if (tanggalAwal != null && tanggalAkhir != null) {
-                java.sql.Date sqlTglAwal = new java.sql.Date(tanggalAwal.getTime());
-                java.sql.Date sqlTglAkhir = new java.sql.Date(tanggalAkhir.getTime());
-                pst.setDate(2, sqlTglAwal);
-                pst.setDate(3, sqlTglAkhir);
+            if (tanggal != null) {
+                java.sql.Date sqlTanggal = new java.sql.Date(tanggal.getTime());
+                pst.setDate(2, sqlTanggal);
             }
 
             ResultSet rs = pst.executeQuery();
@@ -651,30 +680,37 @@ public class FormLaporanPembelian extends javax.swing.JPanel {
             rs.close();
             pst.close();
             con.close();
+
+            // Hitung total setelah filter
+            hitungTotalPembelian();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Gagal filter berdasarkan supplier dan tanggal: " + e.getMessage());
         }
     }//GEN-LAST:event_cb_supplierActionPerformed
 
-    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+    private void btnREFRESHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnREFRESHActionPerformed
         clearFilters();
-    }//GEN-LAST:event_btnClearActionPerformed
+    }//GEN-LAST:event_btnREFRESHActionPerformed
+
+    private void t_totalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_totalActionPerformed
+        hitungTotalPembelian();
+    }//GEN-LAST:event_t_totalActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.toedter.calendar.JDateChooser JD_Akhir;
-    private com.toedter.calendar.JDateChooser JD_Awal;
-    private javax.swing.JButton btnClear;
+    private com.toedter.calendar.JDateChooser JD_Tanggal;
+    private javax.swing.JButton btnREFRESH;
     private javax.swing.JComboBox<String> cb_supplier;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel label_user;
     private javax.swing.JTextField t_cari;
+    private javax.swing.JTextField t_total;
     private javax.swing.JTable tabel_pembelian;
     // End of variables declaration//GEN-END:variables
 
