@@ -231,26 +231,69 @@ public class FormPembelian1 extends javax.swing.JPanel {
         return df.format(value);
     }
 
-    public void isiDataBarangDariBarcode(String barcode) {
-        try {
-            Connection conn = Koneksi.getConnection();
-            String sql = """
+//    public void isiDataBarangDariBarcode(String barcode) {
+//        try {
+//            Connection conn = Koneksi.getConnection();
+//            String sql = """
+//            SELECT 
+//                b.barcode, 
+//                b.Nama_barang, 
+//                b.Harga, 
+//                b.Stok, 
+//                b.Satuan, 
+//                s.Nama AS nama_supplier
+//            FROM 
+//                barang b
+//            LEFT JOIN 
+//                supplier s ON b.id_Supplier = s.id_Supplier
+//            WHERE 
+//                b.barcode = ?
+//        """;
+//            PreparedStatement pst = conn.prepareStatement(sql);
+//            pst.setString(1, barcode);
+//            ResultSet rs = pst.executeQuery();
+//
+//            if (rs.next()) {
+//                t_barcode.setText(rs.getString("barcode"));
+//                t_namabarang.setText(rs.getString("Nama_barang"));
+//                t_harga.setText(String.valueOf(rs.getDouble("Harga")));
+//                t_stok.setText(String.valueOf(rs.getInt("Stok")));
+//                t_satuan.setText(rs.getString("Satuan"));
+//                t_supplier.setText(rs.getString("nama_supplier"));
+//                d_tanggal.setDate(new java.util.Date()); 
+//                t_jumlah.setText("1");
+//                t_jumlah.requestFocus();
+//
+//            } else {
+//               JOptionPane.showMessageDialog(null, "Barang dengan barcode tersebut tidak ditemukan.");
+//                kosongkanFieldBarang();
+//            }
+//
+//            rs.close();
+//            pst.close();
+//        } catch (SQLException ex) {
+//            Logger.getLogger(FormPembelian.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
+    
+    
+    public void CariBarang(String barcode) {
+    try (Connection conn = Koneksi.getConnection()) {
+        String sql = """
             SELECT 
                 b.barcode, 
                 b.Nama_barang, 
                 b.Harga, 
                 b.Stok, 
-                b.Satuan, 
+                b.Satuan,
                 s.Nama AS nama_supplier
-            FROM 
-                barang b
-            LEFT JOIN 
-                supplier s ON b.id_Supplier = s.id_Supplier
-            WHERE 
-                b.barcode = ?
+            FROM barang b
+            LEFT JOIN supplier s ON b.Id_Supplier = s.Id_Supplier
+            WHERE b.barcode = ?
         """;
-            PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setString(1, barcode);
+
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, barcode.trim());
             ResultSet rs = pst.executeQuery();
 
             if (rs.next()) {
@@ -260,21 +303,41 @@ public class FormPembelian1 extends javax.swing.JPanel {
                 t_stok.setText(String.valueOf(rs.getInt("Stok")));
                 t_satuan.setText(rs.getString("Satuan"));
                 t_supplier.setText(rs.getString("nama_supplier"));
-                d_tanggal.setDate(new java.util.Date()); 
+
+                d_tanggal.setDate(new java.util.Date());
                 t_jumlah.setText("1");
+
                 t_jumlah.requestFocus();
-
+                t_jumlah.selectAll();  // agar langsung bisa ketik ulang jika perlu
             } else {
-               JOptionPane.showMessageDialog(null, "Barang dengan barcode tersebut tidak ditemukan.");
-                kosongkanFieldBarang();
+                JOptionPane.showMessageDialog(null, "Barang dengan barcode tersebut tidak ditemukan.");
+                kosongkanFieldBarang(); // reset semua field jika tidak ditemukan
             }
-
-            rs.close();
-            pst.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(FormPembelian.class.getName()).log(Level.SEVERE, null, ex);
         }
+    } catch (SQLException ex) {
+        Logger.getLogger(FormPembelian.class.getName()).log(Level.SEVERE, null, ex);
     }
+}
+
+
+
+    
+    private String ambilIdBarangDariBarcode(Connection con, String barcode) throws SQLException {
+        String sql = "SELECT id_barang FROM barang WHERE barcode = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, barcode);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("id_barang"); // gunakan getString
+                } else {
+                    System.err.println("ID barang tidak ditemukan untuk barcode: " + barcode);
+                }
+            }
+        }
+        return null; // Tidak ditemukan
+    }
+    
+    
 
     private void kosongkanFieldBarang() {
         t_barcode.setText("");
@@ -729,22 +792,22 @@ public class FormPembelian1 extends javax.swing.JPanel {
         }
     }
 
-    private String ambilIdBarangDariBarcode(Connection conn, String barcode) throws SQLException {
-        if (barcode == null || barcode.trim().isEmpty()) {
-            return null;
-        }
-
-        String sql = "SELECT Id_barang FROM barang WHERE barcode = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, barcode);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString("Id_barang");
-                }
-            }
-        }
-        return null;
-    }
+//    private String ambilIdBarangDariBarcode(Connection conn, String barcode) throws SQLException {
+//        if (barcode == null || barcode.trim().isEmpty()) {
+//            return null;
+//        }
+//
+//        String sql = "SELECT Id_barang FROM barang WHERE barcode = ?";
+//        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+//            ps.setString(1, barcode);
+//            try (ResultSet rs = ps.executeQuery()) {
+//                if (rs.next()) {
+//                    return rs.getString("Id_barang");
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     private void tambahkanStok(Connection conn, String barcode, int jumlah) throws SQLException {
         if (barcode == null || barcode.trim().isEmpty()) {
@@ -1322,7 +1385,7 @@ public class FormPembelian1 extends javax.swing.JPanel {
     }//GEN-LAST:event_btn_simpanActionPerformed
 
     private void t_barcodeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_barcodeKeyReleased
-        isiDataBarangDariBarcode(t_barcode.getText().trim());
+        CariBarang(t_barcode.getText().trim());
     }//GEN-LAST:event_t_barcodeKeyReleased
 
     private void t_bayarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_bayarKeyReleased
